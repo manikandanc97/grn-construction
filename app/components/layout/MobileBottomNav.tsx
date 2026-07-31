@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { Home, Hammer, Building2, Star, Phone } from 'lucide-react';
 
 const NAV_ITEMS = [
@@ -13,20 +13,9 @@ const NAV_ITEMS = [
 
 export default function MobileBottomNav() {
   const [activeSection, setActiveSection] = useState('home');
-  const [isVisible, setIsVisible] = useState(true);
-  const lastScrollY = useRef(0);
 
   useEffect(() => {
     const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      
-      if (currentScrollY > lastScrollY.current + 10 && currentScrollY > 100) {
-        setIsVisible(false);
-      } else if (currentScrollY < lastScrollY.current - 10 || currentScrollY < 50) {
-        setIsVisible(true);
-      }
-      lastScrollY.current = currentScrollY;
-
       const sections = NAV_ITEMS.map((i) => i.href);
       for (const id of [...sections].reverse()) {
         const el = document.getElementById(id);
@@ -56,18 +45,16 @@ export default function MobileBottomNav() {
 
   return (
     <nav
-      className={`fixed bottom-[max(env(safe-area-inset-bottom,16px),16px)] left-4 right-4 z-50 flex rounded-3xl border border-black/10 bg-white/95 px-1 py-1.5 shadow-[0_8px_32px_rgba(0,0,0,0.12)] backdrop-blur-xl sm:hidden transition-transform duration-300 ease-in-out ${
-        isVisible ? 'translate-y-0' : 'translate-y-[200%]'
-      }`}
+      className="fixed bottom-[max(env(safe-area-inset-bottom,16px),16px)] left-2 right-2 z-50 flex rounded-3xl border border-black/10 bg-white/95 p-1.5 shadow-[0_8px_32px_rgba(0,0,0,0.12)] backdrop-blur-xl sm:hidden"
     >
-      <div className="flex items-center justify-around w-full">
+      <div className="flex items-center justify-between w-full">
         {NAV_ITEMS.map(({ label, href, Icon }) => {
           const isActive = activeSection === href;
           return (
             <button
               key={href}
               onClick={() => handleClick(href)}
-              className={`flex cursor-pointer flex-col items-center gap-0.5 rounded-xl px-3 py-1.5 transition-all duration-200 ${
+              className={`flex flex-1 cursor-pointer flex-col items-center justify-center gap-0.5 rounded-xl py-1.5 transition-all duration-200 ${
                 isActive ? 'bg-secondary/10' : ''
               }`}
             >
@@ -85,7 +72,6 @@ export default function MobileBottomNav() {
               >
                 {label}
               </span>
-              {isActive && <span className="mt-0.5 h-1 w-1 rounded-full bg-secondary" />}
             </button>
           );
         })}

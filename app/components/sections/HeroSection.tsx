@@ -63,8 +63,8 @@ export default function HeroSection() {
         >
           {/* Badge */}
           <motion.div variants={itemVariants} className="mb-8">
-            <span className="inline-flex items-center gap-1.5 sm:gap-2 px-4 py-2 sm:px-6 sm:py-2.5 rounded-full text-[10px] sm:text-xs md:text-sm font-bold tracking-widest uppercase border border-white/20 text-white/90 bg-white/10 backdrop-blur-sm whitespace-nowrap">
-              <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-secondary animate-pulse" />
+            <span className="inline-flex items-center text-center justify-center flex-wrap gap-1.5 sm:gap-2 px-4 py-2 sm:px-6 sm:py-2.5 rounded-full text-[10px] sm:text-xs md:text-sm font-bold tracking-widest uppercase border border-white/20 text-white/90 bg-white/10 backdrop-blur-sm">
+              <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-secondary animate-pulse shrink-0" />
               Udumalpet&apos;s Trusted Builders Since 2014
             </span>
           </motion.div>

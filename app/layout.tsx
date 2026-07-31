@@ -182,7 +182,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${outfit.variable} scroll-smooth`}
+      className={`${inter.variable} ${outfit.variable} scroll-smooth overflow-x-hidden`}
     >
       <head>
         <script
