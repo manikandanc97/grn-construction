@@ -1,7 +1,8 @@
 'use client';
 
 import { useRef } from 'react';
-import { motion, useInView, type Variants } from 'framer-motion';
+import { useGSAP } from '@gsap/react';
+import { gsap, ScrollTrigger, EASING, prefersReducedMotion } from '@/app/lib/animations/gsap';
 
 interface AnimatedSectionProps {
   children: React.ReactNode;
@@ -11,29 +12,6 @@ interface AnimatedSectionProps {
   once?: boolean;
 }
 
-const variants: Record<string, Variants> = {
-  fadeUp: {
-    hidden: { opacity: 0, y: 40 },
-    visible: { opacity: 1, y: 0 },
-  },
-  fadeIn: {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1 },
-  },
-  slideLeft: {
-    hidden: { opacity: 0, x: -50 },
-    visible: { opacity: 1, x: 0 },
-  },
-  slideRight: {
-    hidden: { opacity: 0, x: 50 },
-    visible: { opacity: 1, x: 0 },
-  },
-  scale: {
-    hidden: { opacity: 0, scale: 0.85 },
-    visible: { opacity: 1, scale: 1 },
-  },
-};
-
 export default function AnimatedSection({
   children,
   className = '',
@@ -41,23 +19,66 @@ export default function AnimatedSection({
   variant = 'fadeUp',
   once = true,
 }: AnimatedSectionProps) {
-  const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once, margin: '-80px' });
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useGSAP(
+    () => {
+      const el = containerRef.current;
+      if (!el) return;
+
+      if (prefersReducedMotion()) {
+        gsap.set(el, { opacity: 1, x: 0, y: 0, scale: 1 });
+        return;
+      }
+
+      const isMobile = window.innerWidth < 768;
+
+      let initialProps: gsap.TweenVars = { opacity: 0 };
+
+      switch (variant) {
+        case 'fadeUp':
+          initialProps = { opacity: 0, y: isMobile ? 25 : 35 };
+          break;
+        case 'fadeIn':
+          initialProps = { opacity: 0 };
+          break;
+        case 'slideLeft':
+          initialProps = { opacity: 0, x: isMobile ? -20 : -45 };
+          break;
+        case 'slideRight':
+          initialProps = { opacity: 0, x: isMobile ? 20 : 45 };
+          break;
+        case 'scale':
+          initialProps = { opacity: 0, scale: isMobile ? 0.98 : 0.95, y: 15 };
+          break;
+      }
+
+      gsap.fromTo(
+        el,
+        initialProps,
+        {
+          opacity: 1,
+          x: 0,
+          y: 0,
+          scale: 1,
+          duration: 0.85,
+          delay,
+          ease: EASING.power3Out,
+          scrollTrigger: {
+            trigger: el,
+            start: 'top 88%',
+            toggleActions: once ? 'play none none none' : 'play reverse play reverse',
+            once,
+          },
+        }
+      );
+    },
+    { scope: containerRef, dependencies: [variant, delay, once] }
+  );
 
   return (
-    <motion.div
-      ref={ref}
-      className={className}
-      variants={variants[variant]}
-      initial="hidden"
-      animate={isInView ? 'visible' : 'hidden'}
-      transition={{
-        duration: 0.6,
-        delay,
-        ease: [0.21, 0.47, 0.32, 0.98] as const,
-      }}
-    >
+    <div ref={containerRef} className={className}>
       {children}
-    </motion.div>
+    </div>
   );
 }

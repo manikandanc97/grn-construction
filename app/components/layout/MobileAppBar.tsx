@@ -1,12 +1,28 @@
 'use client';
 
+import { useRef } from 'react';
 import Image from 'next/image';
-import { Phone, MessageCircle } from 'lucide-react';
+import { useGSAP } from '@gsap/react';
+import { Phone } from 'lucide-react';
+import { gsap, EASING, prefersReducedMotion } from '@/app/lib/animations/gsap';
 import { COMPANY } from '@/app/lib/constants';
 
 export default function MobileAppBar() {
+  const barRef = useRef<HTMLDivElement>(null);
+
+  useGSAP(() => {
+    if (prefersReducedMotion() || !barRef.current) return;
+
+    gsap.fromTo(
+      barRef.current,
+      { y: -20, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.7, ease: EASING.power3Out }
+    );
+  }, []);
+
   return (
     <div
+      ref={barRef}
       className="fixed top-0 left-0 right-0 z-50 flex h-16 items-center justify-between border-b border-white/5 bg-dark/95 px-3 shadow-[0_4px_24px_rgba(0,0,0,0.2)] backdrop-blur-xl sm:hidden"
     >
       {/* Logo + Name */}
@@ -22,7 +38,7 @@ export default function MobileAppBar() {
         </div>
         <div className="min-w-0">
           <p className="text-white font-bold text-sm leading-tight font-display truncate">GRN Construction</p>
-          <p className="text-white/60 text-[9px] tracking-wide truncate">Builders & Contractors</p>
+          <p className="text-white/70 text-[9.5px] font-semibold tracking-wider uppercase truncate">Builders &amp; Contractors</p>
         </div>
       </div>
 
@@ -30,7 +46,7 @@ export default function MobileAppBar() {
       <div className="flex items-center shrink-0 ml-2">
         <a
           href={COMPANY.callLink}
-          className="flex items-center gap-1.5 rounded-full bg-gradient-to-br from-secondary to-secondary-light px-3 py-1.5 text-xs font-bold text-white shadow-md transition-all"
+          className="flex items-center gap-1.5 rounded-full bg-gradient-to-br from-secondary to-secondary-light px-3.5 py-1.5 text-xs font-semibold text-white shadow-md transition-all"
           aria-label="Call Now"
         >
           <Phone size={13} />

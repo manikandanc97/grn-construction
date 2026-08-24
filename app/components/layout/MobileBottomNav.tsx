@@ -1,13 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Home, Hammer, Building2, Star, Phone } from 'lucide-react';
+import { Home, Hammer, Building2, Phone } from 'lucide-react';
 
 const NAV_ITEMS = [
   { label: 'Home', href: 'home', Icon: Home },
   { label: 'Services', href: 'services', Icon: Hammer },
   { label: 'Projects', href: 'projects', Icon: Building2 },
-  { label: 'Reviews', href: 'reviews', Icon: Star },
   { label: 'Contact', href: 'contact', Icon: Phone },
 ];
 
@@ -62,7 +61,7 @@ export default function MobileBottomNav() {
                 size={20}
                 className={`transition-colors ${
                   isActive ? 'text-secondary' : 'text-gray-500'
-                } ${isActive && label === 'Reviews' ? 'fill-secondary' : 'fill-none'}`}
+                } fill-none`}
                 strokeWidth={isActive ? 2.5 : 1.8}
               />
               <span

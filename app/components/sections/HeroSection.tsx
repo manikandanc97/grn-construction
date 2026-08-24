@@ -1,152 +1,273 @@
 'use client';
 
-import { motion, type Variants } from 'framer-motion';
-import { Phone, MessageCircle, ChevronDown } from 'lucide-react';
+import { useRef } from 'react';
+import { useGSAP } from '@gsap/react';
+import { ArrowUpRight, ChevronDown } from 'lucide-react';
+import { gsap, EASING, prefersReducedMotion } from '@/app/lib/animations/gsap';
 import StatCounter from '@/app/components/shared/StatCounter';
-import { COMPANY } from '@/app/lib/constants';
-import { STATS } from '@/app/lib/data';
 
-const containerClass = 'mx-auto w-full max-w-[1400px] px-5 sm:px-8 lg:px-12 xl:px-16';
-const buttonBaseClass =
-  'inline-flex min-h-12 lg:min-h-[52px] items-center justify-center gap-2 sm:gap-3 rounded-[14px] px-6 py-3 sm:px-8 sm:py-4 font-semibold transition-all duration-300 ease-[cubic-bezier(0.21,0.47,0.32,0.98)] hover:-translate-y-1';
-
-const containerVariants: Variants = {
-  hidden: {},
-  visible: {
-    transition: {
-      staggerChildren: 0.15,
-    },
-  },
-};
-
-const itemVariants: Variants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.7, ease: [0.21, 0.47, 0.32, 0.98] },
-  },
-};
+const HERO_METRICS = [
+  { value: 41, suffix: '+', label: 'Projects / Clients' },
+  { value: 4.9, suffix: '/5', label: 'Google Rating', isDecimal: true },
+  { value: 10, suffix: '+', label: 'Years Experience' },
+  { value: 100, suffix: '+', label: 'Completed Works' },
+];
 
 export default function HeroSection() {
+  const heroRef = useRef<HTMLElement>(null);
+  const bgImageRef = useRef<HTMLDivElement>(null);
+  const eyebrowRef = useRef<HTMLDivElement>(null);
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  const descriptionRef = useRef<HTMLParagraphElement>(null);
+  const ctaRef = useRef<HTMLDivElement>(null);
+  const metricsRef = useRef<HTMLDivElement>(null);
+  const scrollIndicatorRef = useRef<HTMLDivElement>(null);
+
+  useGSAP(
+    () => {
+      const hero = heroRef.current;
+      const bgImage = bgImageRef.current;
+      if (!hero || !bgImage) return;
+
+      if (prefersReducedMotion()) {
+        gsap.set(
+          [
+            bgImage,
+            eyebrowRef.current,
+            headingRef.current,
+            descriptionRef.current,
+            ctaRef.current,
+            metricsRef.current?.querySelectorAll('.metric-item'),
+            scrollIndicatorRef.current,
+          ],
+          { opacity: 1, y: 0, scale: 1 }
+        );
+        return;
+      }
+
+      // Background entrance animation: scale 1.05 -> 1 with smooth fade
+      gsap.fromTo(
+        bgImage,
+        { scale: 1.05, opacity: 0.85 },
+        {
+          scale: 1,
+          opacity: 1,
+          duration: 2.0,
+          ease: EASING.power3Out,
+        }
+      );
+
+      // Subtle parallax on scroll
+      gsap.to(bgImage, {
+        yPercent: 12,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: hero,
+          start: 'top top',
+          end: 'bottom top',
+          scrub: 0.5,
+        },
+      });
+
+      // Master content timeline
+      const tl = gsap.timeline({ defaults: { ease: EASING.power3Out } });
+
+      // Eyebrow reveal
+      tl.fromTo(
+        eyebrowRef.current,
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 0.8 },
+        0.2
+      )
+        // Heading reveal
+        .fromTo(
+          headingRef.current,
+          { opacity: 0, y: 30 },
+          { opacity: 1, y: 0, duration: 0.9 },
+          0.35
+        )
+        // Description reveal
+        .fromTo(
+          descriptionRef.current,
+          { opacity: 0, y: 25 },
+          { opacity: 1, y: 0, duration: 0.8 },
+          0.5
+        )
+        // CTA buttons stagger
+        .fromTo(
+          ctaRef.current ? ctaRef.current.children : [],
+          { opacity: 0, y: 20 },
+          { opacity: 1, y: 0, duration: 0.7, stagger: 0.1 },
+          0.65
+        );
+
+      // Minimal metrics row subtle stagger
+      if (metricsRef.current) {
+        const metricItems = metricsRef.current.querySelectorAll('.metric-item');
+        tl.fromTo(
+          metricItems,
+          { opacity: 0, y: 20 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.75,
+            stagger: 0.08,
+          },
+          0.8
+        );
+      }
+
+      // Scroll indicator entrance + loop
+      if (scrollIndicatorRef.current) {
+        tl.fromTo(
+          scrollIndicatorRef.current,
+          { opacity: 0, y: -10 },
+          { opacity: 1, y: 0, duration: 0.6 },
+          1.1
+        );
+
+        gsap.to(scrollIndicatorRef.current, {
+          y: 6,
+          repeat: -1,
+          yoyo: true,
+          duration: 1.4,
+          ease: 'power1.inOut',
+          delay: 1.6,
+        });
+      }
+    },
+    { scope: heroRef }
+  );
+
+  const handleScrollTo = (id: string) => {
+    const el = document.getElementById(id);
+    if (el) {
+      const offset = 70;
+      const top = el.getBoundingClientRect().top + window.scrollY - offset;
+      window.scrollTo({ top, behavior: 'smooth' });
+    }
+  };
+
   return (
     <section
+      ref={heroRef}
       id="home"
-      className="relative min-h-[100svh] flex flex-col items-center justify-center overflow-hidden"
+      className="relative min-h-screen min-h-[100svh] w-full flex flex-col justify-between overflow-hidden bg-dark"
     >
-      {/* Background Image */}
+      {/* Background Image with Architectural Dark Atmosphere */}
       <div
-        className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1920&q=85')] bg-cover bg-center bg-no-repeat"
+        ref={bgImageRef}
+        className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1920&q=85')] bg-cover bg-center bg-no-repeat will-change-transform"
       />
 
-      {/* Gradient Overlays */}
+      {/* Cinematic Overlays: Directional left shade + Vertical Vignette */}
       <div
-        className="absolute inset-0 bg-[linear-gradient(135deg,rgba(15,25,35,0.92)_0%,rgba(26,107,124,0.75)_50%,rgba(15,25,35,0.90)_100%)]"
+        className="absolute inset-0 bg-[linear-gradient(90deg,rgba(15,25,35,0.95)_0%,rgba(15,25,35,0.85)_45%,rgba(15,25,35,0.6)_75%,rgba(15,25,35,0.4)_100%)]"
       />
       <div
-        className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(15,25,35,0.5)_0%,transparent_40%,rgba(15,25,35,0.8)_100%)]"
+        className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(15,25,35,0.65)_0%,transparent_35%,rgba(15,25,35,0.35)_70%,rgba(15,25,35,0.95)_100%)]"
       />
 
-      {/* Animated background grid pattern */}
-      <div className="absolute inset-0 opacity-5">
-        <div
-          className="absolute inset-0 bg-[repeating-linear-gradient(0deg,transparent,transparent_60px,rgba(255,255,255,0.3)_60px,rgba(255,255,255,0.3)_61px),repeating-linear-gradient(90deg,transparent,transparent_60px,rgba(255,255,255,0.3)_60px,rgba(255,255,255,0.3)_61px)]"
-        />
+      {/* Subtle Architectural Grid Background Accent */}
+      <div className="absolute inset-0 opacity-[0.03] pointer-events-none">
+        <div className="w-full h-full bg-[repeating-linear-gradient(0deg,transparent,transparent_80px,rgba(255,255,255,0.4)_80px,rgba(255,255,255,0.4)_81px),repeating-linear-gradient(90deg,transparent,transparent_80px,rgba(255,255,255,0.4)_80px,rgba(255,255,255,0.4)_81px)]" />
       </div>
 
-      {/* Content */}
-      <div className={`${containerClass} relative z-10 max-w-6xl pt-24 pb-32 text-center`}>
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-        >
-          {/* Badge */}
-          <motion.div variants={itemVariants} className="mb-8">
-            <span className="inline-flex items-center text-center justify-center flex-wrap gap-1.5 sm:gap-2 px-4 py-2 sm:px-6 sm:py-2.5 rounded-full text-[10px] sm:text-xs md:text-sm font-bold tracking-widest uppercase border border-white/20 text-white/90 bg-white/10 backdrop-blur-sm">
-              <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-secondary animate-pulse shrink-0" />
-              Udumalpet&apos;s Trusted Builders Since 2014
-            </span>
-          </motion.div>
+      {/* Hero Main Content */}
+      <div className="relative z-10 mx-auto w-full max-w-[1280px] px-4 sm:px-6 lg:px-8 xl:px-10 pt-24 sm:pt-28 lg:pt-28 pb-10 sm:pb-14 flex-1 flex flex-col justify-center">
+        <div className="max-w-[650px] w-full">
+          {/* Eyebrow / Trust Statement */}
+          <div ref={eyebrowRef} className="opacity-0 mb-4 sm:mb-5">
+            <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full border border-white/15 bg-white/[0.07] backdrop-blur-md">
+              <span className="w-2 h-2 rounded-full bg-secondary shadow-[0_0_8px_rgba(212,129,58,0.8)]" />
+              <span className="text-[11px] sm:text-xs font-semibold tracking-wider uppercase text-white/90">
+                Udumalpet&apos;s Trusted Builders Since 2014
+              </span>
+            </div>
+          </div>
 
-          {/* Main Heading */}
-          <motion.h1
-            variants={itemVariants}
-            className="text-[42px] md:text-[60px] lg:text-[72px] font-bold text-white font-display leading-[1.1] mb-8"
+          {/* Main Cinematic Heading: 48px-58px desktop, 34px-38px mobile, font-weight 600-700 */}
+          <h1
+            ref={headingRef}
+            className="text-[34px] leading-[1.12] sm:text-[40px] sm:leading-[1.12] md:text-[48px] md:leading-[1.1] lg:text-[54px] lg:leading-[1.08] xl:text-[58px] font-bold text-white font-display tracking-tight mb-4 sm:mb-5 opacity-0"
           >
             Building Dreams
             <br />
-            <span className="bg-gradient-to-br from-secondary via-secondary-light to-[#F5A865] bg-clip-text text-transparent">
-              Into Reality
-            </span>
-          </motion.h1>
+            <span className="text-secondary">Into Reality</span>
+          </h1>
 
-          {/* Subheading */}
-          <motion.p
-            variants={itemVariants}
-            className="text-[18px] md:text-[20px] lg:text-[22px] text-white/80 max-w-3xl mx-auto mb-12 leading-relaxed"
+          {/* Subheading / Description: 14px-16px, line-height 1.6, max-width 600px */}
+          <p
+            ref={descriptionRef}
+            className="text-[14px] sm:text-[15px] md:text-[16px] text-white/80 max-w-[600px] mb-6 sm:mb-8 font-normal leading-[1.6] opacity-0"
           >
-            Professional Construction, Interior Design &amp; Renovation Services
-            in Udumalpet, Tamil Nadu. Quality you can trust, delivered on time.
-          </motion.p>
+            Professional residential, commercial, and turnkey construction services
+            in Udumalpet &amp; Tamil Nadu. Engineered with precision, delivered on time.
+          </p>
 
-          {/* CTA Buttons */}
-          <motion.div
-            variants={itemVariants}
-            className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-5 mb-12 sm:mb-16 w-full max-w-[280px] sm:max-w-none mx-auto"
+          {/* CTA Buttons: Height 40px-46px, strong primary hierarchy */}
+          <div
+            ref={ctaRef}
+            className="flex flex-wrap items-center gap-3 sm:gap-4 mb-8 sm:mb-9"
           >
-            <a
-              href={COMPANY.callLink}
-              className={`${buttonBaseClass} w-full bg-gradient-to-br from-secondary to-secondary-light text-base sm:text-[18px] text-white shadow-[0_8px_24px_rgba(212,129,58,0.25)] hover:shadow-[0_12px_32px_rgba(212,129,58,0.35)] sm:w-auto`}
-            >
-              <Phone className="w-4 h-4 sm:w-[22px] sm:h-[22px]" />
-              Call Now
-            </a>
             <button
-              onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
-              className={`${buttonBaseClass} w-full border-2 border-white/30 text-base sm:text-[18px] text-white backdrop-blur hover:border-white/50 hover:bg-white/10 sm:w-auto`}
+              onClick={() => handleScrollTo('requirements')}
+              className="inline-flex h-[42px] sm:h-[46px] items-center justify-center gap-2 rounded-xl bg-secondary px-6 sm:px-7 text-sm sm:text-[15px] font-semibold text-white shadow-[0_4px_20px_rgba(212,129,58,0.4)] transition-all duration-300 ease-[cubic-bezier(0.21,0.47,0.32,0.98)] hover:bg-secondary-light hover:shadow-[0_6px_28px_rgba(212,129,58,0.55)] hover:-translate-y-0.5 active:translate-y-0 cursor-pointer opacity-0"
             >
-              <MessageCircle className="w-4 h-4 sm:w-[22px] sm:h-[22px]" />
-              Get Free Quote
+              <span>Get a Quote</span>
+              <ArrowUpRight size={17} className="stroke-[2.5]" />
             </button>
-          </motion.div>
 
-          {/* Stats Row */}
-          <motion.div
-            variants={itemVariants}
-            className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 max-w-3xl mx-auto"
+            <button
+              onClick={() => handleScrollTo('projects')}
+              className="inline-flex h-[42px] sm:h-[46px] items-center justify-center gap-2 rounded-xl border border-white/25 bg-white/[0.06] px-5 sm:px-6 text-sm sm:text-[15px] font-medium text-white backdrop-blur-md transition-all duration-300 ease-[cubic-bezier(0.21,0.47,0.32,0.98)] hover:bg-white/12 hover:border-white/40 hover:-translate-y-0.5 active:translate-y-0 cursor-pointer opacity-0"
+            >
+              <span>View Projects</span>
+            </button>
+          </div>
+
+          {/* Four evenly distributed metrics within the 650px content container with subtle separators */}
+          <div
+            ref={metricsRef}
+            className="w-full pt-5 border-t border-white/15"
           >
-            {STATS.map((stat, index) => (
-              <div
-                key={index}
-                className="flex flex-col items-center rounded-2xl border border-white/15 bg-white/[0.08] p-3 sm:p-4 backdrop-blur-sm"
-              >
-                <span className="text-[32px] md:text-[40px] font-bold text-white font-display">
-                  <StatCounter
-                    value={stat.value}
-                    suffix={stat.suffix}
-                    isDecimal={stat.isDecimal}
-                  />
-                </span>
-                <span className="text-white/60 text-sm mt-2 font-medium tracking-wide">
-                  {stat.label}
-                </span>
-              </div>
-            ))}
-          </motion.div>
-        </motion.div>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-0">
+              {HERO_METRICS.map((metric, index) => (
+                <div
+                  key={index}
+                  className={`metric-item flex flex-col opacity-0 ${
+                    index !== 0 ? 'sm:border-l sm:border-white/15 sm:pl-4 md:pl-5' : ''
+                  } ${
+                    index % 2 === 1 ? 'border-l border-white/15 pl-4 sm:border-l-0' : ''
+                  }`}
+                >
+                  <span className="text-[22px] sm:text-[24px] lg:text-[26px] font-bold text-white font-display tracking-tight leading-none">
+                    <StatCounter
+                      value={metric.value}
+                      suffix={metric.suffix}
+                      isDecimal={metric.isDecimal}
+                      triggerOnScroll={false}
+                    />
+                  </span>
+                  <span className="text-[11px] sm:text-[12px] text-white/70 font-medium tracking-normal mt-1 leading-tight">
+                    {metric.label}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* Scroll Indicator */}
-      <motion.div
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-white/50 cursor-pointer"
-        animate={{ y: [0, 8, 0] }}
-        transition={{ duration: 2, repeat: Infinity }}
-        onClick={() => document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' })}
+      {/* Subtle Scroll Indicator */}
+      <div
+        ref={scrollIndicatorRef}
+        onClick={() => handleScrollTo('about')}
+        className="hidden md:flex absolute bottom-6 lg:bottom-8 right-10 lg:right-16 z-20 items-center gap-2 text-white/45 hover:text-white/85 transition-colors cursor-pointer opacity-0"
       >
-        <span className="text-xs tracking-widest uppercase">Scroll</span>
-        <ChevronDown size={20} />
-      </motion.div>
+        <span className="text-[11px] font-medium tracking-widest uppercase">Explore</span>
+        <ChevronDown size={16} />
+      </div>
     </section>
   );
 }

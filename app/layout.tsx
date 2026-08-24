@@ -1,16 +1,10 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Outfit } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
-  display: "swap",
-});
-
-const outfit = Outfit({
-  subsets: ["latin"],
-  variable: "--font-outfit",
   display: "swap",
 });
 
@@ -75,7 +69,12 @@ export const metadata: Metadata = {
     },
   },
   icons: {
-    icon: "/favicon.ico",
+    icon: [
+      { url: "/logo.jpg" },
+      { url: "/logo.jpg", sizes: "32x32", type: "image/jpeg" },
+      { url: "/logo.jpg", sizes: "16x16", type: "image/jpeg" },
+    ],
+    shortcut: "/logo.jpg",
     apple: "/logo.jpg",
   },
 };
@@ -109,8 +108,8 @@ const jsonLd = {
       email: "info@grnconstructions.com",
       address: {
         "@type": "PostalAddress",
-        streetAddress: "Advocate, No.10 A, Vakil Nagarajan Street, Near Uma Traders",
-        addressLocality: "Udumalpet",
+        streetAddress: "Advocate, No.10 A, Vakil Nagarajan Street, near by Uma traders",
+        addressLocality: "Udumalaipettai Municipality",
         addressRegion: "Tamil Nadu",
         postalCode: "642126",
         addressCountry: "IN",
@@ -182,7 +181,8 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${outfit.variable} scroll-smooth overflow-x-hidden`}
+      className={`${inter.variable} scroll-smooth overflow-x-hidden`}
+      suppressHydrationWarning
     >
       <head>
         <script
@@ -190,7 +190,10 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className="overflow-x-hidden bg-brand-light font-sans text-base leading-[1.7] text-dark antialiased selection:bg-primary/20 selection:text-primary-dark md:text-[17px] lg:text-lg">
+      <body
+        className="overflow-x-hidden bg-brand-light font-sans text-[15px] leading-[1.6] text-dark antialiased selection:bg-primary/20 selection:text-primary-dark"
+        suppressHydrationWarning
+      >
         {children}
       </body>
     </html>

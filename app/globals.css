@@ -12,9 +12,40 @@
   --color-brand-light: #F8F5F0;
 
   --font-sans: var(--font-inter);
-  --font-display: var(--font-outfit);
+  --font-display: var(--font-inter);
 
   --shadow-card: 0 4px 24px rgba(26, 107, 124, 0.12);
   --shadow-card-hover: 0 12px 40px rgba(26, 107, 124, 0.22);
   --shadow-orange: 0 4px 24px rgba(212, 129, 58, 0.25);
 }
+
+:root {
+  --font-hero: clamp(38px, 4.5vw, 56px);
+  --font-section-title: clamp(28px, 3.2vw, 40px);
+  --font-section-subtitle: clamp(14px, 1.2vw, 16px);
+  --font-card-title: 17px;
+  --font-body: 15px;
+  --font-small: 13.5px;
+  --font-caption: 12px;
+}
+
+@layer base {
+  button,
+  a,
+  [role="button"],
+  input[type="button"],
+  input[type="submit"],
+  input[type="reset"],
+  summary {
+    cursor: pointer;
+  }
+
+  button:disabled,
+  input[type="button"]:disabled,
+  input[type="submit"]:disabled,
+  input[type="reset"]:disabled,
+  [role="button"][aria-disabled="true"] {
+    cursor: not-allowed;
+  }
+}
+

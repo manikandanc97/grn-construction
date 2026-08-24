@@ -1,51 +1,74 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { useInView } from 'framer-motion';
+import { gsap, ScrollTrigger, EASING, prefersReducedMotion } from '@/app/lib/animations/gsap';
 
 interface StatCounterProps {
   value: number;
   suffix?: string;
   isDecimal?: boolean;
   duration?: number;
+  triggerOnScroll?: boolean;
 }
 
 export default function StatCounter({
   value,
   suffix = '',
   isDecimal = false,
-  duration = 2000,
+  duration = 1.8,
+  triggerOnScroll = true,
 }: StatCounterProps) {
-  const [count, setCount] = useState(0);
-  const ref = useRef<HTMLSpanElement>(null);
-  const isInView = useInView(ref, { once: true });
-  const hasStarted = useRef(false);
+  const [displayValue, setDisplayValue] = useState<number | string>(() =>
+    prefersReducedMotion() ? (isDecimal ? value.toFixed(1) : value) : 0
+  );
+  const elementRef = useRef<HTMLSpanElement>(null);
+  const hasAnimated = useRef(false);
 
   useEffect(() => {
-    if (!isInView || hasStarted.current) return;
-    hasStarted.current = true;
+    const el = elementRef.current;
+    if (!el || prefersReducedMotion()) return;
 
-    const startTime = performance.now();
-    const startValue = 0;
-    const endValue = value;
+    const obj = { val: 0 };
 
-    const animate = (currentTime: number) => {
-      const elapsed = currentTime - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      // Ease out cubic
-      const eased = 1 - Math.pow(1 - progress, 3);
-      const current = startValue + (endValue - startValue) * eased;
-      setCount(isDecimal ? Math.round(current * 10) / 10 : Math.floor(current));
-      if (progress < 1) {
-        requestAnimationFrame(animate);
-      }
+    const animateValue = () => {
+      if (hasAnimated.current) return;
+      hasAnimated.current = true;
+
+      gsap.to(obj, {
+        val: value,
+        duration,
+        ease: EASING.power2Out,
+        onUpdate: () => {
+          setDisplayValue(
+            isDecimal ? obj.val.toFixed(1) : Math.floor(obj.val)
+          );
+        },
+        onComplete: () => {
+          setDisplayValue(isDecimal ? value.toFixed(1) : value);
+        },
+      });
     };
-    requestAnimationFrame(animate);
-  }, [isInView, value, isDecimal, duration]);
+
+    if (!triggerOnScroll) {
+      animateValue();
+      return;
+    }
+
+    const st = ScrollTrigger.create({
+      trigger: el,
+      start: 'top 90%',
+      once: true,
+      onEnter: animateValue,
+    });
+
+    return () => {
+      st.kill();
+    };
+  }, [value, isDecimal, duration, triggerOnScroll]);
 
   return (
-    <span ref={ref}>
-      {isDecimal ? count.toFixed(1) : count}
+    <span ref={elementRef} className="tabular-nums">
+      {displayValue}
       {suffix}
     </span>
   );

@@ -1,24 +1,38 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useGSAP } from '@gsap/react';
 import { Phone, MessageCircle, Menu, X } from 'lucide-react';
+import { gsap, EASING, prefersReducedMotion } from '@/app/lib/animations/gsap';
 import { COMPANY, NAV_LINKS } from '@/app/lib/constants';
-
-const containerClass = 'mx-auto w-full max-w-[1400px] px-5 sm:px-8 lg:px-12 xl:px-16';
-const buttonBaseClass =
-  'inline-flex items-center justify-center gap-2 rounded-xl px-6 py-2.5 font-medium transition-all duration-300 hover:-translate-y-0.5 whitespace-nowrap';
-const secondaryButtonClass =
-  `${buttonBaseClass} bg-gradient-to-br from-secondary to-secondary-light text-white shadow-[0_4px_12px_rgba(212,129,58,0.25)] hover:shadow-[0_6px_16px_rgba(212,129,58,0.35)]`;
-const whatsappButtonClass =
-  `${buttonBaseClass} bg-green-500 text-white shadow-[0_4px_12px_rgba(34,197,94,0.25)] hover:bg-green-600 hover:shadow-[0_6px_16px_rgba(34,197,94,0.35)]`;
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
+  const desktopHeaderRef = useRef<HTMLElement>(null);
+  const tabletHeaderRef = useRef<HTMLElement>(null);
+
+  useGSAP(() => {
+    if (prefersReducedMotion()) return;
+
+    if (desktopHeaderRef.current) {
+      gsap.fromTo(
+        desktopHeaderRef.current,
+        { y: -20, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.6, ease: EASING.power3Out }
+      );
+    }
+    if (tabletHeaderRef.current) {
+      gsap.fromTo(
+        tabletHeaderRef.current,
+        { y: -20, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.6, ease: EASING.power3Out }
+      );
+    }
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -30,7 +44,7 @@ export default function Navbar() {
         const el = document.getElementById(id);
         if (el) {
           const rect = el.getBoundingClientRect();
-          if (rect.top <= 100) {
+          if (rect.top <= 120) {
             setActiveSection(id);
             break;
           }
@@ -46,7 +60,7 @@ export default function Navbar() {
     const id = href.replace('#', '');
     const el = document.getElementById(id);
     if (el) {
-      const offset = 80;
+      const offset = 75;
       const top = el.getBoundingClientRect().top + window.scrollY - offset;
       window.scrollTo({ top, behavior: 'smooth' });
     }
@@ -55,24 +69,22 @@ export default function Navbar() {
   return (
     <>
       {/* Desktop Navbar */}
-      <motion.header
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.6, ease: [0.21, 0.47, 0.32, 0.98] as const }}
-        className={`fixed top-0 left-0 right-0 z-50 hidden lg:flex transition-all duration-500 ${
+      <header
+        ref={desktopHeaderRef}
+        className={`fixed top-0 left-0 right-0 z-50 hidden lg:flex transition-all duration-300 ${
           scrolled
-            ? 'bg-white/90 backdrop-blur-xl shadow-lg border-b border-gray-100'
-            : 'bg-transparent'
+            ? 'bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100/90 py-2.5'
+            : 'bg-dark/40 backdrop-blur-md border-b border-white/10 py-3.5'
         }`}
       >
-        <div className={`${containerClass} flex h-28 items-center justify-between`}>
+        <div className="mx-auto w-full max-w-[1280px] px-4 sm:px-6 lg:px-8 xl:px-10 flex items-center justify-between">
           {/* Logo */}
           <Link
             href="#home"
             onClick={() => handleNavClick('#home')}
-            className="flex items-center gap-4 group"
+            className="flex items-center gap-3 group transition-transform duration-200 hover:scale-[1.01]"
           >
-            <div className="relative w-16 h-16 rounded-2xl overflow-hidden shadow-md group-hover:shadow-xl transition-shadow border border-white/20">
+            <div className="relative w-10 h-10 rounded-xl overflow-hidden shadow-sm border border-white/20 group-hover:border-secondary/50 transition-colors">
               <Image
                 src="/logo.jpg"
                 alt="GRN Construction Logo"
@@ -82,29 +94,37 @@ export default function Navbar() {
               />
             </div>
             <div>
-              <p className={`font-bold text-2xl leading-tight font-display transition-colors ${scrolled ? 'text-dark' : 'text-white'}`}>
+              <p
+                className={`font-bold text-[15px] sm:text-base leading-tight font-display tracking-tight transition-colors ${
+                  scrolled ? 'text-dark' : 'text-white'
+                }`}
+              >
                 GRN Construction
               </p>
-              <p className={`text-sm transition-colors ${scrolled ? 'text-gray-500' : 'text-white/70'}`}>
-                Builders & Contractors
+              <p
+                className={`text-[11px] font-semibold tracking-wider uppercase transition-colors ${
+                  scrolled ? 'text-secondary' : 'text-white/70'
+                }`}
+              >
+                Builders &amp; Contractors
               </p>
             </div>
           </Link>
 
           {/* Nav Links */}
-          <nav className="flex items-center gap-2">
+          <nav className="flex items-center gap-1 xl:gap-1.5 bg-white/[0.06] p-1 rounded-full border border-white/15">
             {NAV_LINKS.map((link) => {
               const isActive = activeSection === link.href.replace('#', '');
               return (
                 <button
                   key={link.href}
                   onClick={() => handleNavClick(link.href)}
-                  className={`px-3 xl:px-6 py-2.5 xl:py-3 rounded-2xl text-[15px] xl:text-lg font-medium transition-all duration-300 cursor-pointer whitespace-nowrap ${
+                  className={`px-3.5 py-1.5 rounded-full text-[13.5px] font-medium tracking-normal transition-all duration-200 cursor-pointer whitespace-nowrap ${
                     isActive
-                      ? 'text-secondary bg-secondary/10'
+                      ? 'bg-secondary text-white shadow-sm font-semibold'
                       : scrolled
-                      ? 'text-dark hover:text-primary hover:bg-primary/5'
-                      : 'text-white/90 hover:text-white hover:bg-white/10'
+                      ? 'text-dark/85 hover:text-secondary hover:bg-black/5'
+                      : 'text-white/90 hover:text-white hover:bg-white/12'
                   }`}
                 >
                   {link.label}
@@ -114,75 +134,115 @@ export default function Navbar() {
           </nav>
 
           {/* CTA Buttons */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2.5">
             <a
               href={COMPANY.callLink}
-              className={`${secondaryButtonClass} text-[15px]`}
+              className="inline-flex items-center justify-center gap-1.5 rounded-full bg-secondary hover:bg-secondary-light px-4 py-2 text-[13px] font-semibold tracking-wide text-white shadow-[0_2px_10px_rgba(212,129,58,0.35)] transition-all duration-200 hover:shadow-[0_4px_16px_rgba(212,129,58,0.45)] hover:scale-105 active:scale-95 whitespace-nowrap"
             >
-              <Phone size={18} />
-              Call Now
+              <Phone size={13.5} className="stroke-[2.5]" />
+              <span>Call Now</span>
             </a>
           </div>
         </div>
-      </motion.header>
+      </header>
 
       {/* Mobile Hamburger (mid-sized screens) */}
-      <motion.header
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.6 }}
-        className={`fixed top-0 left-0 right-0 z-50 hidden sm:flex lg:hidden transition-all duration-500 ${
-          scrolled ? 'bg-white/90 backdrop-blur-xl shadow-md' : 'bg-transparent'
+      <header
+        ref={tabletHeaderRef}
+        className={`fixed top-0 left-0 right-0 z-50 hidden sm:flex lg:hidden transition-all duration-300 ${
+          scrolled
+            ? 'bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100 py-2.5'
+            : 'bg-dark/50 backdrop-blur-md border-b border-white/10 py-3'
         }`}
       >
-        <div className="w-full px-4 flex items-center justify-between h-20">
-          <Link href="#home" className="flex items-center gap-3" onClick={() => handleNavClick('#home')}>
-            <div className="relative w-12 h-12 rounded-xl overflow-hidden border border-white/20">
+        <div className="w-full px-5 flex items-center justify-between">
+          <Link
+            href="#home"
+            className="flex items-center gap-2.5"
+            onClick={() => handleNavClick('#home')}
+          >
+            <div className="relative w-9 h-9 rounded-lg overflow-hidden border border-white/20">
               <Image src="/logo.jpg" alt="GRN" fill className="object-cover" priority />
             </div>
-            <span className={`font-bold text-lg font-display ${scrolled ? 'text-dark' : 'text-white'}`}>GRN Construction</span>
+            <div className="flex flex-col">
+              <span
+                className={`font-bold text-base leading-tight font-display ${
+                  scrolled ? 'text-dark' : 'text-white'
+                }`}
+              >
+                GRN Construction
+              </span>
+              <span
+                className={`text-[9.5px] uppercase font-medium tracking-wider ${
+                  scrolled ? 'text-secondary' : 'text-white/70'
+                }`}
+              >
+                Builders & Contractors
+              </span>
+            </div>
           </Link>
-          <button
-            onClick={() => setMobileOpen(!mobileOpen)}
-            className={`p-2 rounded-lg ${scrolled ? 'text-dark' : 'text-white'}`}
-          >
-            {mobileOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
+          <div className="flex items-center gap-2">
+            <a
+              href={COMPANY.callLink}
+              className="inline-flex items-center justify-center gap-1.5 rounded-full bg-gradient-to-r from-secondary to-secondary-light px-3.5 py-1.5 text-xs font-semibold text-white shadow-sm"
+            >
+              <Phone size={13} />
+              <span>Call</span>
+            </a>
+            <button
+              onClick={() => setMobileOpen(!mobileOpen)}
+              className={`p-1.5 rounded-lg border transition-colors ${
+                scrolled
+                  ? 'text-dark border-gray-200 hover:bg-gray-100'
+                  : 'text-white border-white/20 hover:bg-white/10'
+              }`}
+              aria-label="Toggle menu"
+            >
+              {mobileOpen ? <X size={20} /> : <Menu size={20} />}
+            </button>
+          </div>
         </div>
 
-        <AnimatePresence>
-          {mobileOpen && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              className="absolute top-full left-0 right-0 bg-white shadow-xl border-t border-gray-100"
-            >
-              <div className="p-4 flex flex-col gap-1">
-                {NAV_LINKS.map((link) => (
+        {mobileOpen && (
+          <div className="absolute top-full left-0 right-0 bg-white/95 backdrop-blur-xl shadow-xl border-t border-gray-100 transition-all duration-300">
+            <div className="p-4 flex flex-col gap-1 max-w-md mx-auto">
+              {NAV_LINKS.map((link) => {
+                const isActive = activeSection === link.href.replace('#', '');
+                return (
                   <button
                     key={link.href}
                     onClick={() => handleNavClick(link.href)}
-                    className="text-left px-4 py-3 rounded-lg text-sm font-medium text-dark hover:bg-primary/5 hover:text-primary transition-colors"
+                    className={`text-left px-3.5 py-2.5 rounded-xl text-sm font-medium transition-colors ${
+                      isActive
+                        ? 'bg-secondary/10 text-secondary font-semibold'
+                        : 'text-dark/80 hover:bg-gray-50 hover:text-primary'
+                    }`}
                   >
                     {link.label}
                   </button>
-                ))}
-                <div className="flex flex-col gap-3 mt-4 pt-4 border-t border-gray-100">
-                  <a href={COMPANY.whatsappLink} target="_blank" rel="noopener noreferrer"
-                    className={`${whatsappButtonClass} w-full !py-3.5`}>
-                    <MessageCircle size={20} /> WhatsApp
-                  </a>
-                  <a href={COMPANY.callLink}
-                    className={`${secondaryButtonClass} w-full !py-3.5`}>
-                    <Phone size={20} /> Call Now
-                  </a>
-                </div>
+                );
+              })}
+              <div className="flex items-center gap-2.5 mt-3 pt-3 border-t border-gray-100">
+                <a
+                  href={COMPANY.whatsappLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl bg-green-500 hover:bg-green-600 text-white text-xs font-semibold py-2.5 shadow-sm transition-all"
+                >
+                  <MessageCircle size={16} /> WhatsApp
+                </a>
+                <a
+                  href={COMPANY.callLink}
+                  className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-secondary to-secondary-light text-white text-xs font-semibold py-2.5 shadow-sm transition-all"
+                >
+                  <Phone size={16} /> Call Now
+                </a>
               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </motion.header>
+            </div>
+          </div>
+        )}
+      </header>
     </>
   );
 }
+

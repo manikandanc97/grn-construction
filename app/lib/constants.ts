@@ -26,12 +26,15 @@ export const COMPANY = {
   email: 'info@grnconstructions.com',
   address: {
     line1: 'Advocate, No.10 A, Vakil Nagarajan Street',
-    line2: 'Near Uma Traders',
-    city: 'Udumalpet',
+    line2: 'Near by Uma Traders',
+    city: 'Udumalaipettai',
+    municipality: 'Udumalaipettai Municipality',
     state: 'Tamil Nadu',
     pin: '642126',
-    full: 'Advocate, No.10 A, Vakil Nagarajan Street, Near Uma Traders, Udumalpet, Tamil Nadu - 642126',
+    full: 'Advocate, No.10 A, Vakil Nagarajan Street, near by Uma traders, Udumalaipettai Municipality, Tamil Nadu 642126',
   },
+  mapUrl: 'https://maps.google.com/?q=GRN+Construction,+Advocate,+No.10+A,+Vakil+Nagarajan+Street,+near+by+Uma+traders,+Udumalaipettai+Municipality,+Tamil+Nadu+642126',
+  mapEmbedUrl: 'https://maps.google.com/maps?q=GRN+Construction,+Advocate,+No.10+A,+Vakil+Nagarajan+Street,+near+by+Uma+traders,+Udumalaipettai+Municipality,+Tamil+Nadu+642126&t=&z=16&ie=UTF8&iwloc=&output=embed',
   rating: 4.9,
   reviewCount: 41,
   experience: 10,
@@ -56,7 +59,7 @@ export const NAV_LINKS = [
   { label: 'About', href: '#about' },
   { label: 'Services', href: '#services' },
   { label: 'Projects', href: '#projects' },
-  { label: 'Reviews', href: '#reviews' },
+  { label: 'Requirement Form', href: '#requirements' },
   { label: 'Contact', href: '#contact' },
 ];
 
@@ -65,6 +68,5 @@ export const BOTTOM_NAV_LINKS = [
   { label: 'Home', href: '#home', iconName: 'Home' },
   { label: 'Services', href: '#services', iconName: 'Hammer' },
   { label: 'Projects', href: '#projects', iconName: 'Building2' },
-  { label: 'Reviews', href: '#reviews', iconName: 'Star' },
   { label: 'Contact', href: '#contact', iconName: 'Phone' },
 ];

@@ -2,156 +2,319 @@
 
 import { useState, useRef } from 'react';
 import Image from 'next/image';
-import { motion, AnimatePresence } from 'framer-motion';
-import { MapPin, Calendar, ExternalLink } from 'lucide-react';
-import AnimatedSection from '@/app/components/shared/AnimatedSection';
-import SectionHeader from '@/app/components/shared/SectionHeader';
+import { useGSAP } from '@gsap/react';
+import { MapPin, ArrowRight, Sparkles } from 'lucide-react';
+import { gsap, EASING, prefersReducedMotion } from '@/app/lib/animations/gsap';
 import { PROJECTS, PROJECT_CATEGORIES } from '@/app/lib/data';
 
-const containerClass = 'mx-auto w-full max-w-[1400px] px-5 sm:px-8 lg:px-12 xl:px-16';
+const containerClass = 'mx-auto w-full max-w-[1280px] px-4 sm:px-6 lg:px-8';
 
 export default function ProjectsSection() {
   const [activeCategory, setActiveCategory] = useState('All');
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const filtersRef = useRef<HTMLDivElement>(null);
+  const featuredCardRef = useRef<HTMLAnchorElement>(null);
+  const supportingGridRef = useRef<HTMLDivElement>(null);
 
   const filtered =
     activeCategory === 'All'
       ? PROJECTS
       : PROJECTS.filter((p) => p.category === activeCategory);
 
+  const featuredProject = filtered[0] || PROJECTS[0];
+  const supportingProjects = filtered.slice(1, 5);
+
+  // Initial header and filter entrance animation
+  useGSAP(
+    () => {
+      const section = sectionRef.current;
+      if (!section) return;
+
+      if (prefersReducedMotion()) {
+        gsap.set([headerRef.current, filtersRef.current, featuredCardRef.current], {
+          opacity: 1,
+          y: 0,
+        });
+        return;
+      }
+
+      // Header reveal
+      if (headerRef.current) {
+        gsap.fromTo(
+          headerRef.current,
+          { opacity: 0, y: 25 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.7,
+            ease: EASING.power3Out,
+            scrollTrigger: {
+              trigger: headerRef.current,
+              start: 'top 85%',
+              toggleActions: 'play none none none',
+              once: true,
+            },
+          }
+        );
+      }
+
+      // Filter tabs reveal
+      if (filtersRef.current) {
+        gsap.fromTo(
+          filtersRef.current,
+          { opacity: 0, y: 15 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.6,
+            delay: 0.1,
+            ease: EASING.power3Out,
+            scrollTrigger: {
+              trigger: filtersRef.current,
+              start: 'top 85%',
+              toggleActions: 'play none none none',
+              once: true,
+            },
+          }
+        );
+      }
+    },
+    { scope: sectionRef }
+  );
+
+  // Animations when category changes or when projects are in view
+  useGSAP(
+    () => {
+      if (prefersReducedMotion()) return;
+
+      // Featured Project: scale + fade
+      if (featuredCardRef.current) {
+        gsap.fromTo(
+          featuredCardRef.current,
+          { opacity: 0, scale: 0.98, y: 25 },
+          {
+            opacity: 1,
+            scale: 1,
+            y: 0,
+            duration: 0.75,
+            ease: EASING.power3Out,
+            scrollTrigger: {
+              trigger: featuredCardRef.current,
+              start: 'top 85%',
+              toggleActions: 'play none none none',
+              once: true,
+            },
+          }
+        );
+      }
+
+      // Supporting Projects: stagger entrance
+      if (supportingGridRef.current) {
+        const cards = supportingGridRef.current.querySelectorAll('.supporting-project-card');
+        if (cards.length > 0) {
+          gsap.fromTo(
+            cards,
+            { opacity: 0, y: 25 },
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.6,
+              stagger: 0.08,
+              ease: EASING.power3Out,
+              scrollTrigger: {
+                trigger: supportingGridRef.current,
+                start: 'top 85%',
+                toggleActions: 'play none none none',
+                once: true,
+              },
+            }
+          );
+        }
+      }
+    },
+    { scope: sectionRef, dependencies: [activeCategory] }
+  );
+
   return (
     <section
+      ref={sectionRef}
       id="projects"
-      className="bg-gradient-to-b from-brand-light to-[#EEF2F7] py-16 md:py-20 lg:py-24"
+      className="bg-gradient-to-b from-[#F8FAFC] via-[#F1F5F9] to-[#EAEFF5] py-16 sm:py-20 lg:py-24 relative overflow-hidden"
     >
+      {/* Background Architectural Accent */}
+      <div className="absolute inset-0 bg-[radial-gradient(#1A6B7C_1px,transparent_1px)] [background-size:32px_32px] opacity-[0.03] pointer-events-none" />
+
       <div className={containerClass}>
-        <AnimatedSection>
-          <SectionHeader
-            badge="Our Work"
-            title="Project"
-            highlight="Showcase"
-            description="Explore our portfolio of completed projects across residential, commercial, interior design, and renovation categories."
-          />
-        </AnimatedSection>
-
-        {/* Category Filter */}
-        <AnimatedSection delay={0.1}>
-          <div className="flex flex-wrap justify-center gap-2 mb-10">
-            {PROJECT_CATEGORIES.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setActiveCategory(cat)}
-                className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 cursor-pointer ${
-                  activeCategory === cat
-                    ? 'bg-gradient-to-br from-primary to-primary-light text-white shadow-[0_4px_15px_rgba(26,107,124,0.3)] border border-transparent'
-                    : 'bg-white text-gray-500 border border-gray-200'
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
+        {/* Header */}
+        <div ref={headerRef} className="opacity-0 mb-8 sm:mb-10 text-center max-w-3xl mx-auto">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold uppercase tracking-wider mb-3.5 shadow-sm backdrop-blur-sm">
+            <Sparkles size={13} className="text-secondary shrink-0" />
+            <span>PROJECT SHOWCASE</span>
           </div>
-        </AnimatedSection>
 
-        {/* Desktop Grid */}
-        <div className="hidden sm:block">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeCategory}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.4 }}
-              className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5"
-            >
-              {filtered.map((project, index) => (
-                <motion.div
-                  key={project.id}
-                  layout
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: index * 0.05, duration: 0.4 }}
-                  className={`group relative rounded-[20px] overflow-hidden cursor-pointer bg-white flex flex-col h-full transition-all duration-300 hover:shadow-2xl shadow-[0_4px_20px_rgba(0,0,0,0.06)] ${index % 3 === 1 ? 'row-span-1' : ''}`}
-                  whileHover={{ y: -8, boxShadow: '0 20px 48px rgba(0,0,0,0.12)' }}
+          <h2 className="text-3xl sm:text-4xl lg:text-[40px] xl:text-[42px] font-extrabold text-dark font-display leading-[1.18] tracking-tight">
+            Built to Last.{' '}
+            <span className="bg-gradient-to-r from-primary via-primary-light to-secondary bg-clip-text text-transparent">
+              Designed for Living.
+            </span>
+          </h2>
+
+          <p className="mt-3.5 sm:mt-4 text-sm sm:text-base md:text-[16px] text-gray-600 font-normal leading-relaxed max-w-2xl mx-auto">
+            A curated portfolio of bespoke residences, commercial landmarks, and architectural spaces built with structural precision.
+          </p>
+        </div>
+
+        {/* Compact & Elegant Filter Buttons */}
+        <div ref={filtersRef} className="opacity-0 mb-8 sm:mb-10">
+          <div className="flex flex-wrap justify-center items-center gap-2 sm:gap-2.5">
+            {PROJECT_CATEGORIES.map((cat) => {
+              const isActive = activeCategory === cat;
+              return (
+                <button
+                  key={cat}
+                  onClick={() => setActiveCategory(cat)}
+                  className={`px-4 py-1.5 sm:px-5 sm:py-2 rounded-full text-xs sm:text-[13px] font-semibold transition-all duration-300 cursor-pointer ${
+                    isActive
+                      ? 'bg-dark text-white shadow-md border border-dark'
+                      : 'bg-white/85 hover:bg-white text-gray-600 hover:text-dark border border-gray-200/90 shadow-sm backdrop-blur-sm hover:border-gray-300'
+                  }`}
                 >
-                  {/* Image */}
-                  <div className="relative h-[240px] lg:h-[280px] overflow-hidden">
+                  {cat}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Projects Showcase Layout */}
+        <div className="space-y-4 sm:space-y-6">
+          {/* FEATURED PROJECT: 100% width, 420px–480px height */}
+          {featuredProject && (
+            <a
+              href="#contact"
+              ref={featuredCardRef}
+              className="featured-project-card group relative w-full h-[420px] sm:h-[450px] lg:h-[480px] rounded-2xl sm:rounded-3xl overflow-hidden bg-dark shadow-xl hover:shadow-2xl transition-all duration-500 cursor-pointer block"
+            >
+              {/* Image with 1.04 Scale Hover */}
+              <div className="relative w-full h-full overflow-hidden">
+                <Image
+                  src={featuredProject.image}
+                  alt={featuredProject.title}
+                  fill
+                  priority
+                  className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+                  sizes="(max-width: 1280px) 100vw, 1280px"
+                />
+
+                {/* Subtle dark gradient overlay at bottom */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent transition-opacity duration-300 group-hover:from-black/95 group-hover:via-black/50" />
+                <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-transparent hidden md:block" />
+
+                {/* Top Badge */}
+                <div className="absolute top-4 sm:top-6 left-4 sm:left-6 z-10">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/50 backdrop-blur-md border border-white/20 text-white text-[11px] sm:text-xs font-semibold tracking-wide uppercase">
+                    <span className="w-2 h-2 rounded-full bg-secondary animate-pulse" />
+                    Featured Project
+                  </span>
+                </div>
+
+                {/* Overlay Content */}
+                <div className="absolute bottom-0 inset-x-0 p-5 sm:p-8 lg:p-10 z-10 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+                  <div className="max-w-xl">
+                    {/* Metadata: Category & Location (12–13px) */}
+                    <div className="flex items-center gap-2 text-[12px] sm:text-[13px] font-semibold uppercase tracking-wider text-secondary mb-1.5 sm:mb-2">
+                      <span>{featuredProject.category}</span>
+                      <span className="text-white/40">•</span>
+                      <span className="inline-flex items-center gap-1 text-white/90 normal-case font-medium">
+                        <MapPin size={13} className="text-secondary" /> {featuredProject.location}
+                      </span>
+                    </div>
+
+                    {/* Project Name: 24–28px, moves slightly upward on hover */}
+                    <h3 className="text-2xl sm:text-[26px] lg:text-[28px] font-bold font-display text-white tracking-tight leading-tight transition-transform duration-300 ease-out group-hover:-translate-y-1.5">
+                      {featuredProject.title}
+                    </h3>
+                  </div>
+
+                  {/* View Project → Button with arrow moving right */}
+                  <div className="flex-shrink-0">
+                    <span className="inline-flex items-center gap-2 px-5 py-2.5 sm:px-6 sm:py-3 rounded-full bg-white text-dark font-semibold text-xs sm:text-sm hover:bg-secondary hover:text-white transition-all duration-300 shadow-md group-hover:bg-secondary group-hover:text-white">
+                      <span>View Project</span>
+                      <ArrowRight
+                        size={15}
+                        className="transition-transform duration-300 ease-out group-hover:translate-x-1.5"
+                      />
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </a>
+          )}
+
+          {/* SUPPORTING PROJECTS: Balanced 2-column grid, 4 projects, 220px–260px each */}
+          {supportingProjects.length > 0 && (
+            <div
+              ref={supportingGridRef}
+              className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6"
+            >
+              {supportingProjects.map((project) => (
+                <a
+                  key={project.id}
+                  href="#contact"
+                  className="supporting-project-card group relative w-full h-[220px] sm:h-[240px] lg:h-[260px] rounded-xl sm:rounded-2xl overflow-hidden bg-dark shadow-md hover:shadow-xl transition-all duration-500 cursor-pointer block"
+                >
+                  {/* Image: occupies most of the card, 1.04 scale on hover */}
+                  <div className="relative w-full h-full overflow-hidden">
                     <Image
                       src={project.image}
                       alt={project.title}
                       fill
-                      className="object-cover transition-transform duration-500 group-hover:scale-110"
-                      sizes="(max-width: 768px) 50vw, 25vw"
+                      className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 640px"
                     />
-                    {/* Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    {/* Overlay Content */}
-                    <div className="absolute inset-0 flex flex-col justify-end p-4 translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
-                      <span className="inline-flex items-center gap-1 text-xs font-semibold text-white/80 mb-1">
-                        <MapPin size={11} /> {project.location}
-                      </span>
-                      <p className="text-white text-sm leading-snug">{project.description}</p>
-                      <ExternalLink size={14} className="text-secondary mt-2" />
-                    </div>
-                    {/* Category Badge */}
-                    <span
-                      className="absolute top-3 left-3 px-2.5 py-1 rounded-full text-xs font-semibold text-white bg-primary/85 backdrop-blur-sm"
-                    >
-                      {project.category}
-                    </span>
-                  </div>
-                  {/* Info */}
-                  <div className="p-8 flex flex-col flex-grow">
-                    <h3 className="font-bold text-dark text-[20px] mb-3 font-display leading-snug">
-                      {project.title}
-                    </h3>
-                    <div className="flex items-center justify-between text-gray-500 text-[16px] mt-auto pt-5 border-t border-gray-100">
-                      <span className="flex items-center gap-1.5"><MapPin size={14} /> {project.location}</span>
-                      <span className="flex items-center gap-1.5"><Calendar size={14} /> {project.year}</span>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </motion.div>
-          </AnimatePresence>
-        </div>
 
-        {/* Mobile Swipe Carousel */}
-        <div className="sm:hidden">
-          <div ref={scrollRef} className="flex gap-6 overflow-x-auto pb-6 snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] pt-2">
-            {filtered.map((project) => (
-              <div
-                key={project.id}
-                className="snap-start flex-shrink-0 w-[85vw] max-w-[340px] rounded-[20px] overflow-hidden bg-white flex flex-col transition-shadow hover:shadow-xl shadow-[0_4px_24px_rgba(0,0,0,0.08)]"
-              >
-                <div className="relative h-[260px]">
-                  <Image
-                    src={project.image}
-                    alt={project.title}
-                    fill
-                    className="object-cover"
-                    sizes="288px"
-                  />
-                  <span
-                    className="absolute top-3 left-3 px-2.5 py-1 rounded-full text-xs font-semibold text-white bg-primary/85"
-                  >
-                    {project.category}
-                  </span>
-                </div>
-                <div className="p-7 flex flex-col flex-grow">
-                  <h3 className="font-bold text-dark text-[22px] mb-3 font-display">{project.title}</h3>
-                  <p className="text-gray-500 text-[16px] mb-5 leading-relaxed line-clamp-2">{project.description}</p>
-                  <div className="flex items-center justify-between text-gray-500 text-[16px] mt-auto pt-5 border-t border-gray-100">
-                    <span className="flex items-center gap-1.5"><MapPin size={16} /> {project.location}</span>
-                    <span className="flex items-center gap-1.5"><Calendar size={16} /> {project.year}</span>
+                    {/* Subtle dark gradient overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-transparent transition-opacity duration-300 group-hover:from-black/90 group-hover:via-black/45" />
+
+                    {/* Minimal Content Overlay */}
+                    <div className="absolute bottom-0 inset-x-0 p-4 sm:p-5 lg:p-6 z-10 flex items-end justify-between gap-3">
+                      <div>
+                        {/* Category / Location (12–13px) */}
+                        <div className="flex items-center gap-2 text-[12px] sm:text-[13px] text-white/80 font-medium mb-1">
+                          <span className="text-secondary font-semibold uppercase tracking-wider text-[11px] sm:text-[12px]">
+                            {project.category}
+                          </span>
+                          <span className="text-white/40">•</span>
+                          <span className="inline-flex items-center gap-1">
+                            <MapPin size={12} className="text-secondary" />
+                            <span>{project.location}</span>
+                          </span>
+                        </div>
+
+                        {/* Project Name: moves slightly upward on hover */}
+                        <h4 className="text-lg sm:text-xl font-bold font-display text-white leading-snug transition-transform duration-300 ease-out group-hover:-translate-y-1">
+                          {project.title}
+                        </h4>
+                      </div>
+
+                      {/* Arrow Icon: moves right on hover */}
+                      <div className="flex-shrink-0 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/15 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white group-hover:bg-secondary group-hover:border-secondary group-hover:text-white transition-all duration-300 shadow-sm">
+                        <ArrowRight
+                          size={15}
+                          className="transition-transform duration-300 ease-out group-hover:translate-x-1"
+                        />
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-            ))}
-          </div>
-          <p className="text-center text-gray-400 text-xs mt-2">Swipe to explore</p>
+                </a>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </section>
   );
 }
+
+

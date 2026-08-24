@@ -8,6 +8,7 @@ import ProjectsSection from '@/app/components/sections/ProjectsSection';
 import WhyChooseUsSection from '@/app/components/sections/WhyChooseUsSection';
 import ReviewsSection from '@/app/components/sections/ReviewsSection';
 import AboutSection from '@/app/components/sections/AboutSection';
+import ClientRequirementSection from '@/app/components/sections/ClientRequirementSection';
 import ContactSection from '@/app/components/sections/ContactSection';
 import FloatingButtons from '@/app/components/shared/FloatingButtons';
 
@@ -24,6 +25,7 @@ export default function Home() {
         <AboutSection />
         <ServicesSection />
         <ProjectsSection />
+        <ClientRequirementSection />
         <WhyChooseUsSection />
         <ReviewsSection />
         <ContactSection />

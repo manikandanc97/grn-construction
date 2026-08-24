@@ -1,51 +1,70 @@
+import React from 'react';
+import { LucideIcon, Sparkles } from 'lucide-react';
+
 interface SectionHeaderProps {
   badge?: string;
+  badgeIcon?: LucideIcon;
   title: string;
   highlight?: string;
   description?: string;
   centered?: boolean;
   light?: boolean;
+  gradientVariant?: 'teal-amber' | 'amber' | 'teal';
 }
 
 export default function SectionHeader({
   badge,
+  badgeIcon: BadgeIcon = Sparkles,
   title,
   highlight,
   description,
   centered = true,
   light = false,
+  gradientVariant = 'teal-amber',
 }: SectionHeaderProps) {
   const textColor = light ? 'text-white' : 'text-dark';
-  const descColor = light ? 'text-white/70' : 'text-gray-500';
+  const descColor = light ? 'text-slate-300' : 'text-gray-600';
+
+  const gradientClass =
+    gradientVariant === 'amber'
+      ? 'bg-gradient-to-r from-secondary-light via-secondary to-amber-400 bg-clip-text text-transparent'
+      : gradientVariant === 'teal'
+      ? 'bg-gradient-to-r from-primary via-primary-light to-primary bg-clip-text text-transparent'
+      : 'bg-gradient-to-r from-primary via-primary-light to-secondary bg-clip-text text-transparent';
 
   return (
-    <div className={`max-w-2xl ${centered ? 'mx-auto text-center' : ''} mb-12`}>
+    <div className={`max-w-3xl ${centered ? 'mx-auto text-center' : ''} mb-10 sm:mb-12`}>
       {badge && (
-        <div className="inline-flex items-center gap-2 mb-4">
-          <span className="h-px w-8 bg-secondary"></span>
-          <span
-            className="text-sm font-bold tracking-widest uppercase text-secondary"
-          >
-            {badge}
-          </span>
-          <span className="h-px w-8 bg-secondary"></span>
+        <div>
+          {light ? (
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/[0.08] border border-white/15 backdrop-blur-md text-secondary-light text-xs font-bold uppercase tracking-wider mb-3.5 shadow-sm">
+              <BadgeIcon size={13} className="text-secondary shrink-0" />
+              <span>{badge}</span>
+            </div>
+          ) : (
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold uppercase tracking-wider mb-3.5 shadow-sm backdrop-blur-sm">
+              <BadgeIcon size={13} className="text-secondary shrink-0" />
+              <span>{badge}</span>
+            </div>
+          )}
         </div>
       )}
       <h2
-        className={`text-[30px] md:text-[38px] lg:text-[48px] font-bold font-display leading-tight ${textColor}`}
+        className={`text-3xl sm:text-4xl lg:text-[40px] xl:text-[42px] font-extrabold font-display leading-[1.18] tracking-tight ${textColor}`}
       >
         {title}{' '}
-        {highlight && (
-          <span className="bg-gradient-to-br from-secondary to-secondary-light bg-clip-text text-transparent">
-            {highlight}
-          </span>
-        )}
+        {highlight && <span className={gradientClass}>{highlight}</span>}
       </h2>
       {description && (
-        <p className={`mt-5 text-[16px] md:text-[17px] lg:text-[18px] leading-relaxed ${descColor}`}>
+        <p
+          className={`mt-3.5 sm:mt-4 text-sm sm:text-base md:text-[16px] leading-relaxed max-w-2xl ${
+            centered ? 'mx-auto' : ''
+          } ${descColor} font-normal`}
+        >
           {description}
         </p>
       )}
     </div>
   );
 }
+

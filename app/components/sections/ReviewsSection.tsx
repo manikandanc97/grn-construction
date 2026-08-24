@@ -1,219 +1,368 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence, type Variants } from 'framer-motion';
-import { Star, ChevronLeft, ChevronRight, Quote } from 'lucide-react';
-import AnimatedSection from '@/app/components/shared/AnimatedSection';
-import SectionHeader from '@/app/components/shared/SectionHeader';
-import { REVIEWS } from '@/app/lib/data';
+import { useState, useEffect, useRef, useMemo } from 'react';
+import { useGSAP } from '@gsap/react';
+import { Edit3, ArrowRight, ChevronLeft, ChevronRight, MessageSquareQuote } from 'lucide-react';
+import { gsap, EASING, prefersReducedMotion } from '@/app/lib/animations/gsap';
 import { COMPANY } from '@/app/lib/constants';
+import { GoogleReview, GoogleReviewPhoto, GoogleReviewSummary, ReviewsApiResponse } from '@/app/lib/types/googleReviews';
+import ReviewSummary from '@/app/components/reviews/ReviewSummary';
+import FeaturedReviewCard from '@/app/components/reviews/FeaturedReviewCard';
+import SupportingReviewCard from '@/app/components/reviews/SupportingReviewCard';
+import ReviewSectionSkeleton from '@/app/components/reviews/ReviewSkeleton';
+import ReviewEmptyState from '@/app/components/reviews/ReviewEmptyState';
+import PhotoLightboxModal from '@/app/components/reviews/PhotoLightboxModal';
 
-const containerClass = 'mx-auto w-full max-w-[1400px] px-5 sm:px-8 lg:px-12 xl:px-16';
-
-function StarRating({ rating }: { rating: number }) {
-  return (
-    <div className="flex gap-0.5">
-      {[1, 2, 3, 4, 5].map((star) => (
-        <Star
-          key={star}
-          size={14}
-          className={star <= rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}
-        />
-      ))}
-    </div>
-  );
-}
+const DEFAULT_SUMMARY: GoogleReviewSummary = {
+  rating: COMPANY.rating || 4.9,
+  reviewCount: COMPANY.reviewCount || 41,
+  businessName: COMPANY.name || 'GRN Construction',
+  businessAddress: COMPANY.address.full,
+  writeReviewUrl: process.env.NEXT_PUBLIC_GOOGLE_REVIEW_URL || 'https://maps.google.com/?q=GRN+Construction+Udumalpet',
+  viewAllReviewsUrl: process.env.NEXT_PUBLIC_GOOGLE_MAPS_URL || 'https://maps.google.com/?q=GRN+Construction+Udumalpet',
+  isConnected: false,
+  source: 'fallback',
+  lastFetched: new Date().toISOString(),
+};
 
 export default function ReviewsSection() {
-  const [current, setCurrent] = useState(0);
-  const [direction, setDirection] = useState(1);
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [summary, setSummary] = useState<GoogleReviewSummary>(DEFAULT_SUMMARY);
+  const [reviews, setReviews] = useState<GoogleReview[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [supportingPageIndex, setSupportingPageIndex] = useState(0);
 
-  const resetTimer = () => {
-    if (timerRef.current) clearTimeout(timerRef.current);
-    timerRef.current = setTimeout(() => {
-      setDirection(1);
-      setCurrent((prev) => (prev + 1) % REVIEWS.length);
-    }, 5000);
-  };
+  // Lightbox Modal state
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxPhotos, setLightboxPhotos] = useState<GoogleReviewPhoto[]>([]);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
+  const [lightboxReviewer, setLightboxReviewer] = useState<string>('');
 
+  const sectionRef = useRef<HTMLElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const summaryRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const ctaRef = useRef<HTMLDivElement>(null);
+
+  // Fetch reviews from server API
   useEffect(() => {
-    resetTimer();
-    return () => { if (timerRef.current) clearTimeout(timerRef.current); };
-  }, [current]);
+    let isMounted = true;
 
-  const navigate = (dir: number) => {
-    setDirection(dir);
-    setCurrent((prev) => (prev + dir + REVIEWS.length) % REVIEWS.length);
-  };
+    async function fetchReviews() {
+      try {
+        const res = await fetch('/api/reviews');
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data: ReviewsApiResponse = await res.json();
 
-  const variants: Variants = {
-    enter: (dir: number) => ({ x: dir > 0 ? 100 : -100, opacity: 0 }),
-    center: { x: 0, opacity: 1 },
-    exit: (dir: number) => ({ x: dir > 0 ? -100 : 100, opacity: 0 }),
+        if (isMounted) {
+          if (data.summary) {
+            setSummary(data.summary);
+          }
+          if (data.reviews && Array.isArray(data.reviews)) {
+            setReviews(data.reviews);
+          }
+        }
+      } catch (err) {
+        console.warn('[ReviewsSection] Could not load live Google reviews, using fallback state:', err);
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    }
+
+    fetchReviews();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  // Ensure reviews are strictly sorted by latest date (latest review MUST remain first)
+  const sortedReviews = useMemo(() => {
+    return [...reviews].sort((a, b) => {
+      const timeA = new Date(a.createdAt).getTime();
+      const timeB = new Date(b.createdAt).getTime();
+      if (isNaN(timeA) || isNaN(timeB)) return 0;
+      return timeB - timeA;
+    });
+  }, [reviews]);
+
+  const featuredReview = sortedReviews.length > 0 ? sortedReviews[0] : null;
+  const remainingReviews = sortedReviews.length > 1 ? sortedReviews.slice(1) : [];
+
+  // 1 supporting review per page (slide one by one)
+  const supportingPageSize = 1;
+  const totalSupportingPages = remainingReviews.length;
+  const currentSupportingReviews = remainingReviews.slice(
+    supportingPageIndex,
+    supportingPageIndex + 1
+  );
+
+  // GSAP Entrance Animations
+  useGSAP(
+    () => {
+      const section = sectionRef.current;
+      if (!section) return;
+
+      if (prefersReducedMotion()) {
+        gsap.set(
+          [headerRef.current, summaryRef.current, contentRef.current, ctaRef.current],
+          { opacity: 1, y: 0, scale: 1 }
+        );
+        return;
+      }
+
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: section,
+          start: 'top 80%',
+          toggleActions: 'play none none none',
+          once: true,
+        },
+        defaults: { ease: EASING.power3Out },
+      });
+
+      if (headerRef.current) {
+        tl.fromTo(
+          headerRef.current,
+          { opacity: 0, y: 30 },
+          { opacity: 1, y: 0, duration: 0.8 },
+          0
+        );
+      }
+
+      if (summaryRef.current) {
+        tl.fromTo(
+          summaryRef.current,
+          { opacity: 0, y: 20 },
+          { opacity: 1, y: 0, duration: 0.7 },
+          0.15
+        );
+      }
+
+      if (contentRef.current) {
+        tl.fromTo(
+          contentRef.current,
+          { opacity: 0, y: 30 },
+          { opacity: 1, y: 0, duration: 0.8 },
+          0.25
+        );
+
+        // Animate featured card (fade + y)
+        const featuredCard = contentRef.current.querySelector('.featured-review-card');
+        if (featuredCard) {
+          tl.fromTo(
+            featuredCard,
+            { opacity: 0, y: 25, scale: 0.98 },
+            { opacity: 1, y: 0, scale: 1, duration: 0.7 },
+            0.3
+          );
+        }
+
+        // Animate supporting cards with stagger
+        const supportingCards = contentRef.current.querySelectorAll('.supporting-review-card');
+        if (supportingCards.length > 0) {
+          tl.fromTo(
+            supportingCards,
+            { opacity: 0, y: 20 },
+            { opacity: 1, y: 0, duration: 0.6, stagger: 0.15 },
+            0.4
+          );
+        }
+      }
+
+      if (ctaRef.current) {
+        tl.fromTo(
+          ctaRef.current,
+          { opacity: 0, y: 20 },
+          { opacity: 1, y: 0, duration: 0.6 },
+          0.55
+        );
+      }
+    },
+    { scope: sectionRef, dependencies: [isLoading, reviews.length] }
+  );
+
+  const handleOpenPhoto = (
+    photos: GoogleReview['reviewPhotos'] | undefined,
+    index: number,
+    reviewerName: string
+  ) => {
+    if (!photos || photos.length === 0) return;
+    setLightboxPhotos(photos);
+    setLightboxIndex(index);
+    setLightboxReviewer(reviewerName);
+    setLightboxOpen(true);
   };
 
   return (
-    <section id="reviews" className="py-16 md:py-20 lg:py-24 bg-white">
-      <div className="w-full max-w-[1400px] mx-auto px-5 sm:px-8 lg:px-12 xl:px-16">
-        {/* Header */}
-        <AnimatedSection>
-          <SectionHeader
-            badge="Testimonials"
-            title="What Our"
-            highlight="Clients Say"
-            description="Real feedback from real clients. Our 4.9 Google rating speaks for the quality we deliver consistently."
-          />
-        </AnimatedSection>
+    <section
+      ref={sectionRef}
+      id="reviews"
+      className="py-16 md:py-20 lg:py-24 bg-[#FAFAFA] relative overflow-hidden"
+    >
+      {/* Background Subtle Gradient Glow */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[450px] bg-radial from-primary/[0.04] via-transparent to-transparent pointer-events-none -z-10" />
 
-        {/* Google Rating Badge */}
-        <AnimatedSection delay={0.1}>
-          <div className="flex justify-center mb-10">
-            <div className="flex items-center gap-6 px-10 py-6 rounded-[20px] bg-gradient-to-br from-[#F8F5F0] to-white shadow-[0_4px_24px_rgba(0,0,0,0.08)] border border-gray-200">
-              {/* Google G */}
-              <div className="font-serif text-4xl font-bold text-[#4285F4]">
-                G
-              </div>
-              <div className="h-10 w-px bg-gray-200" />
-              <div className="text-center">
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="text-[40px] font-bold text-dark font-display">
-                    {COMPANY.rating}
-                  </span>
-                  <Star size={22} className="fill-yellow-400 text-yellow-400" />
-                </div>
-                <p className="text-gray-500 text-[14px]">
-                  Based on <strong className="text-dark">{COMPANY.reviewCount}</strong> Google reviews
-                </p>
-              </div>
-              <div className="h-10 w-px bg-gray-200" />
-              <div className="text-center">
-                <div className="flex gap-0.5 mb-1">
-                  {[1, 2, 3, 4, 5].map((s) => (
-                    <Star key={s} size={16} className="fill-yellow-400 text-yellow-400" />
-                  ))}
-                </div>
-                <p className="text-gray-500 text-[14px]">Excellent Rating</p>
-              </div>
-            </div>
+      <div className="w-full max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10">
+        {/* Section Header */}
+        <div ref={headerRef} className="opacity-0 mb-8 sm:mb-10 text-center max-w-3xl mx-auto">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold uppercase tracking-wider mb-3.5 shadow-sm backdrop-blur-sm">
+            <MessageSquareQuote size={13} className="text-secondary shrink-0" />
+            <span>CLIENT TESTIMONIALS</span>
           </div>
-        </AnimatedSection>
+          <h2 className="text-3xl sm:text-4xl lg:text-[40px] xl:text-[42px] font-extrabold text-dark font-display leading-[1.18] tracking-tight">
+            What Our Clients{' '}
+            <span className="bg-gradient-to-r from-primary via-primary-light to-secondary bg-clip-text text-transparent">
+              Say About Us.
+            </span>
+          </h2>
+          <p className="mt-3.5 sm:mt-4 text-sm sm:text-base md:text-[16px] text-gray-600 font-normal max-w-2xl mx-auto leading-relaxed">
+            Real feedback and verified reviews from homeowners and clients who trusted GRN Construction for their dream spaces.
+          </p>
+        </div>
 
-        {/* Main Carousel */}
-        <AnimatedSection delay={0.2}>
-          <div className="relative max-w-3xl mx-auto">
-            {/* Big Quote */}
-            <div className="absolute -top-4 -left-4 opacity-10 z-0">
-              <Quote size={80} className="text-primary" />
-            </div>
+        {/* Rating Header (Wider Horizontal Summary Block, max-w-[900px]) */}
+        <div ref={summaryRef} className="opacity-0">
+          <ReviewSummary summary={summary} />
+        </div>
 
-            {/* Card */}
-            <div className="relative overflow-hidden rounded-[2rem] p-8 md:p-10 lg:p-12 bg-gradient-to-br from-[#F8F5F0] to-white shadow-[0_12px_48px_rgba(0,0,0,0.12)] border border-primary/10">
-              <AnimatePresence mode="wait" custom={direction}>
-                <motion.div
-                  key={current}
-                  custom={direction}
-                  variants={variants}
-                  initial="enter"
-                  animate="center"
-                  exit="exit"
-                  transition={{ duration: 0.4, ease: [0.21, 0.47, 0.32, 0.98] as const }}
-                >
-                  {/* Stars */}
-                  <div className="flex gap-1 mb-5">
-                    {[1, 2, 3, 4, 5].map((s) => (
-                      <Star key={s} size={18} className="fill-yellow-400 text-yellow-400" />
+        {/* Reviews Layout: 2 equal balanced cards side-by-side on desktop */}
+        <div ref={contentRef} className="opacity-0 min-h-[350px]">
+          {isLoading ? (
+            <ReviewSectionSkeleton />
+          ) : sortedReviews.length > 0 && featuredReview ? (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 items-stretch">
+              {/* Featured Latest Review (Left Column) */}
+              <div className="flex">
+                <FeaturedReviewCard
+                  review={featuredReview}
+                  onOpenPhoto={handleOpenPhoto}
+                  className="w-full"
+                />
+              </div>
+
+              {/* Supporting Reviews Carousel (Right Column) */}
+              <div className="flex flex-col gap-3">
+                {/* Header for Supporting Reviews with Pagination Controls (if more than 1 supporting review) */}
+                {remainingReviews.length > 1 && (
+                  <div className="flex items-center justify-between px-1">
+                    <span className="text-xs font-semibold uppercase tracking-wider text-gray-500">
+                      More Client Stories ({supportingPageIndex + 1} of {remainingReviews.length})
+                    </span>
+
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        onClick={() =>
+                          setSupportingPageIndex((prev) =>
+                            prev > 0 ? prev - 1 : remainingReviews.length - 1
+                          )
+                        }
+                        className="w-7 h-7 rounded-full border border-gray-200 bg-white hover:bg-primary/5 hover:border-primary text-gray-600 hover:text-primary flex items-center justify-center transition-all cursor-pointer shadow-xs active:scale-95"
+                        aria-label="Previous review"
+                      >
+                        <ChevronLeft size={14} />
+                      </button>
+                      <button
+                        onClick={() =>
+                          setSupportingPageIndex((prev) =>
+                            prev < remainingReviews.length - 1 ? prev + 1 : 0
+                          )
+                        }
+                        className="w-7 h-7 rounded-full border border-gray-200 bg-white hover:bg-primary/5 hover:border-primary text-gray-600 hover:text-primary flex items-center justify-center transition-all cursor-pointer shadow-xs active:scale-95"
+                        aria-label="Next review"
+                      >
+                        <ChevronRight size={14} />
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Supporting Card Container: 1 review at a time */}
+                {currentSupportingReviews.length > 0 ? (
+                  <div className="flex-1 flex flex-col">
+                    {currentSupportingReviews.map((review) => (
+                      <SupportingReviewCard
+                        key={review.id}
+                        review={review}
+                        onOpenPhoto={handleOpenPhoto}
+                        className="h-full"
+                      />
                     ))}
                   </div>
-
-                  {/* Text */}
-                  <p className="text-dark text-[18px] md:text-[22px] lg:text-[24px] leading-relaxed mb-10 italic">
-                    &ldquo;{REVIEWS[current].text}&rdquo;
-                  </p>
-
-                  {/* Author */}
-                  <div className="flex items-center gap-5">
-                    <div className="w-16 h-16 rounded-full flex items-center justify-center text-white font-bold text-[22px] flex-shrink-0 bg-gradient-to-br from-primary to-primary-light">
-                      {REVIEWS[current].initial}
-                    </div>
-                    <div>
-                      <p className="font-bold text-[20px] text-dark font-display">
-                        {REVIEWS[current].name}
-                      </p>
-                      <p className="text-gray-500 text-[16px]">
-                        {REVIEWS[current].location} - {REVIEWS[current].date}
-                      </p>
-                    </div>
+                ) : (
+                  /* Fallback if only 1 review exists */
+                  <div className="h-full rounded-2xl border border-dashed border-gray-200 p-6 flex flex-col items-center justify-center text-center bg-white/70">
+                    <p className="text-xs text-gray-500 mb-3">
+                      More reviews from verified homeowners are available on Google Maps.
+                    </p>
+                    <a
+                      href={summary.viewAllReviewsUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs font-semibold text-primary hover:text-primary-dark inline-flex items-center gap-1"
+                    >
+                      <span>Read all on Google</span>
+                      <ArrowRight size={12} />
+                    </a>
                   </div>
-                </motion.div>
-              </AnimatePresence>
-            </div>
-
-            {/* Navigation */}
-            <div className="flex items-center justify-between mt-6">
-              <button
-                onClick={() => navigate(-1)}
-                className="w-11 h-11 rounded-full border border-gray-200 flex items-center justify-center text-gray-500 hover:border-primary hover:text-primary transition-all hover:shadow-md"
-              >
-                <ChevronLeft size={20} />
-              </button>
-
-              {/* Dots */}
-              <div className="flex gap-2">
-                {REVIEWS.map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => {
-                      setDirection(i > current ? 1 : -1);
-                      setCurrent(i);
-                    }}
-                    className={`h-2 rounded-full transition-all duration-300 ${
-                      i === current
-                        ? 'w-6 bg-gradient-to-r from-primary to-primary-light'
-                        : 'w-2 bg-gray-200'
-                    }`}
-                  />
-                ))}
+                )}
               </div>
+            </div>
+          ) : (
+            <ReviewEmptyState summary={summary} />
+          )}
+        </div>
 
-              <button
-                onClick={() => navigate(1)}
-                className="w-11 h-11 rounded-full border border-gray-200 flex items-center justify-center text-gray-500 hover:border-primary hover:text-primary transition-all hover:shadow-md"
+        {/* Bottom CTA Row: View All Google Reviews & Write a Review */}
+        {reviews.length > 0 && (
+          <div
+            ref={ctaRef}
+            className="opacity-0 mt-12 pt-8 border-t border-gray-200/80 flex flex-col sm:flex-row items-center justify-between gap-5 text-center sm:text-left"
+          >
+            <div>
+              <h4 className="font-semibold text-dark font-display text-base sm:text-lg">
+                Have you worked with GRN Construction?
+              </h4>
+              <p className="text-gray-500 text-xs sm:text-[13.5px] mt-0.5">
+                Your authentic feedback helps other homeowners make confident building decisions.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-3 w-full sm:w-auto justify-center">
+              <a
+                href={summary.viewAllReviewsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-full border border-gray-200 hover:border-gray-300 bg-white hover:bg-gray-50 text-dark text-xs sm:text-[13.5px] font-medium transition-all shadow-xs cursor-pointer active:scale-98"
               >
-                <ChevronRight size={20} />
-              </button>
+                <span>View All Google Reviews</span>
+                <ArrowRight size={13} className="text-gray-400" />
+              </a>
+
+              <a
+                href={summary.writeReviewUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-full bg-primary hover:bg-primary-dark text-white text-xs sm:text-[13.5px] font-semibold transition-all shadow-xs hover:shadow-sm cursor-pointer active:scale-98"
+              >
+                <Edit3 size={13} />
+                <span>Write a Review</span>
+              </a>
             </div>
           </div>
-        </AnimatedSection>
-
-        {/* Mini Cards Row */}
-        <AnimatedSection delay={0.3}>
-          <div className="hidden md:grid grid-cols-3 gap-4 mt-10">
-            {REVIEWS.slice(0, 3).map((review, index) => (
-              <button
-                key={review.id}
-                onClick={() => {
-                  setDirection(index > current ? 1 : -1);
-                  setCurrent(index);
-                }}
-                className={`flex h-full cursor-pointer flex-col rounded-[20px] border p-6 text-left transition-all duration-300 hover:shadow-xl lg:p-8 ${
-                  current === index
-                    ? 'border-primary/30 bg-gradient-to-br from-primary/10 to-primary/5 shadow-[0_4px_16px_rgba(26,107,124,0.12)]'
-                    : 'border-gray-200 bg-white'
-                }`}
-              >
-                <StarRating rating={review.rating} />
-                <p className="text-gray-600 text-[16px] mt-6 mb-6 line-clamp-3 leading-relaxed italic flex-grow">
-                  &ldquo;{review.text}&rdquo;
-                </p>
-                <div className="mt-auto pt-5 border-t border-gray-100 w-full">
-                  <p className="text-dark font-bold text-[18px] font-display">{review.name}</p>
-                </div>
-              </button>
-            ))}
-          </div>
-        </AnimatedSection>
+        )}
       </div>
+
+      {/* Review Photo Lightbox Modal */}
+      <PhotoLightboxModal
+        photos={lightboxPhotos}
+        currentIndex={lightboxIndex}
+        isOpen={lightboxOpen}
+        onClose={() => setLightboxOpen(false)}
+        onNavigate={(idx) => setLightboxIndex(idx)}
+        reviewerName={lightboxReviewer}
+      />
     </section>
   );
 }
