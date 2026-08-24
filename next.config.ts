@@ -34,7 +34,7 @@ const nextConfig: NextConfig = {
         pathname: "/**",
       },
     ],
-  },output: "export",
+  },
 };
 
 export default nextConfig;
