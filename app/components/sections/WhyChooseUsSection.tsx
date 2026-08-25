@@ -154,7 +154,7 @@ export default function WhyChooseUsSection() {
     <section
       ref={sectionRef}
       id="why-us"
-      className="relative overflow-hidden bg-[#0A121A] py-16 sm:py-20 lg:py-24 text-white border-y border-white/5"
+      className="relative overflow-hidden bg-[#0A121A] py-12 sm:py-14 lg:py-16 text-white border-y border-white/5"
     >
       {/* Architectural Subtle Grid Background */}
       <div
@@ -172,62 +172,62 @@ export default function WhyChooseUsSection() {
       <div className="relative z-10 w-full max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* HEADER */}
-        <div ref={headerRef} className="max-w-3xl mx-auto text-center mb-12 sm:mb-14 opacity-0">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/[0.08] border border-white/15 backdrop-blur-md text-secondary-light text-xs font-bold uppercase tracking-wider mb-3.5 shadow-sm">
-            <ShieldCheck size={13} className="text-secondary shrink-0" />
+        <div ref={headerRef} className="max-w-3xl mx-auto text-center mb-6 sm:mb-8 opacity-0">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.08] border border-white/15 backdrop-blur-md text-secondary-light text-[11px] sm:text-xs font-bold uppercase tracking-wider mb-2.5 shadow-sm">
+            <ShieldCheck size={12} className="text-secondary shrink-0" />
             <span>WHY GRN CONSTRUCTION</span>
           </div>
 
-          <h2 className="text-3xl sm:text-4xl lg:text-[40px] xl:text-[42px] font-extrabold text-white font-display leading-[1.18] tracking-tight">
+          <h2 className="text-2xl sm:text-3xl lg:text-[34px] font-extrabold text-white font-display leading-[1.18] tracking-tight">
             Built on Trust.{' '}
             <span className="bg-gradient-to-r from-secondary-light via-secondary to-amber-400 bg-clip-text text-transparent">
               Delivered with Precision.
             </span>
           </h2>
 
-          <p className="mt-3.5 sm:mt-4 text-sm sm:text-base md:text-[16px] leading-relaxed text-slate-300 max-w-2xl mx-auto font-normal">
+          <p className="mt-2 sm:mt-2.5 text-xs sm:text-sm leading-relaxed text-slate-300 max-w-2xl mx-auto font-normal">
             We eliminate uncertainty with certified materials, transparent milestone workflows, and unwavering on-site accountability.
           </p>
         </div>
 
-        {/* THREE DIFFERENTIATORS (3 Larger Cards, height: 170px-190px, padding: 24px) */}
+        {/* THREE DIFFERENTIATORS (3 Compact Cards) */}
         <div
           ref={differentiatorsRef}
-          className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-7"
+          className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5"
         >
           {DIFFERENTIATORS.map((diff) => {
             const IconComponent = diff.icon;
             return (
               <div
                 key={diff.number}
-                className="group relative flex flex-col justify-between p-[24px] min-h-[175px] sm:min-h-[185px] lg:min-h-[190px] rounded-xl bg-[#0F1E2C] border border-white/10 hover:border-secondary/40 transition-all duration-300 ease-out hover:-translate-y-1 shadow-[0_8px_24px_rgba(0,0,0,0.35)] opacity-0"
+                className="group relative flex flex-col justify-between p-4 sm:p-5 min-h-[140px] sm:min-h-[150px] rounded-xl bg-[#0F1E2C] border border-white/10 hover:border-secondary/40 transition-all duration-200 ease-out hover:-translate-y-0.5 shadow-md opacity-0"
               >
                 {/* Subtle top indicator on hover */}
-                <div className="absolute top-0 left-6 right-6 h-[2px] bg-gradient-to-r from-secondary/0 via-secondary/60 to-secondary/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="absolute top-0 left-6 right-6 h-[2px] bg-gradient-to-r from-secondary/0 via-secondary/60 to-secondary/0 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
 
                 <div>
                   {/* Top Bar: Number & Icon */}
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="font-mono text-xl sm:text-2xl font-extrabold text-secondary tracking-tight">
+                  <div className="flex items-center justify-between mb-2.5">
+                    <span className="font-mono text-lg sm:text-xl font-extrabold text-secondary tracking-tight">
                       {diff.number}
                     </span>
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/[0.04] border border-white/10 text-secondary group-hover:bg-secondary/15 group-hover:border-secondary/30 transition-colors duration-300">
-                      <IconComponent size={19} className="stroke-[2.2]" />
+                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/[0.04] border border-white/10 text-secondary group-hover:bg-secondary/15 group-hover:border-secondary/30 transition-colors duration-200">
+                      <IconComponent size={16} className="stroke-[2.2]" />
                     </div>
                   </div>
 
                   {/* Title & Short Explanation */}
-                  <h3 className="text-[17px] sm:text-[18px] lg:text-[19px] font-bold text-white font-display leading-snug group-hover:text-secondary-light transition-colors duration-200">
+                  <h3 className="text-sm sm:text-base font-bold text-white font-display leading-snug group-hover:text-secondary-light transition-colors duration-150">
                     {diff.title}
                   </h3>
 
-                  <p className="mt-2.5 text-[13.5px] sm:text-[14px] text-white/65 leading-relaxed font-normal">
+                  <p className="mt-1.5 text-xs sm:text-[13px] text-white/65 leading-relaxed font-normal">
                     {diff.description}
                   </p>
                 </div>
 
                 {/* Subtle bottom detail line */}
-                <div className="mt-5 pt-3.5 border-t border-white/5 flex items-center justify-between text-[11px] font-semibold text-white/40 tracking-wider uppercase group-hover:text-secondary/75 transition-colors">
+                <div className="mt-3.5 pt-2.5 border-t border-white/5 flex items-center justify-between text-[10px] font-semibold text-white/40 tracking-wider uppercase group-hover:text-secondary/75 transition-colors">
                   <span>GRN Standard</span>
                   <span className="w-1.5 h-1.5 rounded-full bg-secondary/50 group-hover:bg-secondary transition-colors" />
                 </div>
@@ -236,21 +236,21 @@ export default function WhyChooseUsSection() {
           })}
         </div>
 
-        {/* METRICS (Numbers 24px-28px, Labels 11-12px, Subtle Separators) */}
+        {/* METRICS */}
         <div
           ref={metricsRef}
-          className="mt-10 sm:mt-12 rounded-xl bg-[#0F1E2C]/80 border border-white/10 p-5 sm:p-6 lg:p-7 opacity-0 shadow-[0_4px_20px_rgba(0,0,0,0.25)]"
+          className="mt-6 sm:mt-8 rounded-xl bg-[#0F1E2C]/80 border border-white/10 p-4 sm:p-5 opacity-0 shadow-md"
         >
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-0 divide-y lg:divide-y-0 lg:divide-x divide-white/10">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-0 divide-y lg:divide-y-0 lg:divide-x divide-white/10">
             {PROOF_METRICS.map((metric, index) => (
               <div
                 key={metric.label}
                 className={`flex flex-col items-center text-center justify-center ${
-                  index >= 2 ? 'pt-5 lg:pt-0' : ''
-                } ${index === 1 || index === 3 ? 'pl-2 sm:pl-4' : ''} px-3 lg:px-6`}
+                  index >= 2 ? 'pt-4 lg:pt-0' : ''
+                } ${index === 1 || index === 3 ? 'pl-2 sm:pl-4' : ''} px-2 lg:px-4`}
               >
                 <div className="flex items-center justify-center gap-1">
-                  <span className="text-[24px] sm:text-[26px] lg:text-[28px] font-extrabold text-white font-display tracking-tight leading-none">
+                  <span className="text-xl sm:text-2xl lg:text-[26px] font-extrabold text-white font-display tracking-tight leading-none">
                     <StatCounter
                       value={metric.value}
                       suffix={metric.suffix}
@@ -260,13 +260,13 @@ export default function WhyChooseUsSection() {
                   </span>
                   {metric.hasStar && (
                     <Star
-                      size={16}
+                      size={14}
                       className="fill-secondary text-secondary shrink-0 ml-0.5 -mt-0.5"
                     />
                   )}
                 </div>
 
-                <span className="text-[11px] sm:text-[12px] text-white/70 font-semibold tracking-wider uppercase mt-2">
+                <span className="text-[10px] sm:text-[11px] text-white/70 font-semibold tracking-wider uppercase mt-1.5">
                   {metric.label}
                 </span>
               </div>
@@ -274,14 +274,14 @@ export default function WhyChooseUsSection() {
           </div>
         </div>
 
-        {/* CTA (Bottom: "Start Your Project →", Compact) */}
-        <div ref={ctaRef} className="mt-10 sm:mt-12 text-center opacity-0">
+        {/* CTA */}
+        <div ref={ctaRef} className="mt-6 sm:mt-8 text-center opacity-0">
           <button
             onClick={handleScrollToRequirements}
-            className="inline-flex items-center gap-2 px-5 py-2.5 sm:px-6 sm:py-3 rounded-lg text-white font-semibold text-[13px] sm:text-[14px] bg-secondary hover:bg-secondary-light hover:shadow-[0_4px_20px_rgba(212,129,58,0.35)] hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 cursor-pointer shadow-md"
+            className="inline-flex items-center gap-1.5 px-5 py-2 sm:px-6 sm:py-2.5 rounded-lg text-white font-semibold text-xs sm:text-[13px] bg-secondary hover:bg-secondary-light hover:shadow-xs hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 cursor-pointer shadow-xs"
           >
             <span>Start Your Project</span>
-            <ArrowRight size={15} className="stroke-[2.5]" />
+            <ArrowRight size={14} className="stroke-[2.5]" />
           </button>
         </div>
 

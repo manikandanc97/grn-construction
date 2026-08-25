@@ -35,6 +35,7 @@ export const COMPANY = {
   },
   mapUrl: 'https://maps.google.com/?q=GRN+Construction,+Advocate,+No.10+A,+Vakil+Nagarajan+Street,+near+by+Uma+traders,+Udumalaipettai+Municipality,+Tamil+Nadu+642126',
   mapEmbedUrl: 'https://maps.google.com/maps?q=GRN+Construction,+Advocate,+No.10+A,+Vakil+Nagarajan+Street,+near+by+Uma+traders,+Udumalaipettai+Municipality,+Tamil+Nadu+642126&t=&z=16&ie=UTF8&iwloc=&output=embed',
+  reviewUrl: 'https://maps.google.com/?q=GRN+Construction,+Advocate,+No.10+A,+Vakil+Nagarajan+Street,+near+by+Uma+traders,+Udumalaipettai+Municipality,+Tamil+Nadu+642126',
   rating: 4.9,
   reviewCount: 41,
   experience: 10,
@@ -59,6 +60,7 @@ export const NAV_LINKS = [
   { label: 'About', href: '#about' },
   { label: 'Services', href: '#services' },
   { label: 'Projects', href: '#projects' },
+  { label: 'Packages', href: '#packages' },
   { label: 'Requirement Form', href: '#requirements' },
   { label: 'Contact', href: '#contact' },
 ];

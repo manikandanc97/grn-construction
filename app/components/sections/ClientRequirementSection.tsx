@@ -26,99 +26,215 @@ import {
   Clock,
   Award,
   ClipboardCheck,
+  DoorClosed,
+  Grid,
+  Factory,
+  ChevronRight,
 } from 'lucide-react';
 import { COMPANY } from '@/app/lib/constants';
 
-export interface ConsultationFormData {
-  projectType: string;
-  projectTypeOther: string;
-  location: string;
-  plotSize: string;
-  budget: string;
-  customBudget: string;
-  timeline: string;
-  details: string;
+export interface SpecificationFormData {
+  // 1. Client & Location Information
   name: string;
-  phone: string;
   email: string;
+  address: string;
+  phone: string;
+  panchayatMunicipalityPlotArea: string;
+
+  // 2. Building Configuration
+  buildingType: string;
+  buildingTypeOther: string;
+  bhk: string;
+  bhkOther: string;
+  floors: string;
+  floorsOther: string;
+  structureType: string;
+  basementHeight: string;
+  basementHeightOther: string;
+
+  // 3. Structural Elements & Materials
+  roofType: string;
+  roofTypeOther: string;
+  wallType: string;
+  wallTypeOther: string;
+  steelBrand: string;
+  steelBrandOther: string;
+  cementBrand: string;
+  cementBrandOther: string;
+
+  // 4. Joineries & Flooring
+  joineryMainDoor: string;
+  joineryMainDoorOther: string;
+  joineryBedroomDoor: string;
+  joineryBedroomDoorOther: string;
+  joineryWindows: string;
+  joineryWindowsOther: string;
+
+  flooringFloor: string;
+  flooringFloorOther: string;
+  flooringWall: string;
+  flooringWallOther: string;
+  flooringKitchenTop: string;
+  flooringKitchenTopOther: string;
+
+  // 5. Electrical, Plumbing, Sanitary & Painting
+  electricalBrand: string;
+  electricalBrandOther: string;
+  plumbingBrand: string;
+  plumbingBrandOther: string;
+  sanitaryBrand: string;
+  sanitaryBrandOther: string;
+  paintingPreferences: string;
 }
 
-const initialFormState: ConsultationFormData = {
-  projectType: 'Residential',
-  projectTypeOther: '',
-  location: '',
-  plotSize: '',
-  budget: '₹40L - ₹75L',
-  customBudget: '',
-  timeline: '1 - 3 Months',
-  details: '',
+const initialFormState: SpecificationFormData = {
   name: '',
-  phone: '',
   email: '',
+  address: '',
+  phone: '',
+  panchayatMunicipalityPlotArea: '',
+
+  buildingType: 'Residential building',
+  buildingTypeOther: '',
+  bhk: '3 BHK',
+  bhkOther: '',
+  floors: 'G + 1',
+  floorsOther: '',
+  structureType: 'framed Structure (Column Foundation)',
+  basementHeight: '3 Feet',
+  basementHeightOther: '',
+
+  roofType: 'Reinforced cement concrete (RCC)',
+  roofTypeOther: '',
+  wallType: 'Wirecut Brick',
+  wallTypeOther: '',
+  steelBrand: 'TATA TMT',
+  steelBrandOther: '',
+  cementBrand: 'UltraTech Cement',
+  cementBrandOther: '',
+
+  joineryMainDoor: 'Teak Wood',
+  joineryMainDoorOther: '',
+  joineryBedroomDoor: 'sal wood',
+  joineryBedroomDoorOther: '',
+  joineryWindows: 'Upvc',
+  joineryWindowsOther: '',
+
+  flooringFloor: 'Granite',
+  flooringFloorOther: '',
+  flooringWall: 'Tiles',
+  flooringWallOther: '',
+  flooringKitchenTop: 'Quartz (preferred table top)',
+  flooringKitchenTopOther: '',
+
+  electricalBrand: 'Legrand',
+  electricalBrandOther: '',
+  plumbingBrand: 'Ashirvad',
+  plumbingBrandOther: '',
+  sanitaryBrand: 'parryware',
+  sanitaryBrandOther: '',
+  paintingPreferences: 'Putty, Primer & Premium Emulsion for interior; Weatherproof for exterior',
 };
 
-const PROJECT_TYPES = [
+// Form Step Definitions
+const SPECIFICATION_STEPS = [
+  { id: 1, number: '01', title: 'Client Info' },
+  { id: 2, number: '02', title: 'Building Basics' },
+  { id: 3, number: '03', title: 'Structure & Materials' },
+  { id: 4, number: '04', title: 'Doors & Flooring' },
+  { id: 5, number: '05', title: 'Fixtures & Paint' },
+];
+
+// Options Mapping
+const BUILDING_TYPES = [
+  { id: 'Residential building', label: 'Residential building', icon: Home },
+  { id: 'Commercial building', label: 'Commercial building', icon: Building2 },
+  { id: 'Industrial building', label: 'Industrial building', icon: Factory },
+  { id: 'Renovation', label: 'Renovation', icon: Wrench },
+  { id: 'other', label: 'Other', icon: Sparkles },
+];
+
+const BHK_OPTIONS = ['1 BHK', '2 BHK', '3 BHK', '4 BHK', 'Other:'];
+
+const FLOOR_OPTIONS = [
+  'Ground floor',
+  'Stilt + Ground floor',
+  'G + 1',
+  'G+2',
+  'Other:',
+];
+
+const STRUCTURE_OPTIONS = [
   {
-    id: 'Residential',
-    title: 'Residential',
-    description: 'Custom villas, independent houses & duplexes',
-    icon: Home,
+    id: 'Load bearing (RR masoanry Foundation)',
+    label: 'Load bearing (RR masonry Foundation)',
+    desc: 'Traditional brick/stone masonry foundation for 1-2 floors',
   },
   {
-    id: 'Commercial',
-    title: 'Commercial',
-    description: 'Offices, showrooms, retail spaces & complexes',
-    icon: Building2,
-  },
-  {
-    id: 'Renovation',
-    title: 'Renovation',
-    description: 'Structural remodeling, extensions & modernization',
-    icon: Wrench,
-  },
-  {
-    id: 'Other',
-    title: 'Other Project',
-    description: 'Civil structures, layouts, roofing & specialized works',
-    icon: Sparkles,
+    id: 'framed Structure (Column Foundation)',
+    label: 'Framed Structure (Column Foundation)',
+    desc: 'Reinforced concrete columns & beams for strength & longevity',
   },
 ];
 
-const LOCATION_PRESETS = [
-  'Udumalpet',
-  'Pollachi',
-  'Tiruppur',
-  'Dharapuram',
-  'Madathukulam',
-  'Coimbatore',
+const BASEMENT_HEIGHT_OPTIONS = ['2.5 Feet', '3 Feet', '3.5 Feet', '4 Feet', '5 Feet', 'Other:'];
+
+const ROOF_OPTIONS = [
+  'Reinforced cement concrete (RCC)',
+  'G.I Roof Sheet (Color sheet)',
+  'Manglore Tile Roof (Clay Tile)',
+  'PEB Structure',
+  'Other:',
 ];
 
-const BUDGET_OPTIONS = [
-  { id: '₹20L - ₹40L', label: '₹20L - ₹40L', sub: 'Standard compact homes' },
-  { id: '₹40L - ₹75L', label: '₹40L - ₹75L', sub: 'Premium 3-4 BHK villas' },
-  { id: '₹75L - ₹1.5 Cr', label: '₹75L - ₹1.5 Cr', sub: 'Luxury residences & duplexes' },
-  { id: '₹1.5 Cr+', label: '₹1.5 Cr+', sub: 'Large estates & commercial builds' },
-  { id: 'Custom / Need Estimate', label: 'Flexible / Need Estimate', sub: 'Engineering consultation required' },
+const WALL_OPTIONS = [
+  'Wirecut Brick',
+  'Solid block',
+  "Flyash brick'",
+  'AAC Block',
+  'Interlock block',
+  'other',
 ];
 
-const TIMELINE_OPTIONS = [
-  { id: 'Immediate (< 1 Month)', label: 'Immediate', sub: 'Within 30 days' },
-  { id: '1 - 3 Months', label: '1 - 3 Months', sub: 'Planning & approvals ready' },
-  { id: '3 - 6 Months', label: '3 - 6 Months', sub: 'Preliminary design stage' },
-  { id: 'Planning Phase (6+ Months)', label: '6+ Months', sub: 'Exploring feasibility & budgeting' },
+const STEEL_OPTIONS = [
+  'TATA TMT',
+  'JSW NeoSteel',
+  'Aiswaryam / Amman / Agni',
+  'Other:',
 ];
 
-const CONSULTATION_STEPS = [
-  { id: 1, number: '01', title: 'Project' },
-  { id: 2, number: '02', title: 'Location' },
-  { id: 3, number: '03', title: 'Budget' },
-  { id: 4, number: '04', title: 'Timeline' },
-  { id: 5, number: '05', title: 'Contact' },
+const CEMENT_OPTIONS = [
+  'UltraTech Cement',
+  'Ramco Cement',
+  'Coromandel / Dalmia',
+  'Chettinad Cement',
+  'Other:',
 ];
+
+const JOINERY_OPTIONS = [
+  'Teak Wood',
+  'sal wood',
+  'mahogany wood',
+  'Upvc',
+  'Steel Windows Premium',
+  'other',
+];
+
+const FLOORING_OPTIONS = [
+  'Tiles',
+  'Granite',
+  'Quartz (preferred table top)',
+  'marble',
+  'other',
+];
+
+const ELECTRICAL_OPTIONS = ['Finolex', 'GM', 'Legrand', 'Other:'];
+const PLUMBING_OPTIONS = ['Finolex', 'Supreme', 'Ashirvad', 'Other:'];
+const SANITARY_OPTIONS = ['parryware', 'hindware', 'kohler', 'Other:'];
 
 export default function ClientRequirementSection() {
   const [currentStep, setCurrentStep] = useState(1);
-  const [form, setForm] = useState<ConsultationFormData>(initialFormState);
+  const [form, setForm] = useState<SpecificationFormData>(initialFormState);
   const [submitted, setSubmitted] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
@@ -181,7 +297,7 @@ export default function ClientRequirementSection() {
     { scope: sectionRef }
   );
 
-  const handleInputChange = (field: keyof ConsultationFormData, value: string) => {
+  const handleInputChange = (field: keyof SpecificationFormData, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
     if (validationErrors[field]) {
       setValidationErrors((prev) => {
@@ -196,40 +312,31 @@ export default function ClientRequirementSection() {
     const errors: Record<string, string> = {};
 
     if (step === 1) {
-      if (!form.projectType) {
-        errors.projectType = 'Please select your project type';
+      if (!(form?.name || '').trim()) {
+        errors.name = 'Please enter your full name';
       }
-      if (form.projectType === 'Other' && !form.projectTypeOther.trim()) {
-        errors.projectTypeOther = 'Please specify what you are planning';
+      if (!(form?.phone || '').trim()) {
+        errors.phone = 'Please enter your phone number';
+      } else if ((form.phone || '').replace(/[^0-9]/g, '').length < 8) {
+        errors.phone = 'Please enter a valid phone number (minimum 8 digits)';
+      }
+      if (!(form?.address || '').trim()) {
+        errors.address = 'Please enter your address';
       }
     }
 
     if (step === 2) {
-      if (!form.location.trim()) {
-        errors.location = 'Please specify the project location or city';
+      if (!form?.buildingType) {
+        errors.buildingType = 'Please select a building type';
       }
-    }
-
-    if (step === 3) {
-      if (!form.budget) {
-        errors.budget = 'Please select an approximate budget';
+      if (form?.buildingType === 'other' && !(form?.buildingTypeOther || '').trim()) {
+        errors.buildingTypeOther = 'Please specify building type';
       }
-    }
-
-    if (step === 4) {
-      if (!form.timeline) {
-        errors.timeline = 'Please select your expected timeline';
+      if (!(form?.basementHeight || '').trim()) {
+        errors.basementHeight = 'Basement height is required';
       }
-    }
-
-    if (step === 5) {
-      if (!form.name.trim()) {
-        errors.name = 'Please enter your full name';
-      }
-      if (!form.phone.trim()) {
-        errors.phone = 'Please enter your phone number';
-      } else if (form.phone.replace(/[^0-9]/g, '').length < 8) {
-        errors.phone = 'Please enter a valid phone number';
+      if (form?.basementHeight === 'Other:' && !(form?.basementHeightOther || '').trim()) {
+        errors.basementHeightOther = 'Please specify basement height';
       }
     }
 
@@ -262,7 +369,7 @@ export default function ClientRequirementSection() {
   const nextStep = () => {
     if (validateStep(currentStep, true)) {
       setValidationErrors({});
-      setCurrentStep((prev) => Math.min(prev + 1, CONSULTATION_STEPS.length));
+      setCurrentStep((prev) => Math.min(prev + 1, SPECIFICATION_STEPS.length));
     }
   };
 
@@ -271,30 +378,75 @@ export default function ClientRequirementSection() {
     setCurrentStep((prev) => Math.max(prev - 1, 1));
   };
 
+  const resolveVal = (main?: string, custom?: string) => {
+    if (!main) return '';
+    if (main === 'Other:' || main === 'other') {
+      return custom && custom.trim() ? custom : 'Other (Custom)';
+    }
+    return main;
+  };
+
   const generateWhatsAppMessage = () => {
-    const resolvedType =
-      form.projectType === 'Other' && form.projectTypeOther
-        ? `Other (${form.projectTypeOther})`
-        : form.projectType;
+    const buildingTypeRes = resolveVal(form.buildingType, form.buildingTypeOther);
+    const bhkRes = resolveVal(form.bhk, form.bhkOther);
+    const floorsRes = resolveVal(form.floors, form.floorsOther);
+    const basementHeightRes = resolveVal(form.basementHeight, form.basementHeightOther);
+    const roofRes = resolveVal(form.roofType, form.roofTypeOther);
+    const wallRes = resolveVal(form.wallType, form.wallTypeOther);
+    const steelRes = resolveVal(form.steelBrand, form.steelBrandOther);
+    const cementRes = resolveVal(form.cementBrand, form.cementBrandOther);
 
-    return `🏛️ *NEW PROJECT CONSULTATION REQUEST*
+    const mainDoorRes = resolveVal(form.joineryMainDoor, form.joineryMainDoorOther);
+    const bedDoorRes = resolveVal(form.joineryBedroomDoor, form.joineryBedroomDoorOther);
+    const windowsRes = resolveVal(form.joineryWindows, form.joineryWindowsOther);
+
+    const floorFloorRes = resolveVal(form.flooringFloor, form.flooringFloorOther);
+    const floorWallRes = resolveVal(form.flooringWall, form.flooringWallOther);
+    const floorKitchenRes = resolveVal(form.flooringKitchenTop, form.flooringKitchenTopOther);
+
+    const elecRes = resolveVal(form.electricalBrand, form.electricalBrandOther);
+    const plumbRes = resolveVal(form.plumbingBrand, form.plumbingBrandOther);
+    const saniRes = resolveVal(form.sanitaryBrand, form.sanitaryBrandOther);
+
+    return `🏛️ *GRN CONSTRUCTION - SPECIFICATION FORM SUBMISSION*
 ━━━━━━━━━━━━━━━━━━━━
-👤 *CLIENT DETAILS:*
-• *Name:* ${form.name}
-• *Phone:* ${form.phone}
+👤 *CLIENT & SITE DETAILS:*
+• *Name:* ${form.name || ''}
+• *Phone:* ${form.phone || ''}
 ${form.email ? `• *Email:* ${form.email}` : ''}
+• *Address:* ${form.address || ''}
+${form.panchayatMunicipalityPlotArea ? `• *Panchayat/Municipality & Plot Area:* ${form.panchayatMunicipalityPlotArea}` : ''}
 
-📐 *PROJECT OVERVIEW:*
-• *Planning:* ${resolvedType}
-• *Location:* ${form.location}
-${form.plotSize ? `• *Plot Size / Area:* ${form.plotSize}` : ''}
-• *Budget Range:* ${form.budget}${form.customBudget ? ` (${form.customBudget})` : ''}
-• *Expected Timeline:* ${form.timeline}
+🏗️ *BUILDING CONFIGURATION:*
+• *Building Type:* ${buildingTypeRes}
+• *BHK:* ${bhkRes}
+• *Floors:* ${floorsRes}
+• *Structure Type:* ${form.structureType || ''}
+• *Basement Height:* ${basementHeightRes}
 
-📝 *PROJECT NOTES:*
-${form.details ? form.details : 'Requesting initial consultation and project discussion.'}
+🧱 *MATERIALS & STRUCTURE:*
+• *Roof Structure:* ${roofRes}
+• *Wall Structure:* ${wallRes}
+• *Steel:* ${steelRes}
+• *Cement:* ${cementRes}
+
+🚪 *JOINERIES:*
+• *Main Door:* ${mainDoorRes}
+• *Bedroom Door Frame:* ${bedDoorRes}
+• *Windows & Ventilators:* ${windowsRes}
+
+✨ *FLOORING & SURFACES:*
+• *Floor:* ${floorFloorRes}
+• *Wall (Dadoing/Bath):* ${floorWallRes}
+• *Kitchen Table Top:* ${floorKitchenRes}
+
+⚡ *UTILITIES & FINISHES:*
+• *Electrical:* ${elecRes}
+• *Plumbing:* ${plumbRes}
+• *Sanitary:* ${saniRes}
+• *Painting:* ${form.paintingPreferences || 'Standard primer, putty & emulsion'}
 ━━━━━━━━━━━━━━━━━━━━
-_Submitted via GRN Construction Project Consultation_`;
+_Submitted via GRN Construction Specification Form_`;
   };
 
   const getWhatsAppUrl = () => {
@@ -334,181 +486,158 @@ _Submitted via GRN Construction Project Consultation_`;
     <section
       ref={sectionRef}
       id="requirements"
-      className="relative bg-white py-16 md:py-20 lg:py-24 border-t border-slate-200/60 overflow-hidden"
+      className="relative bg-white py-12 md:py-14 lg:py-16 border-t border-slate-200/60 overflow-hidden"
     >
       {/* Subtle architectural background texture */}
       <div className="absolute inset-0 pointer-events-none opacity-[0.02] bg-[radial-gradient(#1A6B7C_1px,transparent_1px)] [background-size:24px_24px]" />
 
       <div className="relative mx-auto w-full max-w-[1280px] px-4 sm:px-6 lg:px-8 xl:px-10">
         {/* Section Title */}
-        <div ref={headerRef} className="max-w-3xl mb-10 lg:mb-12 opacity-0">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold uppercase tracking-wider mb-3.5 shadow-sm backdrop-blur-sm">
-            <ClipboardCheck size={13} className="text-secondary shrink-0" />
-            <span>START YOUR PROJECT</span>
+        <div ref={headerRef} className="max-w-3xl mx-auto text-center mb-6 sm:mb-8 opacity-0">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-[11px] font-bold uppercase tracking-wider mb-2.5 shadow-sm backdrop-blur-sm">
+            <ClipboardCheck size={12} className="text-secondary shrink-0" />
+            <span>GRN CONSTRUCTION - SPECIFICATION FORM</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-[40px] font-extrabold text-dark font-display tracking-tight leading-[1.15]">
-            Tell Us About{' '}
+          <h2 className="text-2xl sm:text-3xl lg:text-[34px] font-extrabold text-dark font-display tracking-tight leading-[1.18]">
+            Specify the Details of{' '}
             <span className="bg-gradient-to-r from-primary via-primary-light to-secondary bg-clip-text text-transparent">
-              Your Project.
+              Your Building.
             </span>
           </h2>
-          <p className="mt-3.5 sm:mt-4 text-sm sm:text-base md:text-[16px] text-gray-600 font-normal leading-relaxed max-w-2xl">
-            Share your building vision and requirement details for a personalized civil engineering consultation and transparent estimate.
+          <p className="mt-2 sm:mt-2.5 text-xs sm:text-sm text-gray-600 font-normal leading-relaxed max-w-2xl mx-auto">
+            You can choose the price of your building yourself by specifying the details below. Our civil engineers will prepare a customized cost sheet tailored to your exact brand &amp; structural preferences.
           </p>
         </div>
 
         {/* Main 2-Column Split Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-stretch">
-          {/* LEFT: Strong Visual & Project Preview */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch">
+          {/* LEFT: Structural Guidance & Trust Panel */}
           <div
             ref={leftColRef}
-            className="lg:col-span-5 flex flex-col justify-between rounded-2xl border border-neutral-200/90 bg-neutral-50/50 p-6 sm:p-8 relative overflow-hidden opacity-0"
+            className="lg:col-span-4 flex flex-col justify-between rounded-2xl border border-neutral-200/90 bg-neutral-50/80 p-4 sm:p-5 relative overflow-hidden opacity-0"
           >
-            {/* Image Container with architectural framing */}
-            <div className="relative w-full aspect-[4/3] rounded-xl overflow-hidden mb-6 shadow-sm border border-neutral-200/80">
-              <Image
-                src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1000&q=85&auto=format&fit=crop"
-                alt="GRN Premium Construction Project"
-                fill
-                sizes="(max-width: 1024px) 100vw, 40vw"
-                className="object-cover transition-transform duration-700 hover:scale-105"
-                priority={false}
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-dark/70 via-dark/20 to-transparent" />
-              
-              {/* Image Floating Statement Tag */}
-              <div className="absolute bottom-4 left-4 right-4">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/95 backdrop-blur-md text-dark text-xs font-semibold shadow-sm">
-                  <ShieldCheck size={14} className="text-primary" />
-                  Free Initial Site Consultation
-                </span>
-                <p className="mt-2 text-white font-display font-medium text-sm sm:text-base leading-snug drop-shadow-sm">
-                  &ldquo;From first idea to final handover.&rdquo;
+            <div>
+              {/* Sleek Configurator Header Pill */}
+              <div className="p-3.5 rounded-xl bg-primary/10 border border-primary/20 mb-4">
+                <div className="flex items-center gap-2 text-primary font-bold text-xs uppercase tracking-wider mb-1">
+                  <ShieldCheck size={14} className="text-secondary shrink-0" />
+                  <span>Custom BOQ Calculator</span>
+                </div>
+                <p className="text-[11.5px] sm:text-xs text-neutral-600 leading-snug">
+                  Select your preferred structural materials and finishes. We calculate transparent milestone pricing for you.
                 </p>
               </div>
+
+              {/* Form Navigation Overview */}
+              <div className="space-y-1.5 mb-4">
+                <h4 className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">
+                  Form Steps
+                </h4>
+                {SPECIFICATION_STEPS.map((s) => {
+                  const isCurrent = currentStep === s.id;
+                  const isDone = currentStep > s.id;
+                  return (
+                    <div
+                      key={s.id}
+                      onClick={() => handleStepClick(s.id)}
+                      className={`flex items-center justify-between p-2 rounded-lg border text-xs transition-all cursor-pointer ${
+                        isCurrent
+                          ? 'border-primary bg-primary/10 text-primary font-bold shadow-xs'
+                          : isDone
+                          ? 'border-neutral-200 bg-white text-gray-700 hover:border-neutral-300'
+                          : 'border-transparent text-gray-400 hover:text-gray-600'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2">
+                        <span
+                          className={`w-4.5 h-4.5 rounded-full flex items-center justify-center text-[9px] font-mono ${
+                            isCurrent
+                              ? 'bg-primary text-white'
+                              : isDone
+                              ? 'bg-emerald-600 text-white'
+                              : 'bg-neutral-200 text-neutral-600'
+                          }`}
+                        >
+                          {isDone ? '✓' : s.number}
+                        </span>
+                        <span className="text-[11.5px] sm:text-xs">{s.title}</span>
+                      </div>
+                      <ChevronRight size={12} className={isCurrent ? 'text-primary' : 'text-neutral-300'} />
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Value Highlights */}
+              <div className="space-y-2 pt-3 border-t border-neutral-200/70 text-[11px] sm:text-xs text-gray-600">
+                <div className="flex items-start gap-2">
+                  <Award size={13} className="text-primary mt-0.5 shrink-0" />
+                  <span>Verified A-Grade materials &amp; authentic brands</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <Coins size={13} className="text-secondary mt-0.5 shrink-0" />
+                  <span>Itemized rate cards with zero hidden clauses</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <Clock size={13} className="text-primary mt-0.5 shrink-0" />
+                  <span>Preliminary BOQ estimation within 24 hours</span>
+                </div>
+              </div>
             </div>
 
-            {/* Value Highlights */}
-            <div className="space-y-4 pt-2">
-              <div className="flex items-start gap-3.5">
-                <div className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0 mt-0.5">
-                  <Award size={16} />
-                </div>
-                <div>
-                  <h4 className="text-sm font-semibold text-dark">Direct Engineer Oversight</h4>
-                  <p className="text-xs text-gray-500 leading-relaxed">
-                    Personalized consultations with licensed civil engineers in Udumalpet.
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-3.5">
-                <div className="w-8 h-8 rounded-lg bg-secondary/10 text-secondary flex items-center justify-center shrink-0 mt-0.5">
-                  <Coins size={16} />
-                </div>
-                <div>
-                  <h4 className="text-sm font-semibold text-dark">Transparent Material Estimates</h4>
-                  <p className="text-xs text-gray-500 leading-relaxed">
-                    Clear milestone budgeting with zero hidden costs or surprise charges.
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-3.5">
-                <div className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0 mt-0.5">
-                  <Clock size={16} />
-                </div>
-                <div>
-                  <h4 className="text-sm font-semibold text-dark">Rapid 24-Hour Response</h4>
-                  <p className="text-xs text-gray-500 leading-relaxed">
-                    Our team reviews your submission and provides preliminary project advice promptly.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Quick Contact Footer */}
-            <div className="mt-8 pt-5 border-t border-neutral-200/70 flex items-center justify-between text-xs text-gray-600">
-              <span>Need immediate assistance?</span>
+            {/* Direct Phone Assistance */}
+            <div className="mt-4 pt-3 border-t border-neutral-200/70 flex items-center justify-between text-xs text-gray-600">
+              <span className="text-[11px]">Need guidance?</span>
               <a
                 href={COMPANY.callLink}
-                className="inline-flex items-center gap-1.5 text-primary font-semibold hover:underline"
+                className="inline-flex items-center gap-1 text-primary font-semibold hover:underline text-[11px] sm:text-xs"
               >
-                <Phone size={13} />
+                <Phone size={11} />
                 {COMPANY.phone}
               </a>
             </div>
           </div>
 
-          {/* RIGHT: Modern Multi-Step Consultation Form */}
+          {/* RIGHT: Specification Multi-Step Form */}
           <div
             ref={rightColRef}
-            className="lg:col-span-7 rounded-2xl border border-neutral-200/90 bg-white p-6 sm:p-8 lg:p-10 flex flex-col justify-between relative shadow-[0_2px_16px_rgba(0,0,0,0.03)] opacity-0"
+            className="lg:col-span-8 rounded-2xl border border-neutral-200/90 bg-white p-4 sm:p-6 lg:p-7 flex flex-col justify-between relative shadow-xs opacity-0"
           >
-            {/* Minimal Numbered Progress Indicator */}
-            {!submitted && (
-              <div className="mb-8">
-                <div className="flex items-center justify-between gap-1 sm:gap-2 pb-4 border-b border-neutral-100">
-                  {CONSULTATION_STEPS.map((step) => {
-                    const isActive = currentStep === step.id;
-                    const isCompleted = currentStep > step.id;
 
-                    return (
-                      <button
-                        key={step.id}
-                        type="button"
-                        onClick={() => handleStepClick(step.id)}
-                        className={`flex items-center gap-1.5 text-left transition-colors cursor-pointer py-1 ${
-                          isActive
-                            ? 'text-primary font-bold'
-                            : isCompleted
-                            ? 'text-neutral-700 font-medium hover:text-primary'
-                            : 'text-neutral-400'
-                        }`}
-                      >
-                        <span
-                          className={`text-xs font-mono px-1.5 py-0.5 rounded ${
-                            isActive
-                              ? 'bg-primary text-white'
-                              : isCompleted
-                              ? 'bg-neutral-100 text-neutral-800'
-                              : 'bg-neutral-50 text-neutral-400'
-                          }`}
-                        >
-                          {step.number}
-                        </span>
-                        <span className="hidden sm:inline text-xs">{step.title}</span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-
-            {/* Form Steps */}
+            {/* Form Steps Rendering */}
             {submitted ? (
-              /* Success / Confirmation State */
+              /* Success / WhatsApp Ready State */
               <div className="py-8 sm:py-12 text-center space-y-6">
                 <div className="w-16 h-16 rounded-full bg-green-50 text-green-600 flex items-center justify-center mx-auto ring-8 ring-green-50/60">
                   <CheckCircle2 size={32} />
                 </div>
                 <div className="max-w-md mx-auto space-y-2">
                   <h3 className="text-2xl font-bold text-dark font-display">
-                    Consultation Request Ready!
+                    Building Specifications Form Ready!
                   </h3>
                   <p className="text-sm text-gray-600 leading-relaxed">
-                    Thank you, <strong className="text-dark">{form.name}</strong>. Your project details have been organized. Connect directly via WhatsApp or give us a quick call.
+                    Thank you, <strong className="text-dark">{form.name}</strong>. Your customized structural, joinery, and material specifications are compiled. Send them directly to our engineering desk via WhatsApp or copy the summary.
                   </p>
                 </div>
 
-                <div className="p-4 rounded-xl bg-neutral-50 border border-neutral-200 text-left text-xs text-gray-700 space-y-1.5 max-w-md mx-auto">
-                  <p>
-                    <strong className="text-dark">Project:</strong> {form.projectType}
-                    {form.projectType === 'Other' && form.projectTypeOther ? ` (${form.projectTypeOther})` : ''}
-                  </p>
-                  <p><strong className="text-dark">Location:</strong> {form.location}</p>
-                  <p><strong className="text-dark">Budget:</strong> {form.budget}</p>
-                  <p><strong className="text-dark">Timeline:</strong> {form.timeline}</p>
+                {/* Specification Summary Card */}
+                <div className="p-4 sm:p-5 rounded-xl bg-neutral-50 border border-neutral-200 text-left text-xs text-gray-700 space-y-2 max-w-lg mx-auto">
+                  <div className="grid grid-cols-2 gap-2 pb-2 border-b border-neutral-200/60">
+                    <p><strong className="text-dark">Name:</strong> {form.name}</p>
+                    <p><strong className="text-dark">Phone:</strong> {form.phone}</p>
+                    <p><strong className="text-dark">Building:</strong> {resolveVal(form.buildingType, form.buildingTypeOther)}</p>
+                    <p><strong className="text-dark">BHK:</strong> {resolveVal(form.bhk, form.bhkOther)}</p>
+                    <p><strong className="text-dark">Structure:</strong> {(form.structureType || '').includes('framed') ? 'Framed Column' : 'Load Bearing'}</p>
+                    <p><strong className="text-dark">Basement:</strong> {resolveVal(form.basementHeight, form.basementHeightOther)}</p>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2 pt-1 text-neutral-600">
+                    <p><strong>Roof:</strong> {resolveVal(form.roofType, form.roofTypeOther)}</p>
+                    <p><strong>Wall:</strong> {resolveVal(form.wallType, form.wallTypeOther)}</p>
+                    <p><strong>Steel:</strong> {resolveVal(form.steelBrand, form.steelBrandOther)}</p>
+                    <p><strong>Main Door:</strong> {resolveVal(form.joineryMainDoor, form.joineryMainDoorOther)}</p>
+                    <p><strong>Floor:</strong> {resolveVal(form.flooringFloor, form.flooringFloorOther)}</p>
+                    <p><strong>Sanitary:</strong> {resolveVal(form.sanitaryBrand, form.sanitaryBrandOther)}</p>
+                  </div>
                 </div>
 
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
@@ -519,7 +648,7 @@ _Submitted via GRN Construction Project Consultation_`;
                     className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-green-600 hover:bg-green-700 text-white font-semibold text-sm transition-all shadow-sm cursor-pointer hover:shadow hover:-translate-y-0.5"
                   >
                     <MessageCircle size={17} />
-                    Open WhatsApp Chat
+                    Send on WhatsApp
                   </a>
 
                   <button
@@ -528,18 +657,18 @@ _Submitted via GRN Construction Project Consultation_`;
                     className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl border border-neutral-200 hover:bg-neutral-50 text-dark font-semibold text-sm transition-colors cursor-pointer"
                   >
                     {isCopied ? <Check size={16} className="text-green-600" /> : <Copy size={16} />}
-                    {isCopied ? 'Copied to Clipboard' : 'Copy Project Details'}
+                    {isCopied ? 'Copied to Clipboard' : 'Copy Specifications'}
                   </button>
                 </div>
 
-                <div className="pt-4">
+                <div className="pt-2">
                   <button
                     type="button"
                     onClick={handleReset}
                     className="inline-flex items-center gap-1.5 text-xs text-gray-500 hover:text-dark font-medium transition-colors"
                   >
                     <RotateCcw size={13} />
-                    Start another enquiry
+                    Fill another specification form
                   </button>
                 </div>
               </div>
@@ -548,7 +677,7 @@ _Submitted via GRN Construction Project Consultation_`;
                 noValidate
                 onSubmit={(e) => {
                   e.preventDefault();
-                  if (currentStep === CONSULTATION_STEPS.length) {
+                  if (currentStep === SPECIFICATION_STEPS.length) {
                     handleSubmit(e);
                   } else {
                     nextStep();
@@ -556,9 +685,9 @@ _Submitted via GRN Construction Project Consultation_`;
                 }}
                 className="flex-1 flex flex-col justify-between"
               >
-                <div className="min-h-[300px]">
+                <div className="min-h-[380px]">
                   <AnimatePresence mode="wait">
-                    {/* STEP 1: What are you planning? */}
+                    {/* STEP 1: Client Information & Location */}
                     {currentStep === 1 && (
                       <motion.div
                         key="step1"
@@ -566,92 +695,124 @@ _Submitted via GRN Construction Project Consultation_`;
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
                         transition={{ duration: 0.2 }}
-                        className="space-y-5"
+                        className="space-y-4"
                       >
                         <div>
                           <span className="text-xs font-semibold text-primary uppercase tracking-wider">
-                            Step 01
+                            Step 01 / 05
                           </span>
                           <h3 className="text-xl sm:text-2xl font-bold text-dark font-display mt-0.5">
-                            What are you planning?
+                            Client &amp; Site Details
                           </h3>
                           <p className="text-xs sm:text-sm text-gray-500 mt-1">
-                            Choose the category that best describes your upcoming project.
+                            Please provide your contact info and the plot/site location details.
                           </p>
                         </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-                          {PROJECT_TYPES.map((type) => {
-                            const isSelected = form.projectType === type.id;
-                            const Icon = type.icon;
-
-                            return (
-                              <button
-                                key={type.id}
-                                type="button"
-                                onClick={() => handleInputChange('projectType', type.id)}
-                                className={`p-4 rounded-xl border text-left transition-all duration-200 cursor-pointer flex flex-col justify-between min-h-[96px] ${
-                                  isSelected
-                                    ? 'border-primary bg-primary/5 text-primary ring-1 ring-primary/20'
-                                    : 'border-neutral-200 bg-white hover:border-neutral-300 text-neutral-800'
-                                }`}
-                              >
-                                <div className="flex items-center justify-between w-full">
-                                  <div className="flex items-center gap-2.5">
-                                    <div
-                                      className={`w-7 h-7 rounded-lg flex items-center justify-center text-xs ${
-                                        isSelected ? 'bg-primary text-white' : 'bg-neutral-100 text-neutral-600'
-                                      }`}
-                                    >
-                                      <Icon size={15} />
-                                    </div>
-                                    <span className="text-sm font-semibold text-dark">{type.title}</span>
-                                  </div>
-                                  <span
-                                    className={`w-4 h-4 rounded-full border flex items-center justify-center text-[10px] ${
-                                      isSelected
-                                        ? 'border-primary bg-primary text-white'
-                                        : 'border-neutral-300'
-                                    }`}
-                                  >
-                                    {isSelected && '✓'}
-                                  </span>
-                                </div>
-                                <p className="text-xs text-gray-500 mt-2 line-clamp-2">
-                                  {type.description}
-                                </p>
-                              </button>
-                            );
-                          })}
-                        </div>
-
-                        {form.projectType === 'Other' && (
-                          <div className="pt-2">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+                          {/* Name* */}
+                          <div className="sm:col-span-2">
                             <label className="block text-xs font-semibold text-dark mb-1.5">
-                              Please specify your requirement
+                              Name <span className="text-red-500">*</span>
+                            </label>
+                            <div className="relative">
+                              <User size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
+                              <input
+                                type="text"
+                                value={form.name}
+                                onChange={(e) => handleInputChange('name', e.target.value)}
+                                placeholder="Your full name"
+                                className={`w-full pl-10 pr-4 py-2.5 rounded-xl border text-sm text-dark placeholder-neutral-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all ${
+                                  validationErrors.name ? 'border-red-500' : 'border-neutral-200'
+                                }`}
+                              />
+                            </div>
+                            {validationErrors.name && (
+                              <p className="text-xs text-red-500 mt-1 font-medium">{validationErrors.name}</p>
+                            )}
+                          </div>
+
+                          {/* Phone Number* */}
+                          <div>
+                            <label className="block text-xs font-semibold text-dark mb-1.5">
+                              Phone Number <span className="text-red-500">*</span>
+                            </label>
+                            <div className="relative">
+                              <Phone size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
+                              <input
+                                type="tel"
+                                value={form.phone}
+                                onChange={(e) => handleInputChange('phone', e.target.value)}
+                                placeholder="+91 98765 43210"
+                                className={`w-full pl-10 pr-4 py-2.5 rounded-xl border text-sm text-dark placeholder-neutral-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all ${
+                                  validationErrors.phone ? 'border-red-500' : 'border-neutral-200'
+                                }`}
+                              />
+                            </div>
+                            {validationErrors.phone && (
+                              <p className="text-xs text-red-500 mt-1 font-medium">{validationErrors.phone}</p>
+                            )}
+                          </div>
+
+                          {/* Email */}
+                          <div>
+                            <label className="block text-xs font-semibold text-dark mb-1.5">
+                              Email <span className="text-xs text-gray-400 font-normal">(Optional)</span>
+                            </label>
+                            <div className="relative">
+                              <Mail size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
+                              <input
+                                type="email"
+                                value={form.email}
+                                onChange={(e) => handleInputChange('email', e.target.value)}
+                                placeholder="name@example.com"
+                                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-neutral-200 text-sm text-dark placeholder-neutral-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all"
+                              />
+                            </div>
+                          </div>
+
+                          {/* Address* */}
+                          <div className="sm:col-span-2">
+                            <label className="block text-xs font-semibold text-dark mb-1.5">
+                              Address <span className="text-red-500">*</span>
+                            </label>
+                            <div className="relative">
+                              <MapPin size={15} className="absolute left-3.5 top-3 text-gray-400" />
+                              <textarea
+                                rows={2}
+                                value={form.address}
+                                onChange={(e) => handleInputChange('address', e.target.value)}
+                                placeholder="Your current residential address or site location"
+                                className={`w-full pl-10 pr-4 py-2.5 rounded-xl border text-sm text-dark placeholder-neutral-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all ${
+                                  validationErrors.address ? 'border-red-500' : 'border-neutral-200'
+                                }`}
+                              />
+                            </div>
+                            {validationErrors.address && (
+                              <p className="text-xs text-red-500 mt-1 font-medium">{validationErrors.address}</p>
+                            )}
+                          </div>
+
+                          {/* Is your building under Which panchayat or municipality ? and write the Plot area */}
+                          <div className="sm:col-span-2">
+                            <label className="block text-xs font-semibold text-dark mb-1.5">
+                              Is your building under Which panchayat or municipality ? and write the Plot area
                             </label>
                             <input
                               type="text"
-                              value={form.projectTypeOther}
-                              onChange={(e) => handleInputChange('projectTypeOther', e.target.value)}
-                              placeholder="Your requirement details"
-                              className="w-full px-4 py-3 rounded-xl border border-neutral-200 text-sm text-dark placeholder-neutral-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all"
+                              value={form.panchayatMunicipalityPlotArea}
+                              onChange={(e) =>
+                                handleInputChange('panchayatMunicipalityPlotArea', e.target.value)
+                              }
+                              placeholder="e.g. Udumalpet Municipality / 1200 sq.ft (or cents)"
+                              className="w-full px-4 py-2.5 rounded-xl border border-neutral-200 text-sm text-dark placeholder-neutral-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all"
                             />
-                            {validationErrors.projectTypeOther && (
-                              <p className="text-xs text-red-500 mt-1 font-medium">
-                                {validationErrors.projectTypeOther}
-                              </p>
-                            )}
                           </div>
-                        )}
-
-                        {validationErrors.projectType && (
-                          <p className="text-xs text-red-500 font-medium">{validationErrors.projectType}</p>
-                        )}
+                        </div>
                       </motion.div>
                     )}
 
-                    {/* STEP 2: Project location */}
+                    {/* STEP 2: Building Type & Basics */}
                     {currentStep === 2 && (
                       <motion.div
                         key="step2"
@@ -659,90 +820,211 @@ _Submitted via GRN Construction Project Consultation_`;
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
                         transition={{ duration: 0.2 }}
-                        className="space-y-5"
+                        className="space-y-4"
                       >
                         <div>
                           <span className="text-xs font-semibold text-primary uppercase tracking-wider">
-                            Step 02
+                            Step 02 / 05
                           </span>
                           <h3 className="text-xl sm:text-2xl font-bold text-dark font-display mt-0.5">
-                            Where is your project located?
+                            Building Basics &amp; Structure
                           </h3>
                           <p className="text-xs sm:text-sm text-gray-500 mt-1">
-                            We operate across Udumalpet, Pollachi, Tiruppur, and surrounding regions.
+                            Specify the type of building, number of BHK, floors, and basement height.
                           </p>
                         </div>
 
-                        <div className="space-y-4 pt-1">
-                          {/* Quick selection pills */}
-                          <div>
-                            <label className="block text-xs font-medium text-gray-500 mb-2">
-                              Select prominent region or type your specific area:
-                            </label>
-                            <div className="flex flex-wrap gap-2">
-                              {LOCATION_PRESETS.map((loc) => {
-                                const isSelected = form.location === loc;
-                                return (
-                                  <button
-                                    key={loc}
-                                    type="button"
-                                    onClick={() => handleInputChange('location', loc)}
-                                    className={`px-3.5 py-2 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
-                                      isSelected
-                                        ? 'bg-primary text-white'
-                                        : 'bg-neutral-100 hover:bg-neutral-200 text-neutral-700'
-                                    }`}
-                                  >
-                                    {loc}
-                                  </button>
-                                );
-                              })}
-                            </div>
+                        {/* Type of building do you want * */}
+                        <div>
+                          <label className="block text-xs font-semibold text-dark mb-2">
+                            Type of building do you want <span className="text-red-500">*</span>
+                          </label>
+                          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                            {BUILDING_TYPES.map((t) => {
+                              const isSelected = form.buildingType === t.id;
+                              const Icon = t.icon;
+                              return (
+                                <button
+                                  key={t.id}
+                                  type="button"
+                                  onClick={() => handleInputChange('buildingType', t.id)}
+                                  className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex items-center gap-2.5 ${
+                                    isSelected
+                                      ? 'border-primary bg-primary/10 text-primary font-semibold ring-1 ring-primary/20'
+                                      : 'border-neutral-200 bg-white hover:border-neutral-300 text-neutral-800'
+                                  }`}
+                                >
+                                  <Icon size={16} className={isSelected ? 'text-primary' : 'text-neutral-500'} />
+                                  <span className="text-xs sm:text-sm">{t.label}</span>
+                                </button>
+                              );
+                            })}
                           </div>
-
-                          {/* Specific Location Input */}
-                          <div>
-                            <label className="block text-xs font-semibold text-dark mb-1.5">
-                              Specific Location / Site Address <span className="text-red-500">*</span>
-                            </label>
-                            <div className="relative">
-                              <MapPin
-                                size={16}
-                                className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
-                              />
+                          {form.buildingType === 'other' && (
+                            <div className="mt-2">
                               <input
                                 type="text"
-                                value={form.location}
-                                onChange={(e) => handleInputChange('location', e.target.value)}
-                                placeholder="Your location / address"
-                                className={`w-full pl-10 pr-4 py-3 rounded-xl border text-sm text-dark placeholder-neutral-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all ${
-                                  validationErrors.location ? 'border-red-500' : 'border-neutral-200'
-                                }`}
+                                value={form.buildingTypeOther}
+                                onChange={(e) => handleInputChange('buildingTypeOther', e.target.value)}
+                                placeholder="Please specify your building type"
+                                className="w-full px-3.5 py-2 rounded-xl border border-neutral-200 text-xs sm:text-sm text-dark placeholder-neutral-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20"
+                              />
+                              {validationErrors.buildingTypeOther && (
+                                <p className="text-xs text-red-500 mt-1">{validationErrors.buildingTypeOther}</p>
+                              )}
+                            </div>
+                          )}
+                          {validationErrors.buildingType && (
+                            <p className="text-xs text-red-500 mt-1 font-medium">{validationErrors.buildingType}</p>
+                          )}
+                        </div>
+
+                        {/* Mention the number of BHK */}
+                        <div>
+                          <label className="block text-xs font-semibold text-dark mb-1.5">
+                            Mention the number of BHK (Bedroom, Hall, Kitchen)
+                          </label>
+                          <div className="flex flex-wrap gap-2">
+                            {BHK_OPTIONS.map((opt) => {
+                              const isSelected = form.bhk === opt;
+                              return (
+                                <button
+                                  key={opt}
+                                  type="button"
+                                  onClick={() => handleInputChange('bhk', opt)}
+                                  className={`px-3.5 py-2 rounded-xl text-xs font-medium transition-all cursor-pointer ${
+                                    isSelected
+                                      ? 'bg-primary text-white font-semibold'
+                                      : 'bg-neutral-100 hover:bg-neutral-200 text-neutral-700'
+                                  }`}
+                                >
+                                  {opt}
+                                </button>
+                              );
+                            })}
+                          </div>
+                          {form.bhk === 'Other:' && (
+                            <div className="mt-2">
+                              <input
+                                type="text"
+                                value={form.bhkOther}
+                                onChange={(e) => handleInputChange('bhkOther', e.target.value)}
+                                placeholder="e.g. 5 BHK, Studio room, etc."
+                                className="w-full px-3.5 py-2 rounded-xl border border-neutral-200 text-xs sm:text-sm text-dark placeholder-neutral-400 focus:outline-none focus:border-primary"
                               />
                             </div>
-                            {validationErrors.location && (
-                              <p className="text-xs text-red-500 mt-1 font-medium">{validationErrors.location}</p>
-                            )}
-                          </div>
+                          )}
+                        </div>
 
-                          {/* Plot area (optional) */}
-                          <div>
-                            <label className="block text-xs font-semibold text-dark mb-1.5">
-                              Plot Size / Built-up Area <span className="text-xs text-gray-400 font-normal">(Optional)</span>
-                            </label>
-                            <input
-                              type="text"
-                              value={form.plotSize}
-                              onChange={(e) => handleInputChange('plotSize', e.target.value)}
-                              placeholder="Your plot size / area"
-                              className="w-full px-4 py-3 rounded-xl border border-neutral-200 text-sm text-dark placeholder-neutral-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all"
-                            />
+                        {/* How many floors do you want to build ? */}
+                        <div>
+                          <label className="block text-xs font-semibold text-dark mb-1.5">
+                            How many floors do you want to build ?
+                          </label>
+                          <div className="flex flex-wrap gap-2">
+                            {FLOOR_OPTIONS.map((fl) => {
+                              const isSelected = form.floors === fl;
+                              return (
+                                <button
+                                  key={fl}
+                                  type="button"
+                                  onClick={() => handleInputChange('floors', fl)}
+                                  className={`px-3.5 py-2 rounded-xl text-xs font-medium transition-all cursor-pointer ${
+                                    isSelected
+                                      ? 'bg-primary text-white font-semibold'
+                                      : 'bg-neutral-100 hover:bg-neutral-200 text-neutral-700'
+                                  }`}
+                                >
+                                  {fl}
+                                </button>
+                              );
+                            })}
                           </div>
+                          {form.floors === 'Other:' && (
+                            <div className="mt-2">
+                              <input
+                                type="text"
+                                value={form.floorsOther}
+                                onChange={(e) => handleInputChange('floorsOther', e.target.value)}
+                                placeholder="Specify number of floors"
+                                className="w-full px-3.5 py-2 rounded-xl border border-neutral-200 text-xs sm:text-sm text-dark placeholder-neutral-400 focus:outline-none focus:border-primary"
+                              />
+                            </div>
+                          )}
+                        </div>
+
+                        {/* What kind of structure do you want ? */}
+                        <div>
+                          <label className="block text-xs font-semibold text-dark mb-1.5">
+                            What kind of structure do you want ?
+                          </label>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            {STRUCTURE_OPTIONS.map((st) => {
+                              const isSelected = form.structureType === st.id;
+                              return (
+                                <button
+                                  key={st.id}
+                                  type="button"
+                                  onClick={() => handleInputChange('structureType', st.id)}
+                                  className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
+                                    isSelected
+                                      ? 'border-primary bg-primary/10 text-primary font-semibold ring-1 ring-primary/20'
+                                      : 'border-neutral-200 bg-white hover:border-neutral-300 text-neutral-800'
+                                  }`}
+                                >
+                                  <div className="text-xs sm:text-sm font-semibold">{st.label}</div>
+                                  <div className="text-[11px] text-gray-500 font-normal mt-0.5">{st.desc}</div>
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+
+                        {/* How much height of the basement required ?* */}
+                        <div>
+                          <label className="block text-xs font-semibold text-dark mb-1.5">
+                            How much height of the basement required ? <span className="text-red-500">*</span>
+                          </label>
+                          <div className="flex flex-wrap gap-2">
+                            {BASEMENT_HEIGHT_OPTIONS.map((bh) => {
+                              const isSelected = form.basementHeight === bh;
+                              return (
+                                <button
+                                  key={bh}
+                                  type="button"
+                                  onClick={() => handleInputChange('basementHeight', bh)}
+                                  className={`px-3 py-2 rounded-xl text-xs font-medium transition-all cursor-pointer ${
+                                    isSelected
+                                      ? 'bg-primary text-white font-semibold'
+                                      : 'bg-neutral-100 hover:bg-neutral-200 text-neutral-700'
+                                  }`}
+                                >
+                                  {bh}
+                                </button>
+                              );
+                            })}
+                          </div>
+                          {form.basementHeight === 'Other:' && (
+                            <div className="mt-2">
+                              <input
+                                type="text"
+                                value={form.basementHeightOther}
+                                onChange={(e) => handleInputChange('basementHeightOther', e.target.value)}
+                                placeholder="Specify basement height (e.g. 4.5 Feet)"
+                                className="w-full px-3.5 py-2 rounded-xl border border-neutral-200 text-xs sm:text-sm text-dark placeholder-neutral-400 focus:outline-none focus:border-primary"
+                              />
+                            </div>
+                          )}
+                          {validationErrors.basementHeight && (
+                            <p className="text-xs text-red-500 mt-1 font-medium">
+                              {validationErrors.basementHeight}
+                            </p>
+                          )}
                         </div>
                       </motion.div>
                     )}
 
-                    {/* STEP 3: Approximate budget */}
+                    {/* STEP 3: Roof, Wall, Steel & Cement */}
                     {currentStep === 3 && (
                       <motion.div
                         key="step3"
@@ -750,62 +1032,163 @@ _Submitted via GRN Construction Project Consultation_`;
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
                         transition={{ duration: 0.2 }}
-                        className="space-y-5"
+                        className="space-y-4"
                       >
                         <div>
                           <span className="text-xs font-semibold text-primary uppercase tracking-wider">
-                            Step 03
+                            Step 03 / 05
                           </span>
                           <h3 className="text-xl sm:text-2xl font-bold text-dark font-display mt-0.5">
-                            Approximate budget
+                            Roof, Wall, Steel &amp; Cement
                           </h3>
                           <p className="text-xs sm:text-sm text-gray-500 mt-1">
-                            This helps us tailor material specifications and architectural scope accurately.
+                            Choose the structural components and branded raw materials for construction.
                           </p>
                         </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                          {BUDGET_OPTIONS.map((item, index) => {
-                            const isSelected = form.budget === item.id;
-                            const isLast = index === BUDGET_OPTIONS.length - 1;
-                            return (
-                              <button
-                                key={item.id}
-                                type="button"
-                                onClick={() => handleInputChange('budget', item.id)}
-                                className={`p-3.5 sm:p-4 rounded-xl border text-left transition-all cursor-pointer flex items-center justify-between ${
-                                  isLast ? 'sm:col-span-2' : ''
-                                } ${
-                                  isSelected
-                                    ? 'border-primary bg-primary/5 text-primary ring-1 ring-primary/20'
-                                    : 'border-neutral-200 hover:border-neutral-300 bg-white text-neutral-800'
-                                }`}
-                              >
-                                <div>
-                                  <p className="text-sm font-semibold text-dark">{item.label}</p>
-                                  <p className="text-xs text-gray-500">{item.sub}</p>
-                                </div>
-                                <span
-                                  className={`w-4 h-4 rounded-full border flex items-center justify-center text-[10px] shrink-0 ${
+                        {/* What type of Roof Structure do you want ? */}
+                        <div>
+                          <label className="block text-xs font-semibold text-dark mb-1.5">
+                            What type of Roof Structure do you want ?
+                          </label>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            {ROOF_OPTIONS.map((rf) => {
+                              const isSelected = form.roofType === rf;
+                              return (
+                                <button
+                                  key={rf}
+                                  type="button"
+                                  onClick={() => handleInputChange('roofType', rf)}
+                                  className={`p-2.5 rounded-xl border text-left text-xs transition-all cursor-pointer ${
                                     isSelected
-                                      ? 'border-primary bg-primary text-white'
-                                      : 'border-neutral-300'
+                                      ? 'border-primary bg-primary/10 text-primary font-semibold ring-1 ring-primary/20'
+                                      : 'border-neutral-200 bg-white hover:border-neutral-300 text-neutral-800'
                                   }`}
                                 >
-                                  {isSelected && '✓'}
-                                </span>
-                              </button>
-                            );
-                          })}
+                                  {rf}
+                                </button>
+                              );
+                            })}
+                          </div>
+                          {form.roofType === 'Other:' && (
+                            <input
+                              type="text"
+                              value={form.roofTypeOther}
+                              onChange={(e) => handleInputChange('roofTypeOther', e.target.value)}
+                              placeholder="Specify roof structure"
+                              className="mt-2 w-full px-3.5 py-2 rounded-xl border border-neutral-200 text-xs text-dark placeholder-neutral-400 focus:outline-none focus:border-primary"
+                            />
+                          )}
                         </div>
 
-                        {validationErrors.budget && (
-                          <p className="text-xs text-red-500 font-medium">{validationErrors.budget}</p>
-                        )}
+                        {/* What type of Wall structure do you want ? */}
+                        <div>
+                          <label className="block text-xs font-semibold text-dark mb-1.5">
+                            What type of Wall structure do you want ?
+                          </label>
+                          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                            {WALL_OPTIONS.map((wl) => {
+                              const isSelected = form.wallType === wl;
+                              return (
+                                <button
+                                  key={wl}
+                                  type="button"
+                                  onClick={() => handleInputChange('wallType', wl)}
+                                  className={`p-2.5 rounded-xl border text-left text-xs transition-all cursor-pointer ${
+                                    isSelected
+                                      ? 'border-primary bg-primary/10 text-primary font-semibold ring-1 ring-primary/20'
+                                      : 'border-neutral-200 bg-white hover:border-neutral-300 text-neutral-800'
+                                  }`}
+                                >
+                                  {wl}
+                                </button>
+                              );
+                            })}
+                          </div>
+                          {form.wallType === 'other' && (
+                            <input
+                              type="text"
+                              value={form.wallTypeOther}
+                              onChange={(e) => handleInputChange('wallTypeOther', e.target.value)}
+                              placeholder="Specify wall structure"
+                              className="mt-2 w-full px-3.5 py-2 rounded-xl border border-neutral-200 text-xs text-dark placeholder-neutral-400 focus:outline-none focus:border-primary"
+                            />
+                          )}
+                        </div>
+
+                        {/* What kind of steel do you want ? */}
+                        <div>
+                          <label className="block text-xs font-semibold text-dark mb-1.5">
+                            What kind of steel do you want ?
+                          </label>
+                          <div className="grid grid-cols-2 sm:grid-cols-2 gap-2">
+                            {STEEL_OPTIONS.map((st) => {
+                              const isSelected = form.steelBrand === st;
+                              return (
+                                <button
+                                  key={st}
+                                  type="button"
+                                  onClick={() => handleInputChange('steelBrand', st)}
+                                  className={`p-2.5 rounded-xl border text-left text-xs transition-all cursor-pointer ${
+                                    isSelected
+                                      ? 'border-primary bg-primary/10 text-primary font-semibold ring-1 ring-primary/20'
+                                      : 'border-neutral-200 bg-white hover:border-neutral-300 text-neutral-800'
+                                  }`}
+                                >
+                                  {st}
+                                </button>
+                              );
+                            })}
+                          </div>
+                          {form.steelBrand === 'Other:' && (
+                            <input
+                              type="text"
+                              value={form.steelBrandOther}
+                              onChange={(e) => handleInputChange('steelBrandOther', e.target.value)}
+                              placeholder="Specify steel brand"
+                              className="mt-2 w-full px-3.5 py-2 rounded-xl border border-neutral-200 text-xs text-dark placeholder-neutral-400 focus:outline-none focus:border-primary"
+                            />
+                          )}
+                        </div>
+
+                        {/* What kind of cement do you want ? */}
+                        <div>
+                          <label className="block text-xs font-semibold text-dark mb-1.5">
+                            What kind of cement do you want ?
+                          </label>
+                          <div className="grid grid-cols-2 sm:grid-cols-2 gap-2">
+                            {CEMENT_OPTIONS.map((cm) => {
+                              const isSelected = form.cementBrand === cm;
+                              return (
+                                <button
+                                  key={cm}
+                                  type="button"
+                                  onClick={() => handleInputChange('cementBrand', cm)}
+                                  className={`p-2.5 rounded-xl border text-left text-xs transition-all cursor-pointer ${
+                                    isSelected
+                                      ? 'border-primary bg-primary/10 text-primary font-semibold ring-1 ring-primary/20'
+                                      : 'border-neutral-200 bg-white hover:border-neutral-300 text-neutral-800'
+                                  }`}
+                                >
+                                  {cm}
+                                </button>
+                              );
+                            })}
+                          </div>
+                          {form.cementBrand === 'Other:' && (
+                            <input
+                              type="text"
+                              value={form.cementBrandOther}
+                              onChange={(e) => handleInputChange('cementBrandOther', e.target.value)}
+                              placeholder="Specify cement brand (e.g. Nagarjuna, ACC)"
+                              className="mt-2 w-full px-3.5 py-2 rounded-xl border border-neutral-200 text-xs text-dark placeholder-neutral-400 focus:outline-none focus:border-primary"
+                            />
+                          )}
+                        </div>
                       </motion.div>
                     )}
 
-                    {/* STEP 4: Expected timeline */}
+                    {/* STEP 4: Joineries & Flooring */}
                     {currentStep === 4 && (
                       <motion.div
                         key="step4"
@@ -817,55 +1200,177 @@ _Submitted via GRN Construction Project Consultation_`;
                       >
                         <div>
                           <span className="text-xs font-semibold text-primary uppercase tracking-wider">
-                            Step 04
+                            Step 04 / 05
                           </span>
                           <h3 className="text-xl sm:text-2xl font-bold text-dark font-display mt-0.5">
-                            Expected timeline
+                            Doors, Windows &amp; Flooring
                           </h3>
                           <p className="text-xs sm:text-sm text-gray-500 mt-1">
-                            When are you planning to begin construction or ground-breaking?
+                            Specify individual joinery preferences and surface finishes.
                           </p>
                         </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                          {TIMELINE_OPTIONS.map((item) => {
-                            const isSelected = form.timeline === item.id;
-                            return (
-                              <button
-                                key={item.id}
-                                type="button"
-                                onClick={() => handleInputChange('timeline', item.id)}
-                                className={`p-4 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between min-h-[85px] ${
-                                  isSelected
-                                    ? 'border-primary bg-primary/5 text-primary ring-1 ring-primary/20'
-                                    : 'border-neutral-200 hover:border-neutral-300 bg-white text-neutral-800'
-                                }`}
-                              >
-                                <div className="flex items-center justify-between">
-                                  <span className="text-sm font-semibold text-dark">{item.label}</span>
-                                  <span
-                                    className={`w-4 h-4 rounded-full border flex items-center justify-center text-[10px] ${
-                                      isSelected
-                                        ? 'border-primary bg-primary text-white'
-                                        : 'border-neutral-300'
-                                    }`}
-                                  >
-                                    {isSelected && '✓'}
-                                  </span>
-                                </div>
-                                <span className="text-xs text-gray-500 mt-1">{item.sub}</span>
-                              </button>
-                            );
-                          })}
+                        {/* What Kind of joineries do you want ? */}
+                        <div className="p-3.5 rounded-xl bg-neutral-50 border border-neutral-200/80 space-y-3">
+                          <div className="flex items-center gap-2">
+                            <DoorClosed size={16} className="text-primary" />
+                            <h4 className="text-xs font-bold text-dark uppercase tracking-wider">
+                              What Kind of joineries do you want ?
+                            </h4>
+                          </div>
+
+                          {/* 1. Main Door */}
+                          <div>
+                            <label className="block text-[11px] font-semibold text-neutral-700 mb-1">
+                              • Main Door
+                            </label>
+                            <div className="flex flex-wrap gap-1.5">
+                              {JOINERY_OPTIONS.map((opt) => (
+                                <button
+                                  key={opt}
+                                  type="button"
+                                  onClick={() => handleInputChange('joineryMainDoor', opt)}
+                                  className={`px-2.5 py-1.5 rounded-lg text-xs transition-all cursor-pointer ${
+                                    form.joineryMainDoor === opt
+                                      ? 'bg-primary text-white font-semibold'
+                                      : 'bg-white border border-neutral-200 text-neutral-700 hover:bg-neutral-100'
+                                  }`}
+                                >
+                                  {opt}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* 2. Bedroom Door Frame */}
+                          <div>
+                            <label className="block text-[11px] font-semibold text-neutral-700 mb-1">
+                              • Bed Room Door Frame
+                            </label>
+                            <div className="flex flex-wrap gap-1.5">
+                              {JOINERY_OPTIONS.map((opt) => (
+                                <button
+                                  key={opt}
+                                  type="button"
+                                  onClick={() => handleInputChange('joineryBedroomDoor', opt)}
+                                  className={`px-2.5 py-1.5 rounded-lg text-xs transition-all cursor-pointer ${
+                                    form.joineryBedroomDoor === opt
+                                      ? 'bg-primary text-white font-semibold'
+                                      : 'bg-white border border-neutral-200 text-neutral-700 hover:bg-neutral-100'
+                                  }`}
+                                >
+                                  {opt}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* 3. Windows & Ventilators */}
+                          <div>
+                            <label className="block text-[11px] font-semibold text-neutral-700 mb-1">
+                              • Windows &amp; Ventilators
+                            </label>
+                            <div className="flex flex-wrap gap-1.5">
+                              {JOINERY_OPTIONS.map((opt) => (
+                                <button
+                                  key={opt}
+                                  type="button"
+                                  onClick={() => handleInputChange('joineryWindows', opt)}
+                                  className={`px-2.5 py-1.5 rounded-lg text-xs transition-all cursor-pointer ${
+                                    form.joineryWindows === opt
+                                      ? 'bg-primary text-white font-semibold'
+                                      : 'bg-white border border-neutral-200 text-neutral-700 hover:bg-neutral-100'
+                                  }`}
+                                >
+                                  {opt}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
                         </div>
 
-                        {validationErrors.timeline && (
-                          <p className="text-xs text-red-500 font-medium">{validationErrors.timeline}</p>
-                        )}
+                        {/* What Kind of Flooring do you want ? */}
+                        <div className="p-3.5 rounded-xl bg-neutral-50 border border-neutral-200/80 space-y-3">
+                          <div className="flex items-center gap-2">
+                            <Grid size={16} className="text-secondary" />
+                            <h4 className="text-xs font-bold text-dark uppercase tracking-wider">
+                              What Kind of Flooring do you want ?
+                            </h4>
+                          </div>
+
+                          {/* 1. Floor */}
+                          <div>
+                            <label className="block text-[11px] font-semibold text-neutral-700 mb-1">
+                              • Floor
+                            </label>
+                            <div className="flex flex-wrap gap-1.5">
+                              {FLOORING_OPTIONS.map((opt) => (
+                                <button
+                                  key={opt}
+                                  type="button"
+                                  onClick={() => handleInputChange('flooringFloor', opt)}
+                                  className={`px-2.5 py-1.5 rounded-lg text-xs transition-all cursor-pointer ${
+                                    form.flooringFloor === opt
+                                      ? 'bg-primary text-white font-semibold'
+                                      : 'bg-white border border-neutral-200 text-neutral-700 hover:bg-neutral-100'
+                                  }`}
+                                >
+                                  {opt}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* 2. Wall */}
+                          <div>
+                            <label className="block text-[11px] font-semibold text-neutral-700 mb-1">
+                              • Wall (Bathrooms / Dadoing)
+                            </label>
+                            <div className="flex flex-wrap gap-1.5">
+                              {FLOORING_OPTIONS.map((opt) => (
+                                <button
+                                  key={opt}
+                                  type="button"
+                                  onClick={() => handleInputChange('flooringWall', opt)}
+                                  className={`px-2.5 py-1.5 rounded-lg text-xs transition-all cursor-pointer ${
+                                    form.flooringWall === opt
+                                      ? 'bg-primary text-white font-semibold'
+                                      : 'bg-white border border-neutral-200 text-neutral-700 hover:bg-neutral-100'
+                                  }`}
+                                >
+                                  {opt}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* 3. Kitchen Table top */}
+                          <div>
+                            <label className="block text-[11px] font-semibold text-neutral-700 mb-1">
+                              • Kitchen table top
+                            </label>
+                            <div className="flex flex-wrap gap-1.5">
+                              {FLOORING_OPTIONS.map((opt) => (
+                                <button
+                                  key={opt}
+                                  type="button"
+                                  onClick={() => handleInputChange('flooringKitchenTop', opt)}
+                                  className={`px-2.5 py-1.5 rounded-lg text-xs transition-all cursor-pointer ${
+                                    form.flooringKitchenTop === opt
+                                      ? 'bg-primary text-white font-semibold'
+                                      : 'bg-white border border-neutral-200 text-neutral-700 hover:bg-neutral-100'
+                                  }`}
+                                >
+                                  {opt}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
                       </motion.div>
                     )}
 
-                    {/* STEP 5: Tell us about your project & Contact info */}
+                    {/* STEP 5: Electrical, Plumbing, Sanitary & Painting */}
                     {currentStep === 5 && (
                       <motion.div
                         key="step5"
@@ -877,113 +1382,149 @@ _Submitted via GRN Construction Project Consultation_`;
                       >
                         <div>
                           <span className="text-xs font-semibold text-primary uppercase tracking-wider">
-                            Step 05
+                            Step 05 / 05
                           </span>
                           <h3 className="text-xl sm:text-2xl font-bold text-dark font-display mt-0.5">
-                            Tell us about your project
+                            Electrical, Plumbing, Sanitary &amp; Paint
                           </h3>
                           <p className="text-xs sm:text-sm text-gray-500 mt-1">
-                            Share any specific ideas, floor preferences, or questions for our engineers.
+                            Choose electrical &amp; bathroom fitting brands and specify painting details.
                           </p>
                         </div>
 
-                        <div className="space-y-3.5 pt-1">
-                          {/* Project Description */}
-                          <div>
-                            <textarea
-                              rows={3}
-                              value={form.details}
-                              onChange={(e) => handleInputChange('details', e.target.value)}
-                              placeholder="Your project requirements or message"
-                              className="w-full px-4 py-3 rounded-xl border border-neutral-200 text-sm text-dark placeholder-neutral-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all resize-none"
+                        {/* What kind of electrical items do you want ? */}
+                        <div>
+                          <label className="block text-xs font-semibold text-dark mb-1.5">
+                            What kind of electrical items do you want ?
+                          </label>
+                          <div className="flex flex-wrap gap-2">
+                            {ELECTRICAL_OPTIONS.map((el) => {
+                              const isSelected = form.electricalBrand === el;
+                              return (
+                                <button
+                                  key={el}
+                                  type="button"
+                                  onClick={() => handleInputChange('electricalBrand', el)}
+                                  className={`px-3 py-2 rounded-xl text-xs font-medium transition-all cursor-pointer ${
+                                    isSelected
+                                      ? 'bg-primary text-white font-semibold'
+                                      : 'bg-neutral-100 hover:bg-neutral-200 text-neutral-700'
+                                  }`}
+                                >
+                                  {el}
+                                </button>
+                              );
+                            })}
+                          </div>
+                          {form.electricalBrand === 'Other:' && (
+                            <input
+                              type="text"
+                              value={form.electricalBrandOther}
+                              onChange={(e) => handleInputChange('electricalBrandOther', e.target.value)}
+                              placeholder="Specify electrical brand"
+                              className="mt-2 w-full px-3.5 py-2 rounded-xl border border-neutral-200 text-xs text-dark placeholder-neutral-400 focus:outline-none focus:border-primary"
                             />
-                          </div>
+                          )}
+                        </div>
 
-                          {/* Contact Fields */}
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            {/* Full Name */}
-                            <div>
-                              <label className="block text-xs font-semibold text-dark mb-1">
-                                Full Name <span className="text-red-500">*</span>
-                              </label>
-                              <div className="relative">
-                                <User
-                                  size={15}
-                                  className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
-                                />
-                                <input
-                                  type="text"
-                                  value={form.name}
-                                  onChange={(e) => handleInputChange('name', e.target.value)}
-                                  placeholder="Your Name"
-                                  className={`w-full pl-10 pr-3 py-2.5 rounded-xl border text-sm text-dark placeholder-neutral-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all ${
-                                    validationErrors.name ? 'border-red-500' : 'border-neutral-200'
+                        {/* What kind of plumbing items do you want ? */}
+                        <div>
+                          <label className="block text-xs font-semibold text-dark mb-1.5">
+                            What kind of plumbing items do you want ?
+                          </label>
+                          <div className="flex flex-wrap gap-2">
+                            {PLUMBING_OPTIONS.map((pl) => {
+                              const isSelected = form.plumbingBrand === pl;
+                              return (
+                                <button
+                                  key={pl}
+                                  type="button"
+                                  onClick={() => handleInputChange('plumbingBrand', pl)}
+                                  className={`px-3 py-2 rounded-xl text-xs font-medium transition-all cursor-pointer ${
+                                    isSelected
+                                      ? 'bg-primary text-white font-semibold'
+                                      : 'bg-neutral-100 hover:bg-neutral-200 text-neutral-700'
                                   }`}
-                                />
-                              </div>
-                              {validationErrors.name && (
-                                <p className="text-xs text-red-500 mt-1 font-medium">{validationErrors.name}</p>
-                              )}
-                            </div>
+                                >
+                                  {pl}
+                                </button>
+                              );
+                            })}
+                          </div>
+                          {form.plumbingBrand === 'Other:' && (
+                            <input
+                              type="text"
+                              value={form.plumbingBrandOther}
+                              onChange={(e) => handleInputChange('plumbingBrandOther', e.target.value)}
+                              placeholder="Specify plumbing brand"
+                              className="mt-2 w-full px-3.5 py-2 rounded-xl border border-neutral-200 text-xs text-dark placeholder-neutral-400 focus:outline-none focus:border-primary"
+                            />
+                          )}
+                        </div>
 
-                            {/* Phone Number */}
-                            <div>
-                              <label className="block text-xs font-semibold text-dark mb-1">
-                                Phone Number <span className="text-red-500">*</span>
-                              </label>
-                              <div className="relative">
-                                <Phone
-                                  size={15}
-                                  className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
-                                />
-                                <input
-                                  type="tel"
-                                  value={form.phone}
-                                  onChange={(e) => handleInputChange('phone', e.target.value)}
-                                  placeholder="Your Phone Number"
-                                  className={`w-full pl-10 pr-3 py-2.5 rounded-xl border text-sm text-dark placeholder-neutral-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all ${
-                                    validationErrors.phone ? 'border-red-500' : 'border-neutral-200'
+                        {/* What kind of sanitary items do you want ? */}
+                        <div>
+                          <label className="block text-xs font-semibold text-dark mb-1.5">
+                            What kind of sanitary items do you want ?
+                          </label>
+                          <div className="flex flex-wrap gap-2">
+                            {SANITARY_OPTIONS.map((sn) => {
+                              const isSelected = form.sanitaryBrand === sn;
+                              return (
+                                <button
+                                  key={sn}
+                                  type="button"
+                                  onClick={() => handleInputChange('sanitaryBrand', sn)}
+                                  className={`px-3 py-2 rounded-xl text-xs font-medium transition-all cursor-pointer ${
+                                    isSelected
+                                      ? 'bg-primary text-white font-semibold'
+                                      : 'bg-neutral-100 hover:bg-neutral-200 text-neutral-700'
                                   }`}
-                                />
-                              </div>
-                              {validationErrors.phone && (
-                                <p className="text-xs text-red-500 mt-1 font-medium">{validationErrors.phone}</p>
-                              )}
-                            </div>
+                                >
+                                  {sn}
+                                </button>
+                              );
+                            })}
                           </div>
+                          {form.sanitaryBrand === 'Other:' && (
+                            <input
+                              type="text"
+                              value={form.sanitaryBrandOther}
+                              onChange={(e) => handleInputChange('sanitaryBrandOther', e.target.value)}
+                              placeholder="Specify sanitary brand"
+                              className="mt-2 w-full px-3.5 py-2 rounded-xl border border-neutral-200 text-xs text-dark placeholder-neutral-400 focus:outline-none focus:border-primary"
+                            />
+                          )}
+                        </div>
 
-                          {/* Email (Optional) */}
-                          <div>
-                            <label className="block text-xs font-semibold text-dark mb-1">
-                              Email Address <span className="text-xs text-gray-400 font-normal">(Optional)</span>
-                            </label>
-                            <div className="relative">
-                              <Mail
-                                size={15}
-                                className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
-                              />
-                              <input
-                                type="email"
-                                value={form.email}
-                                onChange={(e) => handleInputChange('email', e.target.value)}
-                                placeholder="Your Email Address"
-                                className="w-full pl-10 pr-3 py-2.5 rounded-xl border border-neutral-200 text-sm text-dark placeholder-neutral-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all"
-                              />
-                            </div>
-                          </div>
+                        {/* What kind of painting do you want ? */}
+                        <div>
+                          <label className="block text-xs font-semibold text-dark mb-1">
+                            What kind of painting do you want ?
+                          </label>
+                          <p className="text-[11px] text-gray-500 mb-1.5">
+                            Examples: White cement coating, Putty, primer, Emulsion and Enamel paints are whichever areas required
+                          </p>
+                          <textarea
+                            rows={3}
+                            value={form.paintingPreferences}
+                            onChange={(e) => handleInputChange('paintingPreferences', e.target.value)}
+                            placeholder="e.g. 2 coats putty, 1 coat primer, Asian Paints Royale emulsion for interior, Apex for exterior"
+                            className="w-full px-4 py-2.5 rounded-xl border border-neutral-200 text-xs sm:text-sm text-dark placeholder-neutral-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all"
+                          />
                         </div>
                       </motion.div>
                     )}
                   </AnimatePresence>
                 </div>
 
-                {/* Bottom Navigation Buttons */}
-                <div className="pt-6 mt-6 border-t border-neutral-100 flex items-center justify-between gap-3">
+                {/* Navigation Buttons */}
+                <div className="pt-6 border-t border-neutral-100 flex items-center justify-between gap-3 mt-4">
                   {currentStep > 1 ? (
                     <button
                       type="button"
                       onClick={prevStep}
-                      className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-neutral-200 hover:bg-neutral-50 text-neutral-700 text-xs sm:text-sm font-semibold transition-colors cursor-pointer"
+                      className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-neutral-200 text-xs sm:text-sm font-semibold text-neutral-700 hover:bg-neutral-50 transition-colors cursor-pointer"
                     >
                       <ArrowLeft size={15} />
                       Back
@@ -992,21 +1533,23 @@ _Submitted via GRN Construction Project Consultation_`;
                     <div />
                   )}
 
-                  {currentStep < CONSULTATION_STEPS.length ? (
+                  {currentStep < SPECIFICATION_STEPS.length ? (
                     <button
                       type="button"
                       onClick={nextStep}
-                      className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary hover:bg-primary-dark text-white text-xs sm:text-sm font-semibold transition-all cursor-pointer shadow-sm hover:shadow"
+                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary hover:bg-primary-light text-white text-xs sm:text-sm font-semibold transition-all shadow-sm cursor-pointer hover:shadow"
                     >
-                      Continue
+                      Next Step
                       <ArrowRight size={15} />
                     </button>
                   ) : (
                     <button
-                      type="submit"
-                      className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-primary hover:bg-primary-dark text-white text-xs sm:text-sm font-bold transition-all cursor-pointer shadow-sm hover:shadow hover:-translate-y-0.5"
+                      type="button"
+                      onClick={handleSubmit}
+                      className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-green-600 hover:bg-green-700 text-white text-xs sm:text-sm font-semibold transition-all shadow-sm cursor-pointer hover:shadow hover:-translate-y-0.5"
                     >
-                      Request a Free Consultation →
+                      <MessageCircle size={16} />
+                      Submit via WhatsApp
                     </button>
                   )}
                 </div>

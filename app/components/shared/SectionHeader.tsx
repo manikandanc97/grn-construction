@@ -33,31 +33,31 @@ export default function SectionHeader({
       : 'bg-gradient-to-r from-primary via-primary-light to-secondary bg-clip-text text-transparent';
 
   return (
-    <div className={`max-w-3xl ${centered ? 'mx-auto text-center' : ''} mb-10 sm:mb-12`}>
+    <div className={`max-w-3xl ${centered ? 'mx-auto text-center' : ''} mb-6 sm:mb-8`}>
       {badge && (
         <div>
           {light ? (
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/[0.08] border border-white/15 backdrop-blur-md text-secondary-light text-xs font-bold uppercase tracking-wider mb-3.5 shadow-sm">
-              <BadgeIcon size={13} className="text-secondary shrink-0" />
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.08] border border-white/15 backdrop-blur-md text-secondary-light text-[11px] sm:text-xs font-bold uppercase tracking-wider mb-2.5 shadow-sm">
+              <BadgeIcon size={12} className="text-secondary shrink-0" />
               <span>{badge}</span>
             </div>
           ) : (
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold uppercase tracking-wider mb-3.5 shadow-sm backdrop-blur-sm">
-              <BadgeIcon size={13} className="text-secondary shrink-0" />
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-[11px] sm:text-xs font-bold uppercase tracking-wider mb-2.5 shadow-sm backdrop-blur-sm">
+              <BadgeIcon size={12} className="text-secondary shrink-0" />
               <span>{badge}</span>
             </div>
           )}
         </div>
       )}
       <h2
-        className={`text-3xl sm:text-4xl lg:text-[40px] xl:text-[42px] font-extrabold font-display leading-[1.18] tracking-tight ${textColor}`}
+        className={`text-2xl sm:text-3xl lg:text-[34px] font-extrabold font-display leading-[1.18] tracking-tight ${textColor}`}
       >
         {title}{' '}
         {highlight && <span className={gradientClass}>{highlight}</span>}
       </h2>
       {description && (
         <p
-          className={`mt-3.5 sm:mt-4 text-sm sm:text-base md:text-[16px] leading-relaxed max-w-2xl ${
+          className={`mt-2 sm:mt-2.5 text-xs sm:text-sm md:text-[14.5px] leading-relaxed max-w-2xl ${
             centered ? 'mx-auto' : ''
           } ${descColor} font-normal`}
         >

@@ -53,7 +53,8 @@ function formatRelativeTime(isoDateString: string): string {
 function getFallbackSummary(source: GoogleReviewSummary['source'] = 'fallback', isConnected = false): GoogleReviewSummary {
   const defaultReviewUrl =
     process.env.NEXT_PUBLIC_GOOGLE_REVIEW_URL ||
-    'https://search.google.com/local/writereview?placeid=ChIJ__grn_construction_mock_or_actual';
+    COMPANY.reviewUrl ||
+    COMPANY.mapUrl;
   const defaultMapsUrl =
     process.env.NEXT_PUBLIC_GOOGLE_MAPS_URL ||
     COMPANY.mapUrl;
@@ -384,7 +385,7 @@ export const VERIFIED_GOOGLE_BUSINESS_REVIEWS: GoogleReview[] = [
       'Recently constructed our new dream house by GRN Construction. They are using branded and good quality materials for the construction. I appreciate quick response and timely completion of the work.',
     createdAt: '2026-05-20T10:30:00.000Z',
     relativeTime: '3 months ago',
-    googleMapsUri: 'https://maps.google.com/?q=GRN+Construction+Udumalpet',
+    googleMapsUri: COMPANY.mapUrl,
     reviewPhotos: [
       {
         url: '/reviews/muruganandam_p1.jpg',
@@ -417,7 +418,7 @@ export const VERIFIED_GOOGLE_BUSINESS_REVIEWS: GoogleReview[] = [
       'GRN Construction provided exceptional structural engineering and on-time execution. The team maintained complete transparency on materials, structural foundation, and budget throughout our project.',
     createdAt: '2025-10-15T09:00:00.000Z',
     relativeTime: '10 months ago',
-    googleMapsUri: 'https://maps.google.com/?q=GRN+Construction+Udumalpet',
+    googleMapsUri: COMPANY.mapUrl,
   },
   {
     id: 'google-review-rajesh-kumar',
@@ -427,7 +428,7 @@ export const VERIFIED_GOOGLE_BUSINESS_REVIEWS: GoogleReview[] = [
       'Excellent work by GRN Construction! They built our dream home within the agreed budget and timeline. The quality of materials used is top-notch. Highly recommended for anyone looking for reliable builders in Udumalpet.',
     createdAt: '2025-09-10T14:20:00.000Z',
     relativeTime: '11 months ago',
-    googleMapsUri: 'https://maps.google.com/?q=GRN+Construction+Udumalpet',
+    googleMapsUri: COMPANY.mapUrl,
   },
   {
     id: 'google-review-priya-lakshmi',
@@ -437,7 +438,7 @@ export const VERIFIED_GOOGLE_BUSINESS_REVIEWS: GoogleReview[] = [
       'Very professional team. The interior design work they did for our office was outstanding. Proper communication throughout the project. They listened to all our requirements and delivered exactly what we wanted.',
     createdAt: '2025-08-05T11:45:00.000Z',
     relativeTime: '1 year ago',
-    googleMapsUri: 'https://maps.google.com/?q=GRN+Construction+Udumalpet',
+    googleMapsUri: COMPANY.mapUrl,
   },
 ];
 

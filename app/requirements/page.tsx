@@ -3,13 +3,14 @@ import Navbar from '@/app/components/layout/Navbar';
 import MobileAppBar from '@/app/components/layout/MobileAppBar';
 import MobileBottomNav from '@/app/components/layout/MobileBottomNav';
 import Footer from '@/app/components/layout/Footer';
+import PackagesSection from '@/app/components/sections/PackagesSection';
 import ClientRequirementSection from '@/app/components/sections/ClientRequirementSection';
 import FloatingButtons from '@/app/components/shared/FloatingButtons';
 
 export const metadata: Metadata = {
-  title: 'Client Requirement Specification Form | GRN Construction Udumalpet',
+  title: 'Packages & Client Requirement Specification Form | GRN Construction Udumalpet',
   description:
-    'Submit your building specifications, structural preferences, joinery choices, flooring, and material requirements to GRN Construction for a customized estimate.',
+    'Explore our Standard, Premium, Elite & Luxury construction packages and submit your building specifications to GRN Construction for a customized estimate.',
   alternates: {
     canonical: '/requirements',
   },
@@ -22,8 +23,9 @@ export default function RequirementsPage() {
       <Navbar />
       <MobileAppBar />
 
-      {/* Main Requirement Form Content */}
+      {/* Main Content */}
       <main className="pt-24 lg:pt-28 max-md:pb-20 min-h-screen bg-brand-light">
+        <PackagesSection />
         <ClientRequirementSection />
       </main>
 

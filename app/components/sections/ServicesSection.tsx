@@ -183,14 +183,14 @@ export default function ServicesSection() {
     <section
       ref={sectionRef}
       id="services"
-      className="relative bg-[#FAFAF8] py-16 md:py-20 lg:py-24 overflow-hidden border-b border-gray-100"
+      className="relative bg-[#FAFAF8] py-12 md:py-14 lg:py-16 overflow-hidden border-b border-gray-100"
     >
       {/* Subtle architectural background texture accent */}
       <div className="absolute inset-0 bg-[radial-gradient(#1A6B7C_1px,transparent_1px)] [background-size:24px_24px] opacity-[0.03] pointer-events-none" />
 
       <div className={containerClass}>
         {/* Section Heading */}
-        <div ref={headerRef} className="opacity-0 mb-10 sm:mb-14">
+        <div ref={headerRef} className="opacity-0 mb-6 sm:mb-8">
           <SectionHeader
             badge="OUR EXPERTISE"
             badgeIcon={Layers}
@@ -203,11 +203,11 @@ export default function ServicesSection() {
         {/* FEATURED SERVICE (Full-width, 50% split layout) */}
         <div
           ref={featuredRef}
-          className="opacity-0 mb-8 sm:mb-10 rounded-2xl border border-neutral-200/90 bg-white overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:border-primary/30 transition-all duration-300"
+          className="opacity-0 mb-5 sm:mb-6 rounded-2xl border border-neutral-200/90 bg-white overflow-hidden shadow-xs hover:border-primary/30 transition-all duration-300"
         >
           <div className="grid grid-cols-1 lg:grid-cols-12 items-stretch">
             {/* Left: Image (5 cols on lg) */}
-            <div className="relative lg:col-span-5 min-h-[260px] sm:min-h-[300px] lg:min-h-full bg-neutral-100 overflow-hidden group">
+            <div className="relative lg:col-span-5 min-h-[200px] sm:min-h-[220px] lg:min-h-full bg-neutral-100 overflow-hidden group">
               <Image
                 src={FEATURED_SERVICE.image}
                 alt={FEATURED_SERVICE.title}
@@ -219,40 +219,40 @@ export default function ServicesSection() {
               <div className="absolute inset-0 bg-gradient-to-t from-dark/60 via-transparent to-transparent lg:hidden" />
               
               {/* Badge on Mobile Image */}
-              <div className="absolute top-4 left-4 lg:hidden inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/95 backdrop-blur-md text-[11px] font-bold text-primary shadow-sm tracking-wider uppercase">
+              <div className="absolute top-3.5 left-3.5 lg:hidden inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/95 backdrop-blur-md text-[10px] font-bold text-primary shadow-xs tracking-wider uppercase">
                 <span className="w-1.5 h-1.5 rounded-full bg-secondary" />
                 {FEATURED_SERVICE.number} • {FEATURED_SERVICE.badge}
               </div>
             </div>
 
             {/* Right: Content (7 cols on lg) */}
-            <div className="lg:col-span-7 p-6 sm:p-8 lg:p-10 flex flex-col justify-between">
+            <div className="lg:col-span-7 p-5 sm:p-6 lg:p-7 flex flex-col justify-between">
               <div>
-                <div className="hidden lg:flex items-center justify-between mb-3">
-                  <div className="inline-flex items-center gap-2 text-xs font-bold tracking-widest text-secondary uppercase">
+                <div className="hidden lg:flex items-center justify-between mb-2">
+                  <div className="inline-flex items-center gap-2 text-[11px] font-bold tracking-widest text-secondary uppercase">
                     <span className="w-1.5 h-1.5 rounded-full bg-secondary" />
                     {FEATURED_SERVICE.badge}
                   </div>
                   <span className="text-xs font-mono font-bold text-neutral-400">{FEATURED_SERVICE.number}</span>
                 </div>
 
-                <h3 className="text-2xl sm:text-[28px] font-bold text-dark font-display tracking-tight mb-2">
+                <h3 className="text-xl sm:text-2xl font-bold text-dark font-display tracking-tight mb-1">
                   {FEATURED_SERVICE.title}
                 </h3>
                 
-                <p className="text-xs sm:text-[13px] font-semibold text-secondary mb-3">
+                <p className="text-[11px] sm:text-xs font-semibold text-secondary mb-2">
                   {FEATURED_SERVICE.tagline}
                 </p>
 
-                <p className="text-neutral-600 text-sm sm:text-[14.5px] leading-relaxed mb-6">
+                <p className="text-neutral-600 text-xs sm:text-[13.5px] leading-relaxed mb-4">
                   {FEATURED_SERVICE.description}
                 </p>
 
                 {/* Highlights List */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-4 border-t border-neutral-100 mb-6 sm:mb-8">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-3 border-t border-neutral-100 mb-4 sm:mb-5">
                   {FEATURED_SERVICE.highlights.map((item) => (
-                    <div key={item} className="flex items-start gap-2 text-xs sm:text-[13px] text-neutral-700 font-medium">
-                      <CheckCircle2 size={16} className="text-primary shrink-0 mt-0.5" />
+                    <div key={item} className="flex items-start gap-1.5 text-[11.5px] sm:text-xs text-neutral-700 font-medium leading-tight">
+                      <CheckCircle2 size={14} className="text-primary shrink-0 mt-0.5" />
                       <span>{item}</span>
                     </div>
                   ))}
@@ -260,15 +260,15 @@ export default function ServicesSection() {
               </div>
 
               {/* Action Button */}
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-4 border-t border-neutral-100">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pt-3 border-t border-neutral-100">
                 <a
                   href={FEATURED_SERVICE.ctaHref}
-                  className="inline-flex items-center gap-2.5 px-6 py-3 rounded-xl bg-dark text-white text-xs sm:text-[13.5px] font-semibold transition-all duration-300 hover:bg-primary hover:shadow-[0_8px_20px_rgba(26,107,124,0.25)] group"
+                  className="inline-flex items-center gap-2 px-4.5 py-2 rounded-xl bg-dark text-white text-xs font-semibold transition-all duration-300 hover:bg-primary hover:shadow-xs group"
                 >
                   <span>{FEATURED_SERVICE.ctaText}</span>
-                  <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
+                  <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
                 </a>
-                <span className="text-xs text-neutral-400 font-medium">
+                <span className="text-[11px] text-neutral-400 font-medium">
                   Complete engineering & architectural oversight
                 </span>
               </div>
@@ -279,7 +279,7 @@ export default function ServicesSection() {
         {/* SUPPORTING SERVICES (3-Column Grid) */}
         <div
           ref={gridRef}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-4"
         >
           {SUPPORTING_SERVICES.map((service) => {
             const Icon = service.icon;
@@ -287,34 +287,34 @@ export default function ServicesSection() {
               <a
                 key={service.id}
                 href="#contact"
-                className="group relative flex flex-col justify-between p-5 sm:p-6 min-h-[150px] sm:min-h-[165px] rounded-xl border border-neutral-200/90 bg-white opacity-0 transition-all duration-300 ease-out hover:-translate-y-1 hover:border-primary/40 hover:shadow-[0_12px_28px_rgba(26,107,124,0.06)]"
+                className="group relative flex flex-col justify-between p-4 sm:p-4.5 min-h-[130px] rounded-xl border border-neutral-200/90 bg-white opacity-0 transition-all duration-200 ease-out hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-xs"
               >
                 {/* Top Row: Service Number + Simple Icon */}
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-xs font-mono font-bold tracking-wider text-neutral-400 group-hover:text-secondary transition-colors">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[11px] font-mono font-bold tracking-wider text-neutral-400 group-hover:text-secondary transition-colors">
                     {service.number}
                   </span>
-                  <div className="w-8 h-8 rounded-lg bg-neutral-100/90 flex items-center justify-center text-primary group-hover:bg-primary/10 group-hover:text-primary transition-colors">
-                    <Icon size={16} strokeWidth={1.8} />
+                  <div className="w-7 h-7 rounded-lg bg-neutral-100/90 flex items-center justify-center text-primary group-hover:bg-primary/10 group-hover:text-primary transition-colors">
+                    <Icon size={14} strokeWidth={1.8} />
                   </div>
                 </div>
 
                 {/* Content: Title & 1-2 line description */}
-                <div className="mb-4">
-                  <h4 className="text-sm sm:text-base font-bold text-dark font-display leading-snug mb-1.5 group-hover:text-primary transition-colors">
+                <div className="mb-2">
+                  <h4 className="text-xs sm:text-sm font-bold text-dark font-display leading-snug mb-1 group-hover:text-primary transition-colors">
                     {service.title}
                   </h4>
-                  <p className="text-[13px] text-neutral-500 leading-relaxed line-clamp-2">
+                  <p className="text-[12px] text-neutral-500 leading-snug line-clamp-2">
                     {service.description}
                   </p>
                 </div>
 
                 {/* Bottom: Subtle hover arrow */}
-                <div className="pt-3 border-t border-neutral-100 flex items-center justify-between text-xs font-semibold text-neutral-500 group-hover:text-primary transition-colors">
+                <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-[11px] font-semibold text-neutral-500 group-hover:text-primary transition-colors">
                   <span>Explore</span>
                   <ArrowRight
-                    size={14}
-                    className="transition-transform duration-300 group-hover:translate-x-1 text-neutral-400 group-hover:text-primary"
+                    size={12}
+                    className="transition-transform duration-200 group-hover:translate-x-1 text-neutral-400 group-hover:text-primary"
                   />
                 </div>
               </a>
@@ -323,21 +323,21 @@ export default function ServicesSection() {
         </div>
 
         {/* Bottom Consultation Banner */}
-        <div className="mt-10 sm:mt-12 rounded-2xl border border-neutral-200/90 bg-white p-6 sm:p-7 flex flex-col sm:flex-row items-center justify-between gap-5 shadow-[0_4px_20px_rgba(0,0,0,0.02)]">
+        <div className="mt-6 sm:mt-8 rounded-xl border border-neutral-200/90 bg-white p-4 sm:p-4.5 flex flex-col sm:flex-row items-center justify-between gap-3.5 shadow-xs">
           <div className="text-center sm:text-left">
-            <h4 className="text-base sm:text-lg font-bold text-dark font-display mb-1">
+            <h4 className="text-xs sm:text-sm font-bold text-dark font-display mb-0.5">
               Need a custom scope or specialized civil consultancy?
             </h4>
-            <p className="text-neutral-500 text-xs sm:text-[13.5px]">
+            <p className="text-neutral-500 text-[11px] sm:text-xs">
               We evaluate soil reports, structural drawings, and custom project requirements with complete engineering transparency.
             </p>
           </div>
           <a
             href="#contact"
-            className="shrink-0 inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-br from-secondary to-secondary-light text-white text-xs sm:text-[13px] font-semibold shadow-[0_4px_16px_rgba(212,129,58,0.25)] hover:shadow-[0_8px_24px_rgba(212,129,58,0.35)] hover:-translate-y-0.5 transition-all duration-300"
+            className="shrink-0 inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-gradient-to-br from-secondary to-secondary-light text-white text-xs font-semibold shadow-xs hover:shadow-sm hover:-translate-y-0.5 transition-all duration-200"
           >
             <span>Request Free Consultation</span>
-            <ArrowRight size={15} />
+            <ArrowRight size={13} />
           </a>
         </div>
 

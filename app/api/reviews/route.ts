@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getGoogleReviews } from '@/app/lib/services/googleReviews';
+import { COMPANY } from '@/app/lib/constants';
 
 export const dynamic = 'force-dynamic';
 
@@ -19,12 +20,12 @@ export async function GET() {
     return NextResponse.json(
       {
         summary: {
-          rating: 4.9,
-          reviewCount: 41,
-          businessName: 'GRN Construction',
-          businessAddress: 'Advocate, No.10 A, Vakil Nagarajan Street, near by Uma traders, Udumalaipettai Municipality, Tamil Nadu 642126',
-          writeReviewUrl: process.env.NEXT_PUBLIC_GOOGLE_REVIEW_URL || 'https://maps.google.com/?q=GRN+Construction,+Advocate,+No.10+A,+Vakil+Nagarajan+Street,+near+by+Uma+traders,+Udumalaipettai+Municipality,+Tamil+Nadu+642126',
-          viewAllReviewsUrl: process.env.NEXT_PUBLIC_GOOGLE_MAPS_URL || 'https://maps.google.com/?q=GRN+Construction,+Advocate,+No.10+A,+Vakil+Nagarajan+Street,+near+by+Uma+traders,+Udumalaipettai+Municipality,+Tamil+Nadu+642126',
+          rating: COMPANY.rating || 4.9,
+          reviewCount: COMPANY.reviewCount || 41,
+          businessName: COMPANY.name || 'GRN Construction',
+          businessAddress: COMPANY.address.full,
+          writeReviewUrl: process.env.NEXT_PUBLIC_GOOGLE_REVIEW_URL || COMPANY.reviewUrl || COMPANY.mapUrl,
+          viewAllReviewsUrl: process.env.NEXT_PUBLIC_GOOGLE_MAPS_URL || COMPANY.mapUrl,
           isConnected: false,
           source: 'fallback',
           lastFetched: new Date().toISOString(),

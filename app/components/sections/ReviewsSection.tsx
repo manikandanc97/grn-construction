@@ -18,8 +18,8 @@ const DEFAULT_SUMMARY: GoogleReviewSummary = {
   reviewCount: COMPANY.reviewCount || 41,
   businessName: COMPANY.name || 'GRN Construction',
   businessAddress: COMPANY.address.full,
-  writeReviewUrl: process.env.NEXT_PUBLIC_GOOGLE_REVIEW_URL || 'https://maps.google.com/?q=GRN+Construction+Udumalpet',
-  viewAllReviewsUrl: process.env.NEXT_PUBLIC_GOOGLE_MAPS_URL || 'https://maps.google.com/?q=GRN+Construction+Udumalpet',
+  writeReviewUrl: process.env.NEXT_PUBLIC_GOOGLE_REVIEW_URL || COMPANY.reviewUrl || COMPANY.mapUrl,
+  viewAllReviewsUrl: process.env.NEXT_PUBLIC_GOOGLE_MAPS_URL || COMPANY.mapUrl,
   isConnected: false,
   source: 'fallback',
   lastFetched: new Date().toISOString(),
@@ -199,40 +199,40 @@ export default function ReviewsSection() {
     <section
       ref={sectionRef}
       id="reviews"
-      className="py-16 md:py-20 lg:py-24 bg-[#FAFAFA] relative overflow-hidden"
+      className="py-12 md:py-14 lg:py-16 bg-[#FAFAFA] relative overflow-hidden"
     >
       {/* Background Subtle Gradient Glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[450px] bg-radial from-primary/[0.04] via-transparent to-transparent pointer-events-none -z-10" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[350px] bg-radial from-primary/[0.04] via-transparent to-transparent pointer-events-none -z-10" />
 
       <div className="w-full max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10">
         {/* Section Header */}
-        <div ref={headerRef} className="opacity-0 mb-8 sm:mb-10 text-center max-w-3xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold uppercase tracking-wider mb-3.5 shadow-sm backdrop-blur-sm">
-            <MessageSquareQuote size={13} className="text-secondary shrink-0" />
+        <div ref={headerRef} className="opacity-0 mb-5 sm:mb-6 text-center max-w-3xl mx-auto">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-[11px] font-bold uppercase tracking-wider mb-2.5 shadow-sm backdrop-blur-sm">
+            <MessageSquareQuote size={12} className="text-secondary shrink-0" />
             <span>CLIENT TESTIMONIALS</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-[40px] xl:text-[42px] font-extrabold text-dark font-display leading-[1.18] tracking-tight">
+          <h2 className="text-2xl sm:text-3xl lg:text-[34px] font-extrabold text-dark font-display leading-[1.18] tracking-tight">
             What Our Clients{' '}
             <span className="bg-gradient-to-r from-primary via-primary-light to-secondary bg-clip-text text-transparent">
               Say About Us.
             </span>
           </h2>
-          <p className="mt-3.5 sm:mt-4 text-sm sm:text-base md:text-[16px] text-gray-600 font-normal max-w-2xl mx-auto leading-relaxed">
+          <p className="mt-2 sm:mt-2.5 text-xs sm:text-sm text-gray-600 font-normal max-w-2xl mx-auto leading-relaxed">
             Real feedback and verified reviews from homeowners and clients who trusted GRN Construction for their dream spaces.
           </p>
         </div>
 
-        {/* Rating Header (Wider Horizontal Summary Block, max-w-[900px]) */}
+        {/* Rating Header */}
         <div ref={summaryRef} className="opacity-0">
           <ReviewSummary summary={summary} />
         </div>
 
         {/* Reviews Layout: 2 equal balanced cards side-by-side on desktop */}
-        <div ref={contentRef} className="opacity-0 min-h-[350px]">
+        <div ref={contentRef} className="opacity-0 min-h-[300px]">
           {isLoading ? (
             <ReviewSectionSkeleton />
           ) : sortedReviews.length > 0 && featuredReview ? (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 items-stretch">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6 items-stretch">
               {/* Featured Latest Review (Left Column) */}
               <div className="flex">
                 <FeaturedReviewCard
@@ -243,12 +243,12 @@ export default function ReviewsSection() {
               </div>
 
               {/* Supporting Reviews Carousel (Right Column) */}
-              <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-2.5">
                 {/* Header for Supporting Reviews with Pagination Controls (if more than 1 supporting review) */}
                 {remainingReviews.length > 1 && (
                   <div className="flex items-center justify-between px-1">
-                    <span className="text-xs font-semibold uppercase tracking-wider text-gray-500">
-                      More Client Stories ({supportingPageIndex + 1} of {remainingReviews.length})
+                    <span className="text-[11px] font-semibold uppercase tracking-wider text-gray-500">
+                      More Stories ({supportingPageIndex + 1} of {remainingReviews.length})
                     </span>
 
                     <div className="flex items-center gap-1.5">
@@ -258,10 +258,10 @@ export default function ReviewsSection() {
                             prev > 0 ? prev - 1 : remainingReviews.length - 1
                           )
                         }
-                        className="w-7 h-7 rounded-full border border-gray-200 bg-white hover:bg-primary/5 hover:border-primary text-gray-600 hover:text-primary flex items-center justify-center transition-all cursor-pointer shadow-xs active:scale-95"
+                        className="w-6.5 h-6.5 rounded-full border border-gray-200 bg-white hover:bg-primary/5 hover:border-primary text-gray-600 hover:text-primary flex items-center justify-center transition-all cursor-pointer shadow-xs active:scale-95"
                         aria-label="Previous review"
                       >
-                        <ChevronLeft size={14} />
+                        <ChevronLeft size={13} />
                       </button>
                       <button
                         onClick={() =>
@@ -269,10 +269,10 @@ export default function ReviewsSection() {
                             prev < remainingReviews.length - 1 ? prev + 1 : 0
                           )
                         }
-                        className="w-7 h-7 rounded-full border border-gray-200 bg-white hover:bg-primary/5 hover:border-primary text-gray-600 hover:text-primary flex items-center justify-center transition-all cursor-pointer shadow-xs active:scale-95"
+                        className="w-6.5 h-6.5 rounded-full border border-gray-200 bg-white hover:bg-primary/5 hover:border-primary text-gray-600 hover:text-primary flex items-center justify-center transition-all cursor-pointer shadow-xs active:scale-95"
                         aria-label="Next review"
                       >
-                        <ChevronRight size={14} />
+                        <ChevronRight size={13} />
                       </button>
                     </div>
                   </div>
@@ -292,8 +292,8 @@ export default function ReviewsSection() {
                   </div>
                 ) : (
                   /* Fallback if only 1 review exists */
-                  <div className="h-full rounded-2xl border border-dashed border-gray-200 p-6 flex flex-col items-center justify-center text-center bg-white/70">
-                    <p className="text-xs text-gray-500 mb-3">
+                  <div className="h-full rounded-xl border border-dashed border-gray-200 p-5 flex flex-col items-center justify-center text-center bg-white/70">
+                    <p className="text-xs text-gray-500 mb-2">
                       More reviews from verified homeowners are available on Google Maps.
                     </p>
                     <a
@@ -313,45 +313,6 @@ export default function ReviewsSection() {
             <ReviewEmptyState summary={summary} />
           )}
         </div>
-
-        {/* Bottom CTA Row: View All Google Reviews & Write a Review */}
-        {reviews.length > 0 && (
-          <div
-            ref={ctaRef}
-            className="opacity-0 mt-12 pt-8 border-t border-gray-200/80 flex flex-col sm:flex-row items-center justify-between gap-5 text-center sm:text-left"
-          >
-            <div>
-              <h4 className="font-semibold text-dark font-display text-base sm:text-lg">
-                Have you worked with GRN Construction?
-              </h4>
-              <p className="text-gray-500 text-xs sm:text-[13.5px] mt-0.5">
-                Your authentic feedback helps other homeowners make confident building decisions.
-              </p>
-            </div>
-
-            <div className="flex items-center gap-3 w-full sm:w-auto justify-center">
-              <a
-                href={summary.viewAllReviewsUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-full border border-gray-200 hover:border-gray-300 bg-white hover:bg-gray-50 text-dark text-xs sm:text-[13.5px] font-medium transition-all shadow-xs cursor-pointer active:scale-98"
-              >
-                <span>View All Google Reviews</span>
-                <ArrowRight size={13} className="text-gray-400" />
-              </a>
-
-              <a
-                href={summary.writeReviewUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-full bg-primary hover:bg-primary-dark text-white text-xs sm:text-[13.5px] font-semibold transition-all shadow-xs hover:shadow-sm cursor-pointer active:scale-98"
-              >
-                <Edit3 size={13} />
-                <span>Write a Review</span>
-              </a>
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Review Photo Lightbox Modal */}
