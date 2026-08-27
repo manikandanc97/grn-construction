@@ -154,7 +154,7 @@ export default function SupportingReviewCard({
         {/* Review Photos (if present) */}
         {review.reviewPhotos && review.reviewPhotos.length > 0 && (
           <div className="mb-4 relative z-10">
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+            <p className="text-xs font-semibold text-neutral-600 mb-2">
               Review Photos ({review.reviewPhotos.length})
             </p>
             <div className="flex items-center gap-2.5 overflow-x-auto pb-1.5 no-scrollbar">
@@ -186,8 +186,8 @@ export default function SupportingReviewCard({
               <ShieldCheck size={18} />
             </div>
             <div className="text-xs min-w-0">
-              <p className="font-bold text-dark text-[12.5px]">100% Genuine Google Feedback</p>
-              <p className="text-gray-500 text-[11.5px] mt-0.5 leading-snug">
+              <p className="font-bold text-dark text-xs sm:text-[13px]">100% Genuine Google Feedback</p>
+              <p className="text-neutral-600 text-xs mt-0.5 leading-normal">
                 Review verified through Google Business Profile for GRN Construction.
               </p>
             </div>

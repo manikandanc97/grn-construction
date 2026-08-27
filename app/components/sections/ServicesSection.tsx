@@ -218,7 +218,7 @@ export default function ServicesSection() {
               <div className="absolute inset-0 bg-gradient-to-t from-dark/60 via-transparent to-transparent lg:hidden" />
               
               {/* Badge on Mobile Image */}
-              <div className="absolute top-3.5 left-3.5 lg:hidden inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/95 backdrop-blur-md text-[10px] font-bold text-primary shadow-xs tracking-wider uppercase">
+              <div className="absolute top-3.5 left-3.5 lg:hidden inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/95 backdrop-blur-md text-xs font-bold text-primary shadow-xs tracking-wider uppercase">
                 <span className="w-1.5 h-1.5 rounded-full bg-secondary" />
                 {FEATURED_SERVICE.number} • {FEATURED_SERVICE.badge}
               </div>
@@ -228,7 +228,7 @@ export default function ServicesSection() {
             <div className="lg:col-span-7 p-5 sm:p-6 lg:p-7 flex flex-col justify-between">
               <div>
                 <div className="hidden lg:flex items-center justify-between mb-2">
-                  <div className="inline-flex items-center gap-2 text-[11px] font-bold tracking-widest text-secondary uppercase">
+                  <div className="inline-flex items-center gap-2 text-xs font-bold tracking-widest text-secondary uppercase">
                     <span className="w-1.5 h-1.5 rounded-full bg-secondary" />
                     {FEATURED_SERVICE.badge}
                   </div>
@@ -239,18 +239,18 @@ export default function ServicesSection() {
                   {FEATURED_SERVICE.title}
                 </h3>
                 
-                <p className="text-[11px] sm:text-xs font-semibold text-secondary mb-2">
+                <p className="text-xs sm:text-sm font-semibold text-secondary mb-2">
                   {FEATURED_SERVICE.tagline}
                 </p>
 
-                <p className="text-neutral-600 text-xs sm:text-[13.5px] leading-relaxed mb-4">
+                <p className="text-neutral-600 text-sm leading-relaxed mb-4">
                   {FEATURED_SERVICE.description}
                 </p>
 
                 {/* Highlights List */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-3 border-t border-neutral-100 mb-4 sm:mb-5">
                   {FEATURED_SERVICE.highlights.map((item) => (
-                    <div key={item} className="flex items-start gap-1.5 text-[11.5px] sm:text-xs text-neutral-700 font-medium leading-tight">
+                    <div key={item} className="flex items-start gap-1.5 text-xs text-neutral-700 font-medium leading-tight">
                       <CheckCircle2 size={14} className="text-primary shrink-0 mt-0.5" />
                       <span>{item}</span>
                     </div>
@@ -262,13 +262,13 @@ export default function ServicesSection() {
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pt-3 border-t border-neutral-100">
                 <a
                   href={FEATURED_SERVICE.ctaHref}
-                  className="inline-flex items-center gap-2 px-4.5 py-2 rounded-xl bg-dark text-white text-xs font-semibold transition-all duration-300 hover:bg-primary hover:shadow-xs group"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary text-white text-xs sm:text-sm font-semibold transition-all duration-300 hover:bg-primary-hover hover:shadow-xs group"
                 >
                   <span>{FEATURED_SERVICE.ctaText}</span>
                   <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
                 </a>
-                <span className="text-[11px] text-neutral-400 font-medium">
-                  Complete engineering & architectural oversight
+                <span className="text-xs text-neutral-500 font-medium">
+                  Complete engineering &amp; architectural oversight
                 </span>
               </div>
             </div>
@@ -286,11 +286,11 @@ export default function ServicesSection() {
               <a
                 key={service.id}
                 href="#contact"
-                className="group relative flex flex-col justify-between p-4 sm:p-4.5 min-h-[130px] rounded-xl border border-neutral-200/90 bg-white opacity-0 transition-all duration-200 ease-out hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-xs"
+                className="group relative flex flex-col justify-between p-4 sm:p-5 min-h-[140px] rounded-xl border border-neutral-200/90 bg-white opacity-0 transition-all duration-200 ease-out hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-sm"
               >
                 {/* Top Row: Service Number + Simple Icon */}
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-[11px] font-mono font-bold tracking-wider text-neutral-400 group-hover:text-secondary transition-colors">
+                  <span className="text-xs font-mono font-bold tracking-wider text-neutral-400 group-hover:text-secondary transition-colors">
                     {service.number}
                   </span>
                   <div className="w-7 h-7 rounded-lg bg-neutral-100/90 flex items-center justify-center text-primary group-hover:bg-primary/10 group-hover:text-primary transition-colors">
@@ -300,20 +300,20 @@ export default function ServicesSection() {
 
                 {/* Content: Title & 1-2 line description */}
                 <div className="mb-2">
-                  <h4 className="text-xs sm:text-sm font-bold text-dark font-display leading-snug mb-1 group-hover:text-primary transition-colors">
+                  <h4 className="text-sm font-bold text-dark font-display leading-snug mb-1 group-hover:text-primary transition-colors">
                     {service.title}
                   </h4>
-                  <p className="text-[12px] text-neutral-500 leading-snug line-clamp-2">
+                  <p className="text-xs sm:text-[13px] text-neutral-600 leading-snug line-clamp-2">
                     {service.description}
                   </p>
                 </div>
 
-                {/* Bottom: Subtle hover arrow */}
-                <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-[11px] font-semibold text-neutral-500 group-hover:text-primary transition-colors">
-                  <span>Explore</span>
+                {/* Bottom: Consistent Explore affordance */}
+                <div className="pt-2 border-t border-neutral-100 flex items-center justify-between text-xs font-semibold text-primary transition-colors">
+                  <span>Explore Service</span>
                   <ArrowRight
-                    size={12}
-                    className="transition-transform duration-200 group-hover:translate-x-1 text-neutral-400 group-hover:text-primary"
+                    size={13}
+                    className="transition-transform duration-200 group-hover:translate-x-1 text-primary"
                   />
                 </div>
               </a>

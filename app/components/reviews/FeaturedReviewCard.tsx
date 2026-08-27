@@ -155,7 +155,7 @@ export default function FeaturedReviewCard({
         {/* Review Media / Photos: Shown below with subtle hover scale */}
         {review.reviewPhotos && review.reviewPhotos.length > 0 && (
           <div className="mb-5 relative z-10">
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2.5">
+            <p className="text-xs font-semibold text-neutral-600 mb-2">
               Review Photos ({review.reviewPhotos.length})
             </p>
             <div className="flex items-center gap-3 overflow-x-auto pb-1.5 no-scrollbar">

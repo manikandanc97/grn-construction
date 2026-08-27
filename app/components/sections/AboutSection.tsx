@@ -205,7 +205,7 @@ export default function AboutSection() {
                 {/* Top Subtle Engineering Tag */}
                 <div
                   ref={tagBadgeRef}
-                  className="absolute top-3.5 left-3.5 sm:top-4 sm:left-4 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-dark/80 backdrop-blur-md border border-white/20 text-white shadow-md text-[11px] font-semibold"
+                  className="absolute top-3.5 left-3.5 sm:top-4 sm:left-4 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-dark/80 backdrop-blur-md border border-white/20 text-white shadow-md text-xs font-semibold"
                 >
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                   <span>Licensed Civil Engineers</span>
@@ -213,13 +213,13 @@ export default function AboutSection() {
 
                 {/* Bottom Image Caption & Coordinates */}
                 <div className="absolute bottom-3.5 left-4 right-4 text-white">
-                  <div className="flex items-center justify-between text-[10px] font-mono text-white/75 uppercase tracking-wider mb-1">
+                  <div className="flex items-center justify-between text-xs font-mono text-white/90 uppercase tracking-wider mb-1">
                     <span>UDUMALPET • TAMIL NADU</span>
                     <span>EST. 2018</span>
                   </div>
-                  <h3 className="text-sm sm:text-base font-bold font-display leading-tight text-white drop-shadow-sm">
+                  <p role="doc-subtitle" className="text-sm sm:text-base font-bold font-display leading-tight text-white drop-shadow-sm">
                     Architectural Excellence &amp; Turnkey Execution
-                  </h3>
+                  </p>
                 </div>
               </div>
 
@@ -305,10 +305,10 @@ export default function AboutSection() {
                       {/* Content */}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between gap-2 mb-0.5">
-                          <h4 className="text-xs sm:text-sm font-bold text-dark font-display group-hover:text-primary transition-colors duration-150">
+                          <h3 className="text-xs sm:text-sm font-bold text-dark font-display group-hover:text-primary transition-colors duration-150">
                             {pillar.title}
-                          </h4>
-                          <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-neutral-100 group-hover:bg-primary/10 text-neutral-600 group-hover:text-primary transition-colors shrink-0">
+                          </h3>
+                          <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-neutral-100 group-hover:bg-primary/10 text-neutral-600 group-hover:text-primary transition-colors shrink-0">
                             {pillar.tag}
                           </span>
                         </div>

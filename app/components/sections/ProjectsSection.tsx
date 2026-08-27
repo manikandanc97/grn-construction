@@ -190,7 +190,7 @@ export default function ProjectsSection() {
 
         {/* Modern Glassmorphic Category Filter Bar with Counts */}
         <div ref={filtersRef} className="opacity-0 mb-8 sm:mb-10 flex justify-center">
-          <div className="inline-flex flex-wrap justify-center items-center gap-1.5 p-1.5 rounded-2xl bg-white/80 backdrop-blur-md border border-slate-200/90 shadow-sm">
+          <div className="inline-flex flex-wrap justify-center items-center gap-2 sm:gap-2.5 p-2 rounded-2xl bg-white/90 backdrop-blur-md border border-slate-200 shadow-sm">
             {PROJECT_CATEGORIES.map((cat) => {
               const isActive = activeCategory === cat;
               const count = getCategoryCount(cat);
@@ -198,18 +198,19 @@ export default function ProjectsSection() {
                 <button
                   key={cat}
                   onClick={() => setActiveCategory(cat)}
-                  className={`inline-flex items-center gap-2 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl text-xs sm:text-[13px] font-semibold transition-all duration-300 cursor-pointer ${
+                  aria-pressed={isActive}
+                  className={`inline-flex items-center justify-center gap-2 px-4 py-2 sm:px-5 sm:py-2.5 min-h-[44px] rounded-xl text-xs sm:text-sm font-semibold transition-all duration-300 cursor-pointer ${
                     isActive
                       ? 'bg-dark text-white shadow-sm'
-                      : 'text-slate-600 hover:text-dark hover:bg-slate-100/80'
+                      : 'text-neutral-700 hover:text-dark hover:bg-slate-100/90'
                   }`}
                 >
                   <span>{cat}</span>
                   <span
-                    className={`text-[10px] sm:text-[11px] px-1.5 py-0.2 rounded-full font-bold transition-colors ${
+                    className={`text-xs px-2 py-0.5 rounded-full font-bold transition-colors ${
                       isActive
                         ? 'bg-white/20 text-white'
-                        : 'bg-slate-200/80 text-slate-500'
+                        : 'bg-slate-200 text-neutral-600'
                     }`}
                   >
                     {count}

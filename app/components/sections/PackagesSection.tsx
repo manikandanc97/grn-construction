@@ -534,9 +534,9 @@ export default function PackagesSection() {
 
                     {/* 7 Aligned Core Inclusions */}
                     <div className="space-y-1.5 mb-3.5 flex-1">
-                      <div className="text-[10px] font-bold uppercase tracking-wider text-gray-400 pb-1 border-b border-slate-100 flex items-center justify-between">
+                      <div className="text-xs font-bold uppercase tracking-wider text-slate-500 pb-1 border-b border-slate-100 flex items-center justify-between">
                         <span>Key Inclusions</span>
-                        <span className="text-[9.5px] font-normal lowercase text-gray-400">
+                        <span className="text-xs font-normal lowercase text-slate-400">
                           7 specs
                         </span>
                       </div>
@@ -545,24 +545,24 @@ export default function PackagesSection() {
                         {pkg.coreInclusions.map((item, cIdx) => (
                           <div
                             key={cIdx}
-                            className="flex items-start gap-2 text-xs text-slate-700 leading-snug"
+                            className="flex items-start gap-2 text-xs sm:text-sm text-slate-700 leading-snug"
                           >
                             <span
-                              className={`mt-0.5 shrink-0 w-3.5 h-3.5 rounded-full flex items-center justify-center text-[9px] font-bold ${
+                              className={`mt-0.5 shrink-0 w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold ${
                                 isElite
                                   ? 'bg-primary/10 text-primary'
                                   : isLux
                                   ? 'bg-secondary/15 text-secondary-dark'
-                                  : 'bg-slate-100 text-slate-600'
+                                  : 'bg-slate-100 text-slate-700'
                               }`}
                             >
-                              <Check size={10} strokeWidth={3} />
+                              <Check size={11} strokeWidth={3} />
                             </span>
-                            <div className="min-w-0 flex-1 text-[11.5px]">
+                            <div className="min-w-0 flex-1 text-xs sm:text-[13px]">
                               <span className="font-semibold text-slate-900 mr-1">
                                 {item.category}:
                               </span>
-                              <span className="text-gray-600">{item.spec}</span>
+                              <span className="text-slate-700">{item.spec}</span>
                             </div>
                           </div>
                         ))}
@@ -577,18 +577,18 @@ export default function PackagesSection() {
                           e.stopPropagation();
                           toggleExpand(pkg.id);
                         }}
-                        className={`w-full py-1.5 px-2.5 rounded-lg text-xs font-semibold flex items-center justify-between transition-colors ${
+                        className={`w-full py-2 px-2.5 rounded-lg text-xs font-semibold flex items-center justify-between transition-colors ${
                           isExpanded
                             ? 'bg-slate-100 text-dark'
-                            : 'text-gray-600 hover:text-dark hover:bg-slate-50'
+                            : 'text-neutral-700 hover:text-dark hover:bg-slate-50'
                         }`}
                         aria-expanded={isExpanded}
                       >
-                        <span className="flex items-center gap-1.5 text-[11.5px]">
-                          <Layers size={12} className={isElite ? 'text-primary' : 'text-gray-400'} />
+                        <span className="flex items-center gap-1.5 text-xs">
+                          <Layers size={13} className={isElite ? 'text-primary' : 'text-slate-400'} />
                           {isExpanded ? 'Hide detailed specs' : 'View all specs & brands'}
                         </span>
-                        {isExpanded ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
+                        {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
                       </button>
 
                       {/* Expandable Specifications Area */}
@@ -596,16 +596,16 @@ export default function PackagesSection() {
                         <div className="mt-2.5 p-3 rounded-xl bg-slate-50 border border-slate-200/80 text-xs space-y-2.5 animate-in fade-in duration-200">
                           {pkg.detailedSpecs.map((group, gIdx) => (
                             <div key={gIdx} className="space-y-1">
-                              <div className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">
+                              <div className="text-xs font-bold text-slate-600 uppercase tracking-wider">
                                 {group.category}
                               </div>
                               <ul className="space-y-1 text-slate-700">
                                 {group.items.map((specItem, sIdx) => (
                                   <li
                                     key={sIdx}
-                                    className="flex items-start gap-1.5 text-[11px] leading-relaxed"
+                                    className="flex items-start gap-1.5 text-xs leading-relaxed"
                                   >
-                                    <span className="text-primary mt-1 text-[7px]">•</span>
+                                    <span className="text-primary mt-1 text-[8px]">•</span>
                                     <span>{specItem}</span>
                                   </li>
                                 ))}
@@ -619,27 +619,27 @@ export default function PackagesSection() {
 
                   {/* Card Actions (Bottom Pinned) */}
                   <div className="p-4 sm:p-5 pt-0 space-y-2">
-                    {/* Primary CTA */}
+                    {/* Primary CTA: Consistently vibrant brand action button */}
                     <a
                       href={getWhatsAppPackageUrl(pkg.name, pkg.price)}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className={`w-full py-2.5 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all duration-200 shadow-2xs active:scale-[0.99] ${
+                      className={`w-full py-2.5 px-3 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2 transition-all duration-200 shadow-xs active:scale-[0.99] ${
                         isElite
-                          ? 'bg-primary text-white hover:bg-primary-dark shadow-sm'
+                          ? 'bg-primary text-white hover:bg-primary-hover shadow-sm'
                           : isLux
                           ? 'bg-secondary text-white hover:bg-secondary-dark shadow-sm'
-                          : 'bg-dark text-white hover:bg-dark-muted'
+                          : 'bg-primary text-white hover:bg-primary-hover shadow-sm'
                       }`}
                     >
-                      <MessageCircle size={14} />
+                      <MessageCircle size={15} />
                       <span>Inquire on WhatsApp</span>
                     </a>
 
                     {/* Secondary CTA */}
                     <Link
                       href="#requirements"
-                      className="w-full py-1.5 px-3 rounded-xl text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200/70 border border-slate-200/60 flex items-center justify-center gap-1.5 transition-colors"
+                      className="w-full py-2 px-3 rounded-xl text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200/70 border border-slate-200/60 flex items-center justify-center gap-1.5 transition-colors"
                     >
                       <span>Customize in Form</span>
                       <ArrowRight size={12} className="text-slate-400" />
@@ -650,23 +650,23 @@ export default function PackagesSection() {
             })}
           </div>
 
-          {/* Slider Pagination Dots & Mobile Navigation Controls */}
-          <div className="flex items-center justify-center gap-3 mt-4 sm:mt-6">
+          {/* Slider Pagination Dots & Direct Proximity Navigation Controls */}
+          <div className="flex items-center justify-center gap-4 mt-5 sm:mt-7">
             <button
               type="button"
               onClick={handlePrev}
               disabled={!canPrev}
               aria-label="Previous package"
-              className={`p-1.5 rounded-lg border transition-all sm:hidden ${
+              className={`p-2 rounded-xl border transition-all ${
                 canPrev
-                  ? 'bg-white border-slate-200 text-dark active:scale-95 shadow-2xs'
+                  ? 'bg-white border-slate-300 text-dark hover:bg-slate-50 active:scale-95 shadow-xs cursor-pointer'
                   : 'bg-slate-100 border-slate-200/60 text-slate-300 opacity-50 cursor-not-allowed'
               }`}
             >
-              <ChevronLeft size={16} />
+              <ChevronLeft size={18} />
             </button>
 
-            {/* Slide Dots Indicator (Low to High: 1 -> 4) */}
+            {/* Slide Dots Indicator */}
             <div className="flex items-center gap-2">
               {PACKAGES.map((pkg, idx) => (
                 <button
@@ -674,10 +674,10 @@ export default function PackagesSection() {
                   type="button"
                   onClick={() => scrollToIndex(idx)}
                   aria-label={`Go to ${pkg.name}`}
-                  className={`h-2 rounded-full transition-all duration-300 ${
+                  className={`h-2.5 rounded-full transition-all duration-300 ${
                     activeIndex === idx
                       ? 'w-8 bg-primary'
-                      : 'w-2 bg-slate-300 hover:bg-slate-400'
+                      : 'w-2.5 bg-slate-300 hover:bg-slate-400'
                   }`}
                 />
               ))}
@@ -688,13 +688,13 @@ export default function PackagesSection() {
               onClick={handleNext}
               disabled={!canNext}
               aria-label="Next package"
-              className={`p-1.5 rounded-lg border transition-all sm:hidden ${
+              className={`p-2 rounded-xl border transition-all ${
                 canNext
-                  ? 'bg-white border-slate-200 text-dark active:scale-95 shadow-2xs'
+                  ? 'bg-white border-slate-300 text-dark hover:bg-slate-50 active:scale-95 shadow-xs cursor-pointer'
                   : 'bg-slate-100 border-slate-200/60 text-slate-300 opacity-50 cursor-not-allowed'
               }`}
             >
-              <ChevronRight size={16} />
+              <ChevronRight size={18} />
             </button>
           </div>
         </div>

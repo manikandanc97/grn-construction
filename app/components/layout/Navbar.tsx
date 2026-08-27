@@ -95,15 +95,15 @@ export default function Navbar() {
             </div>
             <div>
               <p
-                className={`font-bold text-[15px] sm:text-base leading-tight font-display tracking-tight transition-colors ${
+                className={`font-bold text-base leading-tight font-display tracking-tight transition-colors ${
                   scrolled ? 'text-dark' : 'text-white'
                 }`}
               >
                 GRN Construction
               </p>
               <p
-                className={`text-[11px] font-semibold tracking-wider uppercase transition-colors ${
-                  scrolled ? 'text-secondary' : 'text-white/70'
+                className={`text-xs font-semibold tracking-wider uppercase transition-colors ${
+                  scrolled ? 'text-secondary' : 'text-white/80'
                 }`}
               >
                 Builders &amp; Contractors
@@ -112,19 +112,26 @@ export default function Navbar() {
           </Link>
 
           {/* Nav Links */}
-          <nav className="flex items-center gap-1 xl:gap-1.5 bg-white/[0.06] p-1 rounded-full border border-white/15">
+          <nav
+            className={`flex items-center gap-1 xl:gap-1.5 p-1 rounded-full border transition-all ${
+              scrolled
+                ? 'bg-slate-100/90 border-slate-200/90'
+                : 'bg-white/[0.08] border-white/15'
+            }`}
+          >
             {NAV_LINKS.map((link) => {
               const isActive = activeSection === link.href.replace('#', '');
               return (
                 <button
                   key={link.href}
                   onClick={() => handleNavClick(link.href)}
-                  className={`px-3.5 py-1.5 rounded-full text-[13.5px] font-medium tracking-normal transition-all duration-200 cursor-pointer whitespace-nowrap ${
+                  aria-current={isActive ? 'page' : undefined}
+                  className={`px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-medium tracking-normal transition-all duration-200 cursor-pointer whitespace-nowrap ${
                     isActive
                       ? 'bg-secondary text-white shadow-sm font-semibold'
                       : scrolled
-                      ? 'text-dark/85 hover:text-secondary hover:bg-black/5'
-                      : 'text-white/90 hover:text-white hover:bg-white/12'
+                      ? 'text-neutral-700 hover:text-secondary hover:bg-black/5'
+                      : 'text-white/90 hover:text-white hover:bg-white/15'
                   }`}
                 >
                   {link.label}
@@ -173,11 +180,11 @@ export default function Navbar() {
                 GRN Construction
               </span>
               <span
-                className={`text-[9.5px] uppercase font-medium tracking-wider ${
-                  scrolled ? 'text-secondary' : 'text-white/70'
+                className={`text-xs font-semibold uppercase tracking-wider ${
+                  scrolled ? 'text-secondary' : 'text-white/80'
                 }`}
               >
-                Builders & Contractors
+                Builders &amp; Contractors
               </span>
             </div>
           </Link>
@@ -212,10 +219,11 @@ export default function Navbar() {
                   <button
                     key={link.href}
                     onClick={() => handleNavClick(link.href)}
+                    aria-current={isActive ? 'page' : undefined}
                     className={`text-left px-3.5 py-2.5 rounded-xl text-sm font-medium transition-colors ${
                       isActive
                         ? 'bg-secondary/10 text-secondary font-semibold'
-                        : 'text-dark/80 hover:bg-gray-50 hover:text-primary'
+                        : 'text-neutral-800 hover:bg-gray-50 hover:text-primary'
                     }`}
                   >
                     {link.label}

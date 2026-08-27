@@ -530,9 +530,9 @@ _Submitted via GRN Construction Specification Form_`;
 
               {/* Form Navigation Overview */}
               <div className="space-y-1.5 mb-4">
-                <h4 className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">
+                <p className="text-xs font-bold text-neutral-500 uppercase tracking-wider mb-1.5" aria-hidden="true">
                   Form Steps
-                </h4>
+                </p>
                 {SPECIFICATION_STEPS.map((s) => {
                   const isCurrent = currentStep === s.id;
                   const isDone = currentStep > s.id;
