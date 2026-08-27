@@ -14,7 +14,6 @@ import {
   ChevronLeft,
   ChevronRight,
   Layers,
-  FileSpreadsheet,
   Compass,
 } from 'lucide-react';
 import { gsap, EASING, prefersReducedMotion } from '@/app/lib/animations/gsap';
@@ -244,8 +243,6 @@ export default function PackagesSection() {
   const [activeIndex, setActiveIndex] = useState<number>(2);
   // Expanded detailed specs state
   const [expandedCards, setExpandedCards] = useState<Record<string, boolean>>({});
-  // Side-by-side matrix drawer state
-  const [showFullMatrix, setShowFullMatrix] = useState<boolean>(false);
 
   useGSAP(
     () => {
@@ -629,186 +626,6 @@ export default function PackagesSection() {
               <ChevronRight size={18} />
             </button>
           </div>
-        </div>
-
-        {/* Side-by-Side Comparison Matrix Toggle Button */}
-        <div className="mt-8 text-center">
-          <button
-            type="button"
-            onClick={() => setShowFullMatrix(!showFullMatrix)}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-slate-700 bg-white border border-slate-200/90 hover:border-slate-300 shadow-2xs hover:bg-slate-50 transition-colors"
-          >
-            <FileSpreadsheet size={15} className="text-primary" />
-            <span>
-              {showFullMatrix
-                ? 'Hide Side-by-Side Comparison Table'
-                : 'Compare All 4 Packages in a Unified Table'}
-            </span>
-            {showFullMatrix ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-          </button>
-        </div>
-
-        {/* Full Side-by-Side Comparison Table (Expanded) */}
-        {showFullMatrix && (
-          <div className="mt-6 p-4 sm:p-6 bg-white rounded-2xl border border-slate-200 shadow-xs overflow-x-auto animate-in fade-in duration-300">
-            <div className="min-w-[700px]">
-              <div className="border-b border-slate-200 pb-3 mb-4 flex items-center justify-between">
-                <div>
-                  <h4 className="text-sm font-bold text-dark">
-                    Complete Specification Matrix
-                  </h4>
-                  <p className="text-xs text-gray-500">
-                    Comprehensive cross-package material &amp; brand breakdown.
-                  </p>
-                </div>
-                <span className="text-xs text-primary font-semibold">
-                  GRN Construction Standard BOQ
-                </span>
-              </div>
-
-              <table className="w-full text-xs text-left border-collapse">
-                <thead>
-                  <tr className="border-b border-slate-200 bg-slate-50 text-dark">
-                    <th className="py-2.5 px-3 font-bold text-gray-500 uppercase text-[10.5px]">
-                      Parameter
-                    </th>
-                    <th className="py-2.5 px-3 font-bold">Standard</th>
-                    <th className="py-2.5 px-3 font-bold">Premium</th>
-                    <th className="py-2.5 px-3 font-bold text-primary bg-primary/5">
-                      Elite (Most Popular)
-                    </th>
-                    <th className="py-2.5 px-3 font-bold text-secondary-dark">Luxury</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100 text-slate-700">
-                  <tr>
-                    <td className="py-2 px-3 font-semibold text-gray-600 bg-slate-50/50">
-                      Rate / sq.ft
-                    </td>
-                    <td className="py-2 px-3 font-bold text-dark">₹2,100 - ₹2,200</td>
-                    <td className="py-2 px-3 font-bold text-dark">₹2,300</td>
-                    <td className="py-2 px-3 font-bold text-primary bg-primary/5">₹2,400</td>
-                    <td className="py-2 px-3 font-bold text-secondary-dark">₹2,500</td>
-                  </tr>
-                  <tr>
-                    <td className="py-2 px-3 font-semibold text-gray-600 bg-slate-50/50">
-                      Starting (1,000 sq.ft)
-                    </td>
-                    <td className="py-2 px-3">~₹21 - 22 Lakhs</td>
-                    <td className="py-2 px-3">~₹23 Lakhs</td>
-                    <td className="py-2 px-3 font-semibold bg-primary/5">~₹24 Lakhs</td>
-                    <td className="py-2 px-3 font-semibold">~₹25 Lakhs</td>
-                  </tr>
-                  <tr>
-                    <td className="py-2 px-3 font-semibold text-gray-600 bg-slate-50/50">
-                      Structural System
-                    </td>
-                    <td className="py-2 px-3">Load bearing solid blocks</td>
-                    <td className="py-2 px-3">RCC framed columns</td>
-                    <td className="py-2 px-3 bg-primary/5">Engineered heavy RCC framed</td>
-                    <td className="py-2 px-3">Seismic-resistant RCC frame</td>
-                  </tr>
-                  <tr>
-                    <td className="py-2 px-3 font-semibold text-gray-600 bg-slate-50/50">
-                      Steel Brand
-                    </td>
-                    <td className="py-2 px-3">ISI Fe 550 Steel</td>
-                    <td className="py-2 px-3">Amman / Aishwaryam</td>
-                    <td className="py-2 px-3 font-semibold text-dark bg-primary/5">
-                      Tata Tiscon / JSW Neosteel
-                    </td>
-                    <td className="py-2 px-3 font-semibold text-dark">100% Tata Tiscon Fe 550D</td>
-                  </tr>
-                  <tr>
-                    <td className="py-2 px-3 font-semibold text-gray-600 bg-slate-50/50">
-                      Wall Construction
-                    </td>
-                    <td className="py-2 px-3">Solid Concrete Blocks</td>
-                    <td className="py-2 px-3">Wirecut Red Bricks</td>
-                    <td className="py-2 px-3 bg-primary/5">1st Quality Wirecut Red Bricks</td>
-                    <td className="py-2 px-3">High-density Wirecut Red Bricks</td>
-                  </tr>
-                  <tr>
-                    <td className="py-2 px-3 font-semibold text-gray-600 bg-slate-50/50">
-                      Cement Brands
-                    </td>
-                    <td className="py-2 px-3">Ramco / Chettinad</td>
-                    <td className="py-2 px-3">Ramco Supergrade / UltraTech</td>
-                    <td className="py-2 px-3 bg-primary/5">Ramco Supergrade 53 Grade</td>
-                    <td className="py-2 px-3">UltraTech / Ramco Supergrade 53</td>
-                  </tr>
-                  <tr>
-                    <td className="py-2 px-3 font-semibold text-gray-600 bg-slate-50/50">
-                      Main Door &amp; Windows
-                    </td>
-                    <td className="py-2 px-3">Country wood &amp; UPVC</td>
-                    <td className="py-2 px-3">Teak main door &amp; Mahogany</td>
-                    <td className="py-2 px-3 font-semibold bg-primary/5">
-                      Seasoned Teakwood (Full)
-                    </td>
-                    <td className="py-2 px-3 font-semibold">
-                      Carved Teakwood + Saint-Gobain UPVC
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="py-2 px-3 font-semibold text-gray-600 bg-slate-50/50">
-                      Flooring Specs
-                    </td>
-                    <td className="py-2 px-3">2x2 Vitrified (₹50/sq.ft)</td>
-                    <td className="py-2 px-3">4x2 Vitrified (₹65/sq.ft)</td>
-                    <td className="py-2 px-3 bg-primary/5">4x2 Glazed GVT (₹85/sq.ft)</td>
-                    <td className="py-2 px-3">4x2 / 5x2.5 Luxury GVT (₹110/sq.ft)</td>
-                  </tr>
-                  <tr>
-                    <td className="py-2 px-3 font-semibold text-gray-600 bg-slate-50/50">
-                      Sanitaryware &amp; CP
-                    </td>
-                    <td className="py-2 px-3">ISI Standard Branded</td>
-                    <td className="py-2 px-3">Parryware Ceramic Range</td>
-                    <td className="py-2 px-3 bg-primary/5">Parryware / Hindware Wall-hung</td>
-                    <td className="py-2 px-3 font-semibold text-secondary-dark">
-                      Jaquar / Kohler Luxury Series
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="py-2 px-3 font-semibold text-gray-600 bg-slate-50/50">
-                      Elevation &amp; Extras
-                    </td>
-                    <td className="py-2 px-3">Basic exterior finish</td>
-                    <td className="py-2 px-3">Modern parapet elevation</td>
-                    <td className="py-2 px-3 bg-primary/5">Architectural Glass + CNC work</td>
-                    <td className="py-2 px-3 font-semibold">
-                      Facade Glass + TV Unit &amp; Wardrobe
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
-
-        {/* Bottom Assurance Card */}
-        <div className="mt-8 p-4 sm:p-5 rounded-2xl bg-white border border-slate-200/90 shadow-2xs flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-3 text-left">
-            <div className="p-2.5 rounded-xl bg-primary/10 text-primary shrink-0">
-              <Compass size={22} />
-            </div>
-            <div>
-              <h4 className="text-sm font-bold text-dark">
-                Have custom architectural drawings or specific brand preferences?
-              </h4>
-              <p className="text-xs text-gray-500 mt-0.5">
-                Submit your exact room dimensions, soil conditions, and joinery choices in our Client Specification Form for a tailored itemized BOQ.
-              </p>
-            </div>
-          </div>
-          <Link
-            href="#requirements"
-            className="shrink-0 px-5 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-white text-xs font-bold flex items-center gap-2 transition-colors shadow-2xs"
-          >
-            <span>Open Specification Form</span>
-            <ArrowRight size={14} />
-          </Link>
         </div>
       </div>
     </section>

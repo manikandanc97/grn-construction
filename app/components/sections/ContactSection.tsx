@@ -126,26 +126,26 @@ export default function ContactSection() {
         </div>
 
         {/* Top Quick-Action Channels Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-3.5 mb-6 sm:mb-7">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3.5 mb-6 sm:mb-7">
           {/* Phone Call Card */}
           <a
             href={COMPANY.callLink}
-            className="group flex items-center justify-between p-3.5 rounded-xl bg-gradient-to-br from-secondary to-secondary-dark text-white shadow-xs hover:shadow-sm hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-200 border border-white/20"
+            className="group flex items-center justify-between p-2.5 sm:p-3.5 rounded-xl bg-gradient-to-br from-secondary to-secondary-dark text-white shadow-xs hover:shadow-sm hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-200 border border-white/20"
           >
-            <div className="flex items-center gap-2.5">
-              <div className="w-8.5 h-8.5 rounded-lg bg-white/20 flex items-center justify-center shrink-0 backdrop-blur-sm group-hover:scale-105 transition-transform">
-                <Phone size={15} className="text-white" />
+            <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
+              <div className="w-7 h-7 sm:w-8.5 sm:h-8.5 rounded-lg bg-white/20 flex items-center justify-center shrink-0 backdrop-blur-sm group-hover:scale-105 transition-transform">
+                <Phone size={14} className="text-white" />
               </div>
-              <div>
-                <span className="block text-[9px] uppercase tracking-wider font-semibold text-white/80">
+              <div className="min-w-0">
+                <span className="block text-[8px] sm:text-[9px] uppercase tracking-wider font-semibold text-white/80 truncate">
                   Direct Line
                 </span>
-                <span className="block text-xs sm:text-[13px] font-bold text-white leading-tight">
+                <span className="block text-xs sm:text-[13px] font-bold text-white leading-tight truncate">
                   Call Engineer
                 </span>
               </div>
             </div>
-            <ArrowRight size={14} className="text-white/80 group-hover:translate-x-0.5 transition-transform shrink-0" />
+            <ArrowRight size={14} className="text-white/80 group-hover:translate-x-0.5 transition-transform shrink-0 hidden sm:block" />
           </a>
 
           {/* WhatsApp Chat Card */}
@@ -153,43 +153,43 @@ export default function ContactSection() {
             href={COMPANY.whatsappLink}
             target="_blank"
             rel="noopener noreferrer"
-            className="group flex items-center justify-between p-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white shadow-xs hover:shadow-sm hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-200 border border-white/20"
+            className="group flex items-center justify-between p-2.5 sm:p-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white shadow-xs hover:shadow-sm hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-200 border border-white/20"
           >
-            <div className="flex items-center gap-2.5">
-              <div className="w-8.5 h-8.5 rounded-lg bg-white/20 flex items-center justify-center shrink-0 backdrop-blur-sm group-hover:scale-105 transition-transform">
-                <MessageCircle size={15} className="text-white" />
+            <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
+              <div className="w-7 h-7 sm:w-8.5 sm:h-8.5 rounded-lg bg-white/20 flex items-center justify-center shrink-0 backdrop-blur-sm group-hover:scale-105 transition-transform">
+                <MessageCircle size={14} className="text-white" />
               </div>
-              <div>
-                <span className="block text-[9px] uppercase tracking-wider font-semibold text-white/90">
+              <div className="min-w-0">
+                <span className="block text-[8px] sm:text-[9px] uppercase tracking-wider font-semibold text-white/90 truncate">
                   Instant Support
                 </span>
-                <span className="block text-xs sm:text-[13px] font-bold text-white leading-tight">
+                <span className="block text-xs sm:text-[13px] font-bold text-white leading-tight truncate">
                   WhatsApp Chat
                 </span>
               </div>
             </div>
-            <ArrowRight size={14} className="text-white/80 group-hover:translate-x-0.5 transition-transform shrink-0" />
+            <ArrowRight size={14} className="text-white/80 group-hover:translate-x-0.5 transition-transform shrink-0 hidden sm:block" />
           </a>
 
           {/* Email Support Card */}
           <a
             href={`mailto:${COMPANY.email}`}
-            className="group flex items-center justify-between p-3.5 rounded-xl bg-primary hover:bg-primary-light text-white shadow-xs hover:shadow-sm hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-200 border border-white/20"
+            className="group flex items-center justify-between p-2.5 sm:p-3.5 rounded-xl bg-primary hover:bg-primary-light text-white shadow-xs hover:shadow-sm hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-200 border border-white/20"
           >
-            <div className="flex items-center gap-2.5">
-              <div className="w-8.5 h-8.5 rounded-lg bg-white/20 flex items-center justify-center shrink-0 backdrop-blur-sm group-hover:scale-105 transition-transform">
-                <Mail size={15} className="text-white" />
+            <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
+              <div className="w-7 h-7 sm:w-8.5 sm:h-8.5 rounded-lg bg-white/20 flex items-center justify-center shrink-0 backdrop-blur-sm group-hover:scale-105 transition-transform">
+                <Mail size={14} className="text-white" />
               </div>
-              <div>
-                <span className="block text-[9px] uppercase tracking-wider font-semibold text-white/80">
+              <div className="min-w-0">
+                <span className="block text-[8px] sm:text-[9px] uppercase tracking-wider font-semibold text-white/80 truncate">
                   Email Support
                 </span>
-                <span className="block text-xs sm:text-[13px] font-bold text-white leading-tight truncate max-w-[120px]">
+                <span className="block text-xs sm:text-[13px] font-bold text-white leading-tight truncate">
                   Send Email
                 </span>
               </div>
             </div>
-            <ArrowRight size={14} className="text-white/80 group-hover:translate-x-0.5 transition-transform shrink-0" />
+            <ArrowRight size={14} className="text-white/80 group-hover:translate-x-0.5 transition-transform shrink-0 hidden sm:block" />
           </a>
 
           {/* Location Directions */}
@@ -197,22 +197,22 @@ export default function ContactSection() {
             href={COMPANY.mapUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="group flex items-center justify-between p-3.5 rounded-xl bg-slate-800 hover:bg-slate-900 text-white shadow-xs hover:shadow-sm hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-200 border border-white/10"
+            className="group flex items-center justify-between p-2.5 sm:p-3.5 rounded-xl bg-slate-800 hover:bg-slate-900 text-white shadow-xs hover:shadow-sm hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-200 border border-white/10"
           >
-            <div className="flex items-center gap-2.5">
-              <div className="w-8.5 h-8.5 rounded-lg bg-white/15 flex items-center justify-center shrink-0 backdrop-blur-sm group-hover:scale-105 transition-transform">
-                <Navigation size={15} className="text-white" />
+            <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
+              <div className="w-7 h-7 sm:w-8.5 sm:h-8.5 rounded-lg bg-white/15 flex items-center justify-center shrink-0 backdrop-blur-sm group-hover:scale-105 transition-transform">
+                <Navigation size={14} className="text-white" />
               </div>
-              <div>
-                <span className="block text-[9px] uppercase tracking-wider font-semibold text-white/80">
+              <div className="min-w-0">
+                <span className="block text-[8px] sm:text-[9px] uppercase tracking-wider font-semibold text-white/80 truncate">
                   Google Maps
                 </span>
-                <span className="block text-xs sm:text-[13px] font-bold text-white leading-tight">
+                <span className="block text-xs sm:text-[13px] font-bold text-white leading-tight truncate">
                   Get Directions
                 </span>
               </div>
             </div>
-            <ExternalLink size={14} className="text-white/80 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform shrink-0" />
+            <ExternalLink size={14} className="text-white/80 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform shrink-0 hidden sm:block" />
           </a>
         </div>
 

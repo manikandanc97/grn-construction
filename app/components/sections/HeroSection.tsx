@@ -219,10 +219,10 @@ export default function HeroSection() {
             </button>
 
             <button
-              onClick={() => handleScrollTo('projects')}
+              onClick={() => handleScrollTo('packages')}
               className="inline-flex h-[42px] sm:h-[46px] items-center justify-center gap-2 rounded-xl border border-white/25 bg-white/[0.06] px-5 sm:px-6 text-sm sm:text-[15px] font-medium text-white backdrop-blur-md transition-all duration-300 ease-[cubic-bezier(0.21,0.47,0.32,0.98)] hover:bg-white/12 hover:border-white/40 hover:-translate-y-0.5 active:translate-y-0 cursor-pointer opacity-0"
             >
-              <span>View Projects</span>
+              <span>View Packages</span>
             </button>
           </div>
 
