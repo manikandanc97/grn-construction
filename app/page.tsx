@@ -12,6 +12,7 @@ import PackagesSection from '@/app/components/sections/PackagesSection';
 import ClientRequirementSection from '@/app/components/sections/ClientRequirementSection';
 import ContactSection from '@/app/components/sections/ContactSection';
 import FloatingButtons from '@/app/components/shared/FloatingButtons';
+import FreeEstimationModal from '@/app/components/shared/FreeEstimationModal';
 
 export default function Home() {
   return (
@@ -35,6 +36,9 @@ export default function Home() {
 
       {/* Footer */}
       <Footer />
+
+      {/* Free Estimation Popup Modal */}
+      <FreeEstimationModal />
 
       {/* Floating Action Buttons + Mobile Bottom Nav */}
       <FloatingButtons />

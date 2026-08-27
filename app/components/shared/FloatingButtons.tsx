@@ -33,6 +33,19 @@ export default function FloatingButtons() {
         </motion.a>
       </div>
 
+      {/* Floating Free Estimation Trigger (Bottom Center / Left) */}
+      <div className="hidden md:flex fixed left-5 bottom-24 z-40">
+        <motion.button
+          onClick={() => window.dispatchEvent(new CustomEvent('open-free-estimate-modal'))}
+          className="inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-dark/90 hover:bg-dark text-white text-xs font-semibold shadow-xl border border-white/20 backdrop-blur-md transition-all cursor-pointer hover:border-secondary/60 hover:scale-105 active:scale-95"
+          whileHover={{ y: -2 }}
+          aria-label="Get Free Estimate"
+        >
+          <span className="w-2 h-2 rounded-full bg-secondary animate-pulse" />
+          <span>Free Estimate</span>
+        </motion.button>
+      </div>
+
       {/* Floating WhatsApp Button (Right Side) */}
       <div className="flex fixed right-3 sm:right-5 bottom-20 sm:bottom-8 z-40">
         <motion.a
