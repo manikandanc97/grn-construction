@@ -36,8 +36,7 @@ const FEATURED_SERVICE = {
     'Certified foundation & premium grade materials',
     'Turnkey handover with 100% budget transparency',
   ],
-  image:
-    'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&auto=format&fit=crop&q=80',
+  image: '/images/services/featured-residential.webp',
   ctaText: 'Explore Service',
   ctaHref: '#contact',
 };

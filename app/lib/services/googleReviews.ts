@@ -388,23 +388,23 @@ export const VERIFIED_GOOGLE_BUSINESS_REVIEWS: GoogleReview[] = [
     googleMapsUri: COMPANY.mapUrl,
     reviewPhotos: [
       {
-        url: '/reviews/muruganandam_p1.jpg',
+        url: '/images/projects/residential-modern-facade.webp',
         label: 'House Elevation & Modern Front Gate',
       },
       {
-        url: '/reviews/muruganandam_p2.jpg',
+        url: '/images/projects/exterior-wooden-louvers.webp',
         label: 'Exterior Modern Wooden Louvers',
       },
       {
-        url: '/reviews/muruganandam_p3.jpg',
+        url: '/images/projects/interior-carved-teak-door.webp',
         label: 'Main Entrance Teak Door',
       },
       {
-        url: '/reviews/muruganandam_p4.jpg',
+        url: '/images/projects/interior-stone-foyer.webp',
         label: 'Living Wall Buddha Art & Stone Cladding',
       },
       {
-        url: '/reviews/muruganandam_p5.jpg',
+        url: '/images/projects/traditional-house-entrance.webp',
         label: 'Interior Hallway Arch & Entrance',
       },
     ],

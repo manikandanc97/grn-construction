@@ -191,7 +191,7 @@ export default function AboutSection() {
                 className="relative w-full aspect-[16/11] sm:aspect-[4/3] lg:aspect-[16/12] rounded-2xl overflow-hidden bg-neutral-900 shadow-[0_16px_40px_-10px_rgba(15,25,35,0.18)] border-2 border-white"
               >
                 <Image
-                  src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&auto=format&fit=crop&q=85"
+                  src="/images/about/about-showcase.webp"
                   alt="GRN Construction Architectural Masterpiece in Udumalpet"
                   fill
                   className="object-cover transition-transform duration-700 hover:scale-105"

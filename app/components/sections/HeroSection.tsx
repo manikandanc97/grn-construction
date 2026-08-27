@@ -157,7 +157,7 @@ export default function HeroSection() {
       {/* Background Image with Architectural Dark Atmosphere */}
       <div
         ref={bgImageRef}
-        className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1920&q=85')] bg-cover bg-center bg-no-repeat will-change-transform"
+        className="absolute inset-0 bg-[url('/images/hero/hero-bg.webp')] bg-cover bg-center bg-no-repeat will-change-transform"
       />
 
       {/* Cinematic Overlays: Directional left shade + Vertical Vignette */}
