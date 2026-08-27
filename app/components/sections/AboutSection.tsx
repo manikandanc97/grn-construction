@@ -215,7 +215,7 @@ export default function AboutSection() {
                 <div className="absolute bottom-3.5 left-4 right-4 text-white">
                   <div className="flex items-center justify-between text-[10px] font-mono text-white/75 uppercase tracking-wider mb-1">
                     <span>UDUMALPET • TAMIL NADU</span>
-                    <span>EST. 2014</span>
+                    <span>EST. 2018</span>
                   </div>
                   <h3 className="text-sm sm:text-base font-bold font-display leading-tight text-white drop-shadow-sm">
                     Architectural Excellence &amp; Turnkey Execution

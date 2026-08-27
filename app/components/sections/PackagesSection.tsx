@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { useGSAP } from '@gsap/react';
 import {
@@ -23,6 +23,7 @@ import { COMPANY } from '@/app/lib/constants';
 interface PackageItem {
   id: string;
   name: string;
+  tier: string;
   badge?: string;
   isPopular?: boolean;
   isLuxury?: boolean;
@@ -30,6 +31,7 @@ interface PackageItem {
   priceNote: string;
   startingEstimate: string;
   targetDescription: string;
+  accentColor: string;
   coreInclusions: {
     category: string;
     spec: string;
@@ -40,15 +42,18 @@ interface PackageItem {
   }[];
 }
 
+// Ordered strictly from LOWEST price to HIGHEST price (Low -> High)
 const PACKAGES: PackageItem[] = [
   {
     id: 'standard',
     name: 'Standard Package',
+    tier: 'Tier 1 • Basic Essential',
     price: '₹2,100 - ₹2,200',
     priceNote: 'per sq.ft',
     startingEstimate: 'Est. ~₹21 - 22 Lakhs for 1,000 sq.ft',
     targetDescription:
       'Cost-effective, structurally sound construction using ISI certified materials for standard residential homes.',
+    accentColor: 'from-slate-600 to-slate-700',
     coreInclusions: [
       { category: 'Structure', spec: 'Load bearing solid block structure' },
       { category: 'Steel', spec: 'ISI Fe 550 Standard TMT Steel' },
@@ -91,11 +96,13 @@ const PACKAGES: PackageItem[] = [
   {
     id: 'premium',
     name: 'Premium Package',
+    tier: 'Tier 2 • Enhanced Red Brick',
     price: '₹2,300',
     priceNote: 'per sq.ft',
     startingEstimate: 'Est. ~₹23 Lakhs for 1,000 sq.ft',
     targetDescription:
       'Engineered RCC framed structure with thermal wirecut red bricks and seasoned teakwood main entrance.',
+    accentColor: 'from-[#1A6B7C] to-[#145361]',
     coreInclusions: [
       { category: 'Structure', spec: 'Engineered RCC framed column structure' },
       { category: 'Steel', spec: 'Amman / Aishwaryam / Equivalent Fe 550' },
@@ -138,6 +145,7 @@ const PACKAGES: PackageItem[] = [
   {
     id: 'elite',
     name: 'Elite Package',
+    tier: 'Tier 3 • Flagship Standard',
     badge: 'MOST POPULAR',
     isPopular: true,
     price: '₹2,400',
@@ -145,6 +153,7 @@ const PACKAGES: PackageItem[] = [
     startingEstimate: 'Est. ~₹24 Lakhs for 1,000 sq.ft',
     targetDescription:
       'Our flagship standard with primary Tata/JSW steel, seasoned teak joinery & contemporary glass elevation.',
+    accentColor: 'from-primary to-primary-dark',
     coreInclusions: [
       { category: 'Structure', spec: 'Heavy-duty engineered RCC framed frame' },
       { category: 'Steel', spec: 'Primary Tata Tiscon / JSW Neosteel Fe 550D' },
@@ -187,6 +196,7 @@ const PACKAGES: PackageItem[] = [
   {
     id: 'luxury',
     name: 'Luxury Package',
+    tier: 'Tier 4 • Ultra Luxury Turnkey',
     badge: 'LUXURY SPEC',
     isLuxury: true,
     price: '₹2,500',
@@ -194,6 +204,7 @@ const PACKAGES: PackageItem[] = [
     startingEstimate: 'Est. ~₹25 Lakhs for 1,000 sq.ft',
     targetDescription:
       'Turnkey luxury living with Jaquar fittings, custom interior woodwork, and grand architectural exterior.',
+    accentColor: 'from-secondary to-secondary-dark',
     coreInclusions: [
       { category: 'Structure', spec: 'Seismic-resistant heavy RCC framed structure' },
       { category: 'Steel', spec: '100% Tata Tiscon Fe 550D Primary Steel' },
@@ -238,9 +249,10 @@ const PACKAGES: PackageItem[] = [
 export default function PackagesSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
+  const sliderRef = useRef<HTMLDivElement>(null);
 
-  // Active center index (starts on Elite package index 2 so it's in the center)
-  const [activeIndex, setActiveIndex] = useState<number>(2);
+  // Active index starts at 0 (Lowest price package - Standard)
+  const [activeIndex, setActiveIndex] = useState<number>(0);
   // Expanded detailed specs state
   const [expandedCards, setExpandedCards] = useState<Record<string, boolean>>({});
 
@@ -269,13 +281,57 @@ export default function PackagesSection() {
     { scope: sectionRef }
   );
 
-  // Infinite carousel next / prev
+  // Scroll to index without looping (stops at 0 or 3)
+  const scrollToIndex = (index: number) => {
+    const targetIdx = Math.max(0, Math.min(index, PACKAGES.length - 1));
+    setActiveIndex(targetIdx);
+
+    if (sliderRef.current) {
+      const container = sliderRef.current;
+      const child = container.children[targetIdx] as HTMLElement;
+      if (child) {
+        const targetScroll = child.offsetLeft - (container.clientWidth - child.clientWidth) / 2;
+        container.scrollTo({
+          left: Math.max(0, targetScroll),
+          behavior: 'smooth',
+        });
+      }
+    }
+  };
+
   const handlePrev = () => {
-    setActiveIndex((prev) => (prev - 1 + PACKAGES.length) % PACKAGES.length);
+    if (activeIndex > 0) {
+      scrollToIndex(activeIndex - 1);
+    }
   };
 
   const handleNext = () => {
-    setActiveIndex((prev) => (prev + 1) % PACKAGES.length);
+    if (activeIndex < PACKAGES.length - 1) {
+      scrollToIndex(activeIndex + 1);
+    }
+  };
+
+  // Sync activeIndex on scroll (for swipe gestures)
+  const handleScroll = () => {
+    if (!sliderRef.current) return;
+    const container = sliderRef.current;
+    const scrollCenter = container.scrollLeft + container.clientWidth / 2;
+    let closestIdx = 0;
+    let minDistance = Infinity;
+
+    Array.from(container.children).forEach((child, idx) => {
+      const el = child as HTMLElement;
+      const childCenter = el.offsetLeft + el.clientWidth / 2;
+      const distance = Math.abs(scrollCenter - childCenter);
+      if (distance < minDistance) {
+        minDistance = distance;
+        closestIdx = idx;
+      }
+    });
+
+    if (closestIdx !== activeIndex) {
+      setActiveIndex(closestIdx);
+    }
   };
 
   const toggleExpand = (id: string) => {
@@ -292,19 +348,8 @@ export default function PackagesSection() {
     return `https://wa.me/${COMPANY.phoneRaw}?text=${text}`;
   };
 
-  // 3-card visible window with activeIndex in the CENTER:
-  // Left: (activeIndex - 1 + 4) % 4
-  // Center: activeIndex
-  // Right: (activeIndex + 1) % 4
-  const leftIdx = (activeIndex - 1 + PACKAGES.length) % PACKAGES.length;
-  const centerIdx = activeIndex;
-  const rightIdx = (activeIndex + 1) % PACKAGES.length;
-
-  const visibleCards = [
-    { pkg: PACKAGES[leftIdx], position: 'left', originalIndex: leftIdx },
-    { pkg: PACKAGES[centerIdx], position: 'center', originalIndex: centerIdx },
-    { pkg: PACKAGES[rightIdx], position: 'right', originalIndex: rightIdx },
-  ];
+  const canPrev = activeIndex > 0;
+  const canNext = activeIndex < PACKAGES.length - 1;
 
   return (
     <section
@@ -329,120 +374,136 @@ export default function PackagesSection() {
             badgeIcon={Compass}
             title="Engineered Construction Packages"
             highlight="Tailored to Perfection."
-            description="Clear, honest specifications crafted for Udumalpet homeowners. Compare materials, structural engineering, and starting estimates at a glance."
+            description="Clear, honest specifications crafted for Udumalpet homeowners. Explore our transparent tiers arranged sequentially from standard essentials to luxury turnkey."
             centered
           />
         </div>
 
-        {/* 3-Card Centered Loop Carousel Viewport */}
-        <div className="relative mt-8 md:mt-10">
-          {/* Floating Previous Arrow Button (Desktop & Tablet) */}
-          <button
-            type="button"
-            onClick={handlePrev}
-            aria-label="Previous package"
-            className="hidden sm:flex absolute -left-2 sm:-left-3 lg:-left-5 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-white border border-slate-200/90 shadow-md text-dark items-center justify-center hover:bg-slate-50 hover:scale-105 active:scale-95 transition-all"
-          >
-            <ChevronLeft size={22} />
-          </button>
+        {/* Slider Navigation Controls Header */}
+        <div className="flex items-center justify-end gap-3 mt-6 sm:mt-8 pb-2 border-b border-slate-200/70">
+          <span className="text-xs font-medium text-slate-500">
+            Package <strong className="text-dark">{activeIndex + 1}</strong> of{' '}
+            <strong className="text-dark">{PACKAGES.length}</strong>
+          </span>
+          <div className="flex items-center gap-1.5">
+            <button
+              type="button"
+              onClick={handlePrev}
+              disabled={!canPrev}
+              aria-label="Previous package"
+              className={`p-2 rounded-lg border transition-all ${
+                canPrev
+                  ? 'bg-white border-slate-200 text-dark hover:bg-slate-50 hover:scale-105 active:scale-95 shadow-2xs cursor-pointer'
+                  : 'bg-slate-100 border-slate-200/60 text-slate-300 cursor-not-allowed opacity-50'
+              }`}
+            >
+              <ChevronLeft size={18} />
+            </button>
+            <button
+              type="button"
+              onClick={handleNext}
+              disabled={!canNext}
+              aria-label="Next package"
+              className={`p-2 rounded-lg border transition-all ${
+                canNext
+                  ? 'bg-white border-slate-200 text-dark hover:bg-slate-50 hover:scale-105 active:scale-95 shadow-2xs cursor-pointer'
+                  : 'bg-slate-100 border-slate-200/60 text-slate-300 cursor-not-allowed opacity-50'
+              }`}
+            >
+              <ChevronRight size={18} />
+            </button>
+          </div>
+        </div>
 
-          {/* Floating Next Arrow Button (Desktop & Tablet) */}
-          <button
-            type="button"
-            onClick={handleNext}
-            aria-label="Next package"
-            className="hidden sm:flex absolute -right-2 sm:-right-3 lg:-right-5 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-white border border-slate-200/90 shadow-md text-dark items-center justify-center hover:bg-slate-50 hover:scale-105 active:scale-95 transition-all"
+        {/* Interactive Slider Track (No infinite loop, strictly Low to High) */}
+        <div className="relative mt-6 sm:mt-8">
+          {/* Scrollable Container with Snap */}
+          <div
+            ref={sliderRef}
+            onScroll={handleScroll}
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+            className="flex gap-4 sm:gap-5 lg:gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-4 pt-2 px-1 [&::-webkit-scrollbar]:hidden"
           >
-            <ChevronRight size={22} />
-          </button>
-
-          {/* Cards Grid: 3 Cards on Desktop/Tablet with Center Active Card */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 lg:gap-6 items-stretch transition-all duration-300">
-            {visibleCards.map(({ pkg, position, originalIndex }) => {
-              const isCenter = position === 'center';
+            {PACKAGES.map((pkg, idx) => {
+              const isSelected = activeIndex === idx;
               const isElite = pkg.isPopular;
               const isLux = pkg.isLuxury;
               const isExpanded = !!expandedCards[pkg.id];
 
               return (
                 <div
-                  key={`${pkg.id}-${position}`}
-                  onClick={() => {
-                    if (!isCenter) setActiveIndex(originalIndex);
-                  }}
-                  className={`relative flex flex-col justify-between rounded-2xl transition-all duration-300 bg-white ${
-                    !isCenter
-                      ? 'cursor-pointer opacity-85 hover:opacity-100 hidden md:flex border border-slate-200/80 shadow-2xs hover:border-slate-300'
-                      : isElite
-                      ? 'flex border-2 border-primary ring-2 ring-primary/20 shadow-md bg-gradient-to-b from-primary/[0.03] to-white md:scale-[1.02] z-20'
-                      : isLux
-                      ? 'flex border-2 border-secondary ring-2 ring-secondary/20 shadow-md bg-gradient-to-b from-amber-500/[0.02] to-white md:scale-[1.02] z-20'
-                      : 'flex border-2 border-slate-400 ring-2 ring-slate-200 shadow-md md:scale-[1.02] z-20'
+                  key={pkg.id}
+                  onClick={() => scrollToIndex(idx)}
+                  className={`snap-center shrink-0 w-[86vw] max-w-[340px] sm:w-[360px] md:w-[350px] lg:w-[320px] xl:w-[295px] flex flex-col justify-between rounded-2xl transition-all duration-300 bg-white cursor-pointer ${
+                    isSelected
+                      ? isElite
+                        ? 'border-2 border-primary ring-2 ring-primary/20 shadow-md bg-gradient-to-b from-primary/[0.03] to-white md:scale-[1.01]'
+                        : isLux
+                        ? 'border-2 border-secondary ring-2 ring-secondary/20 shadow-md bg-gradient-to-b from-secondary/[0.03] to-white md:scale-[1.01]'
+                        : 'border-2 border-slate-700 ring-2 ring-slate-200 shadow-md md:scale-[1.01]'
+                      : 'border border-slate-200/90 shadow-2xs hover:border-slate-300 opacity-95 hover:opacity-100'
                   }`}
                 >
                   {/* Top Architectural Accent Bar */}
                   <div
-                    className={`h-1.5 w-full rounded-t-2xl ${
+                    className={`h-1.5 w-full rounded-t-2xl bg-gradient-to-r ${
                       isElite
-                        ? 'bg-primary'
+                        ? 'from-primary to-primary-light'
                         : isLux
-                        ? 'bg-secondary'
-                        : isCenter
-                        ? 'bg-slate-700'
-                        : 'bg-slate-200'
+                        ? 'from-secondary to-secondary-dark'
+                        : isSelected
+                        ? 'from-slate-700 to-slate-800'
+                        : 'from-slate-300 to-slate-400'
                     }`}
                   />
 
-                  {/* Card Content Top Wrapper */}
-                  <div className="p-5 sm:p-6 flex flex-col flex-1">
-                    {/* Header: Name + Badge */}
-                    <div className="flex items-start justify-between gap-2 min-h-[32px] mb-2">
-                      <div>
-                        <h3 className="text-lg sm:text-[19px] font-bold text-dark tracking-tight font-display">
-                          {pkg.name}
-                        </h3>
-                        {isCenter && (
-                          <span className="text-[10.5px] font-semibold text-primary block mt-0.5">
-                            Selected Plan
-                          </span>
-                        )}
-                      </div>
-
+                  {/* Card Content Top Area */}
+                  <div className="p-4 sm:p-5 flex flex-col flex-1">
+                    {/* Tier and Badge */}
+                    <div className="flex items-center justify-between gap-1 mb-1.5">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                        {pkg.tier}
+                      </span>
                       {isElite ? (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10.5px] font-extrabold uppercase tracking-wider bg-primary text-white shadow-2xs shrink-0">
-                          <Sparkles size={11} className="shrink-0" />
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-primary text-white shadow-2xs shrink-0">
+                          <Sparkles size={10} className="shrink-0" />
                           Most Popular
                         </span>
                       ) : isLux ? (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10.5px] font-extrabold uppercase tracking-wider bg-secondary text-white shadow-2xs shrink-0">
-                          <Crown size={11} className="shrink-0" />
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-secondary text-white shadow-2xs shrink-0">
+                          <Crown size={10} className="shrink-0" />
                           Luxury
                         </span>
                       ) : null}
                     </div>
 
+                    {/* Header: Name */}
+                    <h3 className="text-base sm:text-lg font-bold text-dark tracking-tight font-display mb-1.5">
+                      {pkg.name}
+                    </h3>
+
                     {/* Short Target Description */}
-                    <p className="text-xs text-gray-600 leading-relaxed min-h-[44px] mb-4">
+                    <p className="text-xs text-gray-600 leading-relaxed min-h-[40px] mb-3">
                       {pkg.targetDescription}
                     </p>
 
                     {/* Price & Starting Estimate Block */}
                     <div
-                      className={`p-3.5 rounded-xl mb-5 transition-colors border ${
+                      className={`p-3 rounded-xl mb-4 transition-colors border ${
                         isElite
                           ? 'bg-primary/[0.06] border-primary/20'
                           : isLux
                           ? 'bg-secondary/[0.07] border-secondary/25'
-                          : isCenter
+                          : isSelected
                           ? 'bg-slate-100/90 border-slate-300'
                           : 'bg-slate-50/90 border-slate-200/80'
                       }`}
                     >
                       <div className="flex items-baseline justify-between gap-1">
-                        <span className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">
+                        <span className="text-[10.5px] font-semibold text-gray-500 uppercase tracking-wider">
                           Rate
                         </span>
-                        <span className="text-[11px] font-medium text-gray-500">
+                        <span className="text-[10.5px] font-medium text-gray-500">
                           {pkg.priceNote}
                         </span>
                       </div>
@@ -450,7 +511,7 @@ export default function PackagesSection() {
                       {/* Main Big Price Typography */}
                       <div className="flex items-baseline gap-1 mt-0.5">
                         <span
-                          className={`text-2xl sm:text-[26px] font-extrabold font-display tracking-tight ${
+                          className={`text-xl sm:text-2xl font-extrabold font-display tracking-tight ${
                             isElite
                               ? 'text-primary'
                               : isLux
@@ -463,7 +524,7 @@ export default function PackagesSection() {
                       </div>
 
                       {/* Approximate Starting Project Cost */}
-                      <div className="mt-2 pt-2 border-t border-slate-200/60 flex items-center justify-between text-[11.5px]">
+                      <div className="mt-1.5 pt-1.5 border-t border-slate-200/60 flex items-center justify-between text-[11px]">
                         <span className="text-gray-500 font-medium">Starting Cost:</span>
                         <span className="font-bold text-dark text-right">
                           {pkg.startingEstimate.replace('Est. ', '')}
@@ -472,22 +533,22 @@ export default function PackagesSection() {
                     </div>
 
                     {/* 7 Aligned Core Inclusions */}
-                    <div className="space-y-2 mb-4 flex-1">
-                      <div className="text-[11px] font-bold uppercase tracking-wider text-gray-400 pb-1 border-b border-slate-100 flex items-center justify-between">
+                    <div className="space-y-1.5 mb-3.5 flex-1">
+                      <div className="text-[10px] font-bold uppercase tracking-wider text-gray-400 pb-1 border-b border-slate-100 flex items-center justify-between">
                         <span>Key Inclusions</span>
-                        <span className="text-[10px] font-normal lowercase text-gray-400">
+                        <span className="text-[9.5px] font-normal lowercase text-gray-400">
                           7 specs
                         </span>
                       </div>
 
-                      <div className="space-y-2.5 pt-1">
-                        {pkg.coreInclusions.map((item, idx) => (
+                      <div className="space-y-2 pt-1">
+                        {pkg.coreInclusions.map((item, cIdx) => (
                           <div
-                            key={idx}
-                            className="flex items-start gap-2.5 text-xs text-slate-700 leading-snug"
+                            key={cIdx}
+                            className="flex items-start gap-2 text-xs text-slate-700 leading-snug"
                           >
                             <span
-                              className={`mt-0.5 shrink-0 w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold ${
+                              className={`mt-0.5 shrink-0 w-3.5 h-3.5 rounded-full flex items-center justify-center text-[9px] font-bold ${
                                 isElite
                                   ? 'bg-primary/10 text-primary'
                                   : isLux
@@ -495,9 +556,9 @@ export default function PackagesSection() {
                                   : 'bg-slate-100 text-slate-600'
                               }`}
                             >
-                              <Check size={11} strokeWidth={3} />
+                              <Check size={10} strokeWidth={3} />
                             </span>
-                            <div className="min-w-0 flex-1">
+                            <div className="min-w-0 flex-1 text-[11.5px]">
                               <span className="font-semibold text-slate-900 mr-1">
                                 {item.category}:
                               </span>
@@ -516,35 +577,35 @@ export default function PackagesSection() {
                           e.stopPropagation();
                           toggleExpand(pkg.id);
                         }}
-                        className={`w-full py-2 px-3 rounded-lg text-xs font-semibold flex items-center justify-between transition-colors ${
+                        className={`w-full py-1.5 px-2.5 rounded-lg text-xs font-semibold flex items-center justify-between transition-colors ${
                           isExpanded
                             ? 'bg-slate-100 text-dark'
                             : 'text-gray-600 hover:text-dark hover:bg-slate-50'
                         }`}
                         aria-expanded={isExpanded}
                       >
-                        <span className="flex items-center gap-1.5">
-                          <Layers size={13} className={isElite ? 'text-primary' : 'text-gray-400'} />
-                          {isExpanded ? 'Hide detailed specs' : 'View all inclusions & brands'}
+                        <span className="flex items-center gap-1.5 text-[11.5px]">
+                          <Layers size={12} className={isElite ? 'text-primary' : 'text-gray-400'} />
+                          {isExpanded ? 'Hide detailed specs' : 'View all specs & brands'}
                         </span>
-                        {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                        {isExpanded ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
                       </button>
 
                       {/* Expandable Specifications Area */}
                       {isExpanded && (
-                        <div className="mt-3 p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 text-xs space-y-3 animate-in fade-in duration-200">
+                        <div className="mt-2.5 p-3 rounded-xl bg-slate-50 border border-slate-200/80 text-xs space-y-2.5 animate-in fade-in duration-200">
                           {pkg.detailedSpecs.map((group, gIdx) => (
-                            <div key={gIdx} className="space-y-1.5">
-                              <div className="text-[10.5px] font-bold text-gray-500 uppercase tracking-wider">
+                            <div key={gIdx} className="space-y-1">
+                              <div className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">
                                 {group.category}
                               </div>
                               <ul className="space-y-1 text-slate-700">
                                 {group.items.map((specItem, sIdx) => (
                                   <li
                                     key={sIdx}
-                                    className="flex items-start gap-1.5 text-[11.5px] leading-relaxed"
+                                    className="flex items-start gap-1.5 text-[11px] leading-relaxed"
                                   >
-                                    <span className="text-primary mt-1 text-[8px]">•</span>
+                                    <span className="text-primary mt-1 text-[7px]">•</span>
                                     <span>{specItem}</span>
                                   </li>
                                 ))}
@@ -557,13 +618,13 @@ export default function PackagesSection() {
                   </div>
 
                   {/* Card Actions (Bottom Pinned) */}
-                  <div className="p-5 sm:p-6 pt-0 space-y-2">
+                  <div className="p-4 sm:p-5 pt-0 space-y-2">
                     {/* Primary CTA */}
                     <a
                       href={getWhatsAppPackageUrl(pkg.name, pkg.price)}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className={`w-full py-2.5 px-4 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all duration-200 shadow-2xs active:scale-[0.99] ${
+                      className={`w-full py-2.5 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all duration-200 shadow-2xs active:scale-[0.99] ${
                         isElite
                           ? 'bg-primary text-white hover:bg-primary-dark shadow-sm'
                           : isLux
@@ -571,17 +632,17 @@ export default function PackagesSection() {
                           : 'bg-dark text-white hover:bg-dark-muted'
                       }`}
                     >
-                      <MessageCircle size={15} />
-                      <span>Inquire via WhatsApp</span>
+                      <MessageCircle size={14} />
+                      <span>Inquire on WhatsApp</span>
                     </a>
 
                     {/* Secondary CTA */}
                     <Link
                       href="#requirements"
-                      className="w-full py-2 px-4 rounded-xl text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200/70 border border-slate-200/60 flex items-center justify-center gap-1.5 transition-colors"
+                      className="w-full py-1.5 px-3 rounded-xl text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200/70 border border-slate-200/60 flex items-center justify-center gap-1.5 transition-colors"
                     >
                       <span>Customize in Form</span>
-                      <ArrowRight size={13} className="text-slate-400" />
+                      <ArrowRight size={12} className="text-slate-400" />
                     </Link>
                   </div>
                 </div>
@@ -589,24 +650,29 @@ export default function PackagesSection() {
             })}
           </div>
 
-          {/* Carousel Bottom Controls: Prev/Next & Dots Indicator */}
-          <div className="flex items-center justify-center gap-4 mt-6">
+          {/* Slider Pagination Dots & Mobile Navigation Controls */}
+          <div className="flex items-center justify-center gap-3 mt-4 sm:mt-6">
             <button
               type="button"
               onClick={handlePrev}
+              disabled={!canPrev}
               aria-label="Previous package"
-              className="p-2 rounded-xl bg-white border border-slate-200 shadow-2xs text-dark hover:bg-slate-50 transition-colors"
+              className={`p-1.5 rounded-lg border transition-all sm:hidden ${
+                canPrev
+                  ? 'bg-white border-slate-200 text-dark active:scale-95 shadow-2xs'
+                  : 'bg-slate-100 border-slate-200/60 text-slate-300 opacity-50 cursor-not-allowed'
+              }`}
             >
-              <ChevronLeft size={18} />
+              <ChevronLeft size={16} />
             </button>
 
-            {/* Slide Dots Indicator */}
+            {/* Slide Dots Indicator (Low to High: 1 -> 4) */}
             <div className="flex items-center gap-2">
               {PACKAGES.map((pkg, idx) => (
                 <button
                   key={pkg.id}
                   type="button"
-                  onClick={() => setActiveIndex(idx)}
+                  onClick={() => scrollToIndex(idx)}
                   aria-label={`Go to ${pkg.name}`}
                   className={`h-2 rounded-full transition-all duration-300 ${
                     activeIndex === idx
@@ -620,10 +686,15 @@ export default function PackagesSection() {
             <button
               type="button"
               onClick={handleNext}
+              disabled={!canNext}
               aria-label="Next package"
-              className="p-2 rounded-xl bg-white border border-slate-200 shadow-2xs text-dark hover:bg-slate-50 transition-colors"
+              className={`p-1.5 rounded-lg border transition-all sm:hidden ${
+                canNext
+                  ? 'bg-white border-slate-200 text-dark active:scale-95 shadow-2xs'
+                  : 'bg-slate-100 border-slate-200/60 text-slate-300 opacity-50 cursor-not-allowed'
+              }`}
             >
-              <ChevronRight size={18} />
+              <ChevronRight size={16} />
             </button>
           </div>
         </div>

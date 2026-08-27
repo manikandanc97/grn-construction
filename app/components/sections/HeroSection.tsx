@@ -181,7 +181,7 @@ export default function HeroSection() {
             <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full border border-white/15 bg-white/[0.07] backdrop-blur-md">
               <span className="w-2 h-2 rounded-full bg-secondary shadow-[0_0_8px_rgba(212,129,58,0.8)]" />
               <span className="text-[11px] sm:text-xs font-semibold tracking-wider uppercase text-white/90">
-                Udumalpet&apos;s Trusted Builders Since 2014
+                Udumalpet&apos;s Trusted Builders Since 2018
               </span>
             </div>
           </div>
