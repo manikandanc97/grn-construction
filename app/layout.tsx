@@ -105,7 +105,7 @@ const jsonLd = {
       description:
         "GRN Construction is a trusted construction company in Udumalpet, Tamil Nadu offering house construction, commercial buildings, interior design, renovation, waterproofing and civil engineering services.",
       telephone: "+91-93441-85614",
-      email: "info@grnconstructions.com",
+      email: "grnconstruction.in@gmail.com",
       address: {
         "@type": "PostalAddress",
         streetAddress: "Advocate, No.10 A, Vakil Nagarajan Street, near by Uma traders",

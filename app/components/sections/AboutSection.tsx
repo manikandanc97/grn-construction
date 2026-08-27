@@ -211,13 +211,17 @@ export default function AboutSection() {
                   <span>Licensed Civil Engineers</span>
                 </div>
 
-                {/* Bottom Image Caption & Coordinates */}
-                <div className="absolute bottom-3.5 left-4 right-4 text-white">
-                  <div className="flex items-center justify-between text-xs font-mono text-white/90 uppercase tracking-wider mb-1">
-                    <span>UDUMALPET • TAMIL NADU</span>
-                    <span>EST. 2018</span>
-                  </div>
-                  <p role="doc-subtitle" className="text-sm sm:text-base font-bold font-display leading-tight text-white drop-shadow-sm">
+                {/* Top Right EST Badge */}
+                <div className="absolute top-3.5 right-3.5 sm:top-4 sm:right-4 inline-flex items-center px-2.5 py-1 rounded-full bg-dark/60 backdrop-blur-md border border-white/15 text-white/90 text-xs font-mono tracking-wider">
+                  <span>EST. 2018</span>
+                </div>
+
+                {/* Bottom Image Caption & Coordinates (Constrained to left side so it never collides with floating card) */}
+                <div className="absolute bottom-3.5 left-3.5 sm:left-4 max-w-[52%] sm:max-w-[56%] lg:max-w-[58%] text-white z-0 pr-1">
+                  <span className="inline-block text-[11px] sm:text-xs font-mono text-white/90 uppercase tracking-wider mb-1">
+                    UDUMALPET • TAMIL NADU
+                  </span>
+                  <p role="doc-subtitle" className="text-xs sm:text-sm lg:text-[15px] font-bold font-display leading-snug text-white drop-shadow-sm">
                     Architectural Excellence &amp; Turnkey Execution
                   </p>
                 </div>
