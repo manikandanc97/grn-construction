@@ -141,12 +141,21 @@ export default function Navbar() {
           </nav>
 
           {/* CTA Buttons */}
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => window.dispatchEvent(new CustomEvent('open-free-estimate-modal'))}
+              className="inline-flex items-center justify-center gap-1.5 rounded-full border border-secondary/50 bg-secondary/15 hover:bg-secondary/25 px-3.5 py-2 text-[12.5px] font-semibold text-secondary-light transition-all duration-200 cursor-pointer shadow-xs hover:scale-105 active:scale-95 whitespace-nowrap"
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse" />
+              <span>Free Estimate</span>
+            </button>
+
             <a
               href={COMPANY.callLink}
-              className="inline-flex items-center justify-center gap-1.5 rounded-full bg-secondary hover:bg-secondary-light px-4 py-2 text-[13px] font-semibold tracking-wide text-white shadow-[0_2px_10px_rgba(212,129,58,0.35)] transition-all duration-200 hover:shadow-[0_4px_16px_rgba(212,129,58,0.45)] hover:scale-105 active:scale-95 whitespace-nowrap"
+              className="inline-flex items-center justify-center gap-1.5 rounded-full bg-secondary hover:bg-secondary-light px-3.5 py-2 text-[12.5px] font-semibold tracking-wide text-white shadow-[0_2px_10px_rgba(212,129,58,0.35)] transition-all duration-200 hover:shadow-[0_4px_16px_rgba(212,129,58,0.45)] hover:scale-105 active:scale-95 whitespace-nowrap"
             >
-              <Phone size={13.5} className="stroke-[2.5]" />
+              <Phone size={13} className="stroke-[2.5]" />
               <span>Call Now</span>
             </a>
           </div>
@@ -189,11 +198,18 @@ export default function Navbar() {
             </div>
           </Link>
           <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => window.dispatchEvent(new CustomEvent('open-free-estimate-modal'))}
+              className="inline-flex items-center justify-center gap-1 rounded-full bg-secondary/20 border border-secondary/50 px-2.5 py-1.5 text-[11px] font-semibold text-secondary-light"
+            >
+              Estimate
+            </button>
             <a
               href={COMPANY.callLink}
-              className="inline-flex items-center justify-center gap-1.5 rounded-full bg-gradient-to-r from-secondary to-secondary-light px-3.5 py-1.5 text-xs font-semibold text-white shadow-sm"
+              className="inline-flex items-center justify-center gap-1.5 rounded-full bg-gradient-to-r from-secondary to-secondary-light px-3 py-1.5 text-xs font-semibold text-white shadow-sm"
             >
-              <Phone size={13} />
+              <Phone size={12} />
               <span>Call</span>
             </a>
             <button
@@ -230,7 +246,32 @@ export default function Navbar() {
                   </button>
                 );
               })}
+
+              <div className="pt-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMobileOpen(false);
+                    window.dispatchEvent(new CustomEvent('open-plan-approval-modal'));
+                  }}
+                  className="w-full text-left px-3.5 py-2 rounded-xl text-xs font-semibold bg-secondary/10 text-secondary-dark border border-secondary/20 flex items-center justify-between"
+                >
+                  <span>🏛️ Plan Approval &amp; Blueprints</span>
+                  <span className="text-[10px] bg-secondary text-white px-2 py-0.5 rounded-full font-bold">DTCP</span>
+                </button>
+              </div>
+
               <div className="flex items-center gap-2.5 mt-3 pt-3 border-t border-gray-100">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMobileOpen(false);
+                    window.dispatchEvent(new CustomEvent('open-free-estimate-modal'));
+                  }}
+                  className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl bg-primary text-white text-xs font-semibold py-2.5 shadow-sm transition-all"
+                >
+                  Free Estimate
+                </button>
                 <a
                   href={COMPANY.whatsappLink}
                   target="_blank"
@@ -238,12 +279,6 @@ export default function Navbar() {
                   className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl bg-green-500 hover:bg-green-600 text-white text-xs font-semibold py-2.5 shadow-sm transition-all"
                 >
                   <MessageCircle size={16} /> WhatsApp
-                </a>
-                <a
-                  href={COMPANY.callLink}
-                  className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-secondary to-secondary-light text-white text-xs font-semibold py-2.5 shadow-sm transition-all"
-                >
-                  <Phone size={16} /> Call Now
                 </a>
               </div>
             </div>

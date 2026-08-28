@@ -6,6 +6,8 @@ import Footer from '@/app/components/layout/Footer';
 import PackagesSection from '@/app/components/sections/PackagesSection';
 import ClientRequirementSection from '@/app/components/sections/ClientRequirementSection';
 import FloatingButtons from '@/app/components/shared/FloatingButtons';
+import FreeEstimationModal from '@/app/components/shared/FreeEstimationModal';
+import PlanApprovalModal from '@/app/components/shared/PlanApprovalModal';
 
 export const metadata: Metadata = {
   title: 'Packages & Client Requirement Specification Form | GRN Construction Udumalpet',
@@ -31,6 +33,10 @@ export default function RequirementsPage() {
 
       {/* Footer */}
       <Footer />
+
+      {/* Popups & Modals */}
+      <FreeEstimationModal />
+      <PlanApprovalModal />
 
       {/* Floating Action Buttons + Mobile Bottom Nav */}
       <FloatingButtons />

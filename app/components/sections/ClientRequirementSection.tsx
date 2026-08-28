@@ -30,6 +30,11 @@ import {
   Grid,
   Factory,
   ChevronRight,
+  UploadCloud,
+  FileText,
+  Trash2,
+  X,
+  FileCheck,
 } from 'lucide-react';
 import { COMPANY } from '@/app/lib/constants';
 
@@ -40,6 +45,9 @@ export interface SpecificationFormData {
   address: string;
   phone: string;
   panchayatMunicipalityPlotArea: string;
+  layoutDocumentName: string;
+  layoutDocumentSize: string;
+  layoutDocumentPreview: string;
 
   // 2. Building Configuration
   buildingType: string;
@@ -93,6 +101,9 @@ const initialFormState: SpecificationFormData = {
   address: '',
   phone: '',
   panchayatMunicipalityPlotArea: '',
+  layoutDocumentName: '',
+  layoutDocumentSize: '',
+  layoutDocumentPreview: '',
 
   buildingType: 'Residential building',
   buildingTypeOther: '',
@@ -158,6 +169,7 @@ const BHK_OPTIONS = ['1 BHK', '2 BHK', '3 BHK', '4 BHK', 'Other:'];
 
 const FLOOR_OPTIONS = [
   'Ground floor',
+  'First floor only',
   'Stilt + Ground floor',
   'G + 1',
   'G+2',
@@ -308,6 +320,43 @@ export default function ClientRequirementSection() {
     }
   };
 
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const sizeInKb = Math.round(file.size / 1024);
+    const sizeStr = sizeInKb > 1024 ? `${(sizeInKb / 1024).toFixed(1)} MB` : `${sizeInKb} KB`;
+
+    if (file.type.startsWith('image/')) {
+      const reader = new FileReader();
+      reader.onload = (loadEvt) => {
+        setForm((prev) => ({
+          ...prev,
+          layoutDocumentName: file.name,
+          layoutDocumentSize: sizeStr,
+          layoutDocumentPreview: (loadEvt.target?.result as string) || '',
+        }));
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setForm((prev) => ({
+        ...prev,
+        layoutDocumentName: file.name,
+        layoutDocumentSize: sizeStr,
+        layoutDocumentPreview: '',
+      }));
+    }
+  };
+
+  const handleRemoveFile = () => {
+    setForm((prev) => ({
+      ...prev,
+      layoutDocumentName: '',
+      layoutDocumentSize: '',
+      layoutDocumentPreview: '',
+    }));
+  };
+
   const validateStep = (step: number, updateErrors: boolean = true): boolean => {
     const errors: Record<string, string> = {};
 
@@ -416,6 +465,7 @@ export default function ClientRequirementSection() {
 ${form.email ? `• *Email:* ${form.email}` : ''}
 • *Address:* ${form.address || ''}
 ${form.panchayatMunicipalityPlotArea ? `• *Panchayat/Municipality & Plot Area:* ${form.panchayatMunicipalityPlotArea}` : ''}
+${form.layoutDocumentName ? `• *Attached Layout / Document:* ${form.layoutDocumentName} (${form.layoutDocumentSize || 'File Attached'}) - (Sharing photo in chat)` : ''}
 
 🏗️ *BUILDING CONFIGURATION:*
 • *Building Type:* ${buildingTypeRes}
@@ -637,6 +687,11 @@ _Submitted via GRN Construction Specification Form_`;
                     <p><strong>Main Door:</strong> {resolveVal(form.joineryMainDoor, form.joineryMainDoorOther)}</p>
                     <p><strong>Floor:</strong> {resolveVal(form.flooringFloor, form.flooringFloorOther)}</p>
                     <p><strong>Sanitary:</strong> {resolveVal(form.sanitaryBrand, form.sanitaryBrandOther)}</p>
+                    {form.layoutDocumentName && (
+                      <p className="col-span-2 text-primary font-semibold pt-1 border-t border-neutral-200/60">
+                        <strong>Attached Layout / Plan:</strong> {form.layoutDocumentName} ({form.layoutDocumentSize})
+                      </p>
+                    )}
                   </div>
                 </div>
 
@@ -807,6 +862,88 @@ _Submitted via GRN Construction Specification Form_`;
                               placeholder="e.g. Udumalpet Municipality / 1200 sq.ft (or cents)"
                               className="w-full px-4 py-2.5 rounded-xl border border-neutral-200 text-sm text-dark placeholder-neutral-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all"
                             />
+                          </div>
+
+                          {/* Layout / Document / Site Photo Upload */}
+                          <div className="sm:col-span-2">
+                            <label className="block text-xs font-semibold text-dark mb-1.5 flex items-center justify-between">
+                              <span className="flex items-center gap-1.5">
+                                <UploadCloud size={15} className="text-primary" />
+                                <span>Upload Site Layout / Floor Sketch / Documents</span>
+                              </span>
+                              <span className="text-[10.5px] text-gray-400 font-normal">Optional (Photo / Sketch / PDF)</span>
+                            </label>
+
+                            {form.layoutDocumentName ? (
+                              /* Uploaded Preview State */
+                              <div className="p-3 rounded-xl border border-primary/30 bg-primary/[0.04] flex items-center justify-between gap-3">
+                                <div className="flex items-center gap-3 min-w-0">
+                                  {form.layoutDocumentPreview ? (
+                                    <div className="relative w-12 h-12 rounded-lg overflow-hidden border border-primary/20 bg-white shrink-0">
+                                      <Image
+                                        src={form.layoutDocumentPreview}
+                                        alt="Uploaded Layout Preview"
+                                        fill
+                                        className="object-cover"
+                                        unoptimized
+                                      />
+                                    </div>
+                                  ) : (
+                                    <div className="w-12 h-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0 border border-primary/20">
+                                      <FileText size={22} />
+                                    </div>
+                                  )}
+                                  <div className="min-w-0">
+                                    <p className="text-xs font-bold text-dark truncate">
+                                      {form.layoutDocumentName}
+                                    </p>
+                                    <p className="text-[11px] text-gray-500 font-medium">
+                                      {form.layoutDocumentSize || 'Ready to send'} •{' '}
+                                      <span className="text-emerald-600 font-semibold">Attached</span>
+                                    </p>
+                                  </div>
+                                </div>
+
+                                <button
+                                  type="button"
+                                  onClick={handleRemoveFile}
+                                  className="p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors cursor-pointer shrink-0"
+                                  aria-label="Remove uploaded layout document"
+                                >
+                                  <Trash2 size={16} />
+                                </button>
+                              </div>
+                            ) : (
+                              /* Empty Dropzone / Selector State */
+                              <div className="relative">
+                                <label className="flex flex-col items-center justify-center w-full px-4 py-4 rounded-xl border-2 border-dashed border-neutral-200 hover:border-primary/50 bg-neutral-50/70 hover:bg-neutral-50 transition-all cursor-pointer group">
+                                  <div className="flex flex-col items-center justify-center text-center space-y-1">
+                                    <div className="w-9 h-9 rounded-full bg-primary/10 text-primary flex items-center justify-center group-hover:scale-110 transition-transform">
+                                      <UploadCloud size={18} />
+                                    </div>
+                                    <p className="text-xs font-semibold text-neutral-700">
+                                      Click to upload layout photo, site sketch or approval copy
+                                    </p>
+                                    <p className="text-[10.5px] text-gray-400">
+                                      Supports JPG, PNG, WEBP or PDF (Max 10MB)
+                                    </p>
+                                  </div>
+                                  <input
+                                    type="file"
+                                    accept="image/*,.pdf"
+                                    onChange={handleFileUpload}
+                                    className="hidden"
+                                  />
+                                </label>
+                              </div>
+                            )}
+
+                            <p className="text-[11px] text-neutral-500 mt-1.5 flex items-center gap-1 leading-snug">
+                              <span>💡</span>
+                              <span>
+                                Have a hand-drawn sketch or photo? Upload here and also attach in WhatsApp for fast engineer review.
+                              </span>
+                            </p>
                           </div>
                         </div>
                       </motion.div>

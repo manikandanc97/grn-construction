@@ -2,7 +2,7 @@
 
 import { useRef } from 'react';
 import { useGSAP } from '@gsap/react';
-import { ArrowUpRight, ChevronDown } from 'lucide-react';
+import { ArrowUpRight, ChevronDown, FileCheck } from 'lucide-react';
 import { gsap, EASING, prefersReducedMotion } from '@/app/lib/animations/gsap';
 import StatCounter from '@/app/components/shared/StatCounter';
 
@@ -208,19 +208,29 @@ export default function HeroSection() {
           {/* CTA Buttons: Height 40px-46px, strong primary hierarchy */}
           <div
             ref={ctaRef}
-            className="flex flex-wrap items-center gap-3 sm:gap-4 mb-8 sm:mb-9"
+            className="flex flex-wrap items-center gap-2.5 sm:gap-3.5 mb-8 sm:mb-9"
           >
             <button
               onClick={() => handleScrollTo('requirements')}
-              className="inline-flex h-[42px] sm:h-[46px] items-center justify-center gap-2 rounded-xl bg-secondary px-6 sm:px-7 text-sm sm:text-[15px] font-semibold text-white shadow-[0_4px_20px_rgba(212,129,58,0.4)] transition-all duration-300 ease-[cubic-bezier(0.21,0.47,0.32,0.98)] hover:bg-secondary-light hover:shadow-[0_6px_28px_rgba(212,129,58,0.55)] hover:-translate-y-0.5 active:translate-y-0 cursor-pointer opacity-0"
+              className="inline-flex h-[42px] sm:h-[46px] items-center justify-center gap-2 rounded-xl bg-secondary px-5 sm:px-6 text-sm sm:text-[15px] font-semibold text-white shadow-[0_4px_20px_rgba(212,129,58,0.4)] transition-all duration-300 ease-[cubic-bezier(0.21,0.47,0.32,0.98)] hover:bg-secondary-light hover:shadow-[0_6px_28px_rgba(212,129,58,0.55)] hover:-translate-y-0.5 active:translate-y-0 cursor-pointer opacity-0"
             >
               <span>Get a Quote</span>
               <ArrowUpRight size={17} className="stroke-[2.5]" />
             </button>
 
+            {/* Plan Approval Works - Separately next to Quote option */}
+            <button
+              type="button"
+              onClick={() => window.dispatchEvent(new CustomEvent('open-plan-approval-modal'))}
+              className="inline-flex h-[42px] sm:h-[46px] items-center justify-center gap-2 rounded-xl border border-secondary/50 bg-secondary/15 px-4 sm:px-5 text-sm sm:text-[15px] font-semibold text-white backdrop-blur-md transition-all duration-300 ease-[cubic-bezier(0.21,0.47,0.32,0.98)] hover:bg-secondary/30 hover:border-secondary hover:-translate-y-0.5 active:translate-y-0 cursor-pointer opacity-0 shadow-[0_2px_12px_rgba(212,129,58,0.2)]"
+            >
+              <FileCheck size={16} className="text-secondary-light stroke-[2.2]" />
+              <span>Plan Approval Works</span>
+            </button>
+
             <button
               onClick={() => handleScrollTo('packages')}
-              className="inline-flex h-[42px] sm:h-[46px] items-center justify-center gap-2 rounded-xl border border-white/25 bg-white/[0.06] px-5 sm:px-6 text-sm sm:text-[15px] font-medium text-white backdrop-blur-md transition-all duration-300 ease-[cubic-bezier(0.21,0.47,0.32,0.98)] hover:bg-white/12 hover:border-white/40 hover:-translate-y-0.5 active:translate-y-0 cursor-pointer opacity-0"
+              className="inline-flex h-[42px] sm:h-[46px] items-center justify-center gap-2 rounded-xl border border-white/25 bg-white/[0.06] px-4 sm:px-5 text-sm sm:text-[15px] font-medium text-white backdrop-blur-md transition-all duration-300 ease-[cubic-bezier(0.21,0.47,0.32,0.98)] hover:bg-white/12 hover:border-white/40 hover:-translate-y-0.5 active:translate-y-0 cursor-pointer opacity-0"
             >
               <span>View Packages</span>
             </button>

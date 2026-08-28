@@ -152,13 +152,13 @@ const PACKAGES: PackageItem[] = [
     priceNote: 'per sq.ft',
     startingEstimate: 'Est. ~₹24 Lakhs for 1,000 sq.ft',
     targetDescription:
-      'Our flagship standard with primary Tata/JSW steel, seasoned teak joinery & contemporary glass elevation.',
+      'Our flagship standard with primary Tata/JSW steel, teak main entrance, UPVC windows & contemporary glass elevation.',
     accentColor: 'from-primary to-primary-dark',
     coreInclusions: [
       { category: 'Structure', spec: 'Heavy-duty engineered RCC framed frame' },
       { category: 'Steel', spec: 'Primary Tata Tiscon / JSW Neosteel Fe 550D' },
       { category: 'Walls', spec: 'Grade-A kiln-baked wirecut red bricks' },
-      { category: 'Joinery', spec: '100% seasoned teak doors & woodwork' },
+      { category: 'Joinery', spec: 'Teak main door & UPVC sliding windows' },
       { category: 'Flooring', spec: "Glazed Vitrified (GVT) 4' x 2' (₹85/sq.ft)" },
       { category: 'Sanitary', spec: 'Parryware / Hindware wall-hung range' },
       { category: 'Elevation', spec: 'Architectural glass fitting & CNC facade' },
@@ -176,7 +176,8 @@ const PACKAGES: PackageItem[] = [
       {
         category: 'Joinery & Architectural Finishes',
         items: [
-          'Fully seasoned 1st quality teakwood frames & carved doors',
+          '1st quality seasoned teakwood main door frame & carved shutter',
+          'Premium multi-track UPVC sliding windows with safety MS grills',
           'Toughened glass balcony railings with SS 304 fittings',
           '2 coats Birla Putty + Asian Paints Royale Luxury Emulsion',
           'Exterior Asian Paints Apex Ultima weather-proof coating',

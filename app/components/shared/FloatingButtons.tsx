@@ -33,16 +33,16 @@ export default function FloatingButtons() {
         </motion.a>
       </div>
 
-      {/* Floating Free Estimation Trigger (Bottom Center / Left) */}
-      <div className="hidden md:flex fixed left-5 bottom-24 z-40">
+      {/* Floating Free Estimation Trigger (Bottom Left / Desktop & Tablet) */}
+      <div className="fixed left-3 sm:left-5 bottom-36 sm:bottom-24 z-40">
         <motion.button
           onClick={() => window.dispatchEvent(new CustomEvent('open-free-estimate-modal'))}
-          className="inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-dark/90 hover:bg-dark text-white text-xs font-semibold shadow-xl border border-white/20 backdrop-blur-md transition-all cursor-pointer hover:border-secondary/60 hover:scale-105 active:scale-95"
+          className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-full bg-dark/95 hover:bg-dark text-white text-[11px] sm:text-xs font-semibold shadow-xl border border-secondary/40 backdrop-blur-md transition-all cursor-pointer hover:border-secondary hover:scale-105 active:scale-95"
           whileHover={{ y: -2 }}
           aria-label="Get Free Estimate"
         >
           <span className="w-2 h-2 rounded-full bg-secondary animate-pulse" />
-          <span>Free Estimate</span>
+          <span className="whitespace-nowrap">Free Estimate</span>
         </motion.button>
       </div>
 
