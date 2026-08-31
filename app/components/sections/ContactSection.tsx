@@ -130,10 +130,10 @@ export default function ContactSection() {
           {/* Phone Call Card */}
           <a
             href={COMPANY.callLink}
-            className="group flex items-center justify-between p-2.5 sm:p-3.5 rounded-xl bg-gradient-to-br from-secondary to-secondary-dark text-white shadow-xs hover:shadow-sm hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-200 border border-white/20"
+            className="group flex items-center justify-between p-2.5 sm:p-3.5 rounded-xl bg-gradient-to-br from-secondary to-secondary-dark text-white shadow-xs hover:shadow-md hover:shadow-secondary/30 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] transition-all duration-200 ease-out border border-white/20 cursor-pointer"
           >
             <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
-              <div className="w-7 h-7 sm:w-8.5 sm:h-8.5 rounded-lg bg-white/20 flex items-center justify-center shrink-0 backdrop-blur-sm group-hover:scale-105 transition-transform">
+              <div className="w-7 h-7 sm:w-8.5 sm:h-8.5 rounded-lg bg-white/20 flex items-center justify-center shrink-0 backdrop-blur-sm group-hover:scale-105 transition-transform duration-200">
                 <Phone size={14} className="text-white" />
               </div>
               <div className="min-w-0">
@@ -145,7 +145,7 @@ export default function ContactSection() {
                 </span>
               </div>
             </div>
-            <ArrowRight size={14} className="text-white/80 group-hover:translate-x-0.5 transition-transform shrink-0 hidden sm:block" />
+            <ArrowRight size={14} className="text-white/80 group-hover:translate-x-0.5 transition-transform duration-200 shrink-0 hidden sm:block" />
           </a>
 
           {/* WhatsApp Chat Card */}
@@ -153,10 +153,10 @@ export default function ContactSection() {
             href={COMPANY.whatsappLink}
             target="_blank"
             rel="noopener noreferrer"
-            className="group flex items-center justify-between p-2.5 sm:p-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white shadow-xs hover:shadow-sm hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-200 border border-white/20"
+            className="group flex items-center justify-between p-2.5 sm:p-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white shadow-xs hover:shadow-md hover:shadow-emerald-500/30 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] transition-all duration-200 ease-out border border-white/20 cursor-pointer"
           >
             <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
-              <div className="w-7 h-7 sm:w-8.5 sm:h-8.5 rounded-lg bg-white/20 flex items-center justify-center shrink-0 backdrop-blur-sm group-hover:scale-105 transition-transform">
+              <div className="w-7 h-7 sm:w-8.5 sm:h-8.5 rounded-lg bg-white/20 flex items-center justify-center shrink-0 backdrop-blur-sm group-hover:scale-105 transition-transform duration-200">
                 <MessageCircle size={14} className="text-white" />
               </div>
               <div className="min-w-0">
@@ -168,16 +168,16 @@ export default function ContactSection() {
                 </span>
               </div>
             </div>
-            <ArrowRight size={14} className="text-white/80 group-hover:translate-x-0.5 transition-transform shrink-0 hidden sm:block" />
+            <ArrowRight size={14} className="text-white/80 group-hover:translate-x-0.5 transition-transform duration-200 shrink-0 hidden sm:block" />
           </a>
 
           {/* Email Support Card */}
           <a
             href={`mailto:${COMPANY.email}`}
-            className="group flex items-center justify-between p-2.5 sm:p-3.5 rounded-xl bg-primary hover:bg-primary-light text-white shadow-xs hover:shadow-sm hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-200 border border-white/20"
+            className="group flex items-center justify-between p-2.5 sm:p-3.5 rounded-xl bg-primary hover:bg-primary-light text-white shadow-xs hover:shadow-md hover:shadow-primary/30 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] transition-all duration-200 ease-out border border-white/20 cursor-pointer"
           >
             <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
-              <div className="w-7 h-7 sm:w-8.5 sm:h-8.5 rounded-lg bg-white/20 flex items-center justify-center shrink-0 backdrop-blur-sm group-hover:scale-105 transition-transform">
+              <div className="w-7 h-7 sm:w-8.5 sm:h-8.5 rounded-lg bg-white/20 flex items-center justify-center shrink-0 backdrop-blur-sm group-hover:scale-105 transition-transform duration-200">
                 <Mail size={14} className="text-white" />
               </div>
               <div className="min-w-0">
@@ -189,7 +189,7 @@ export default function ContactSection() {
                 </span>
               </div>
             </div>
-            <ArrowRight size={14} className="text-white/80 group-hover:translate-x-0.5 transition-transform shrink-0 hidden sm:block" />
+            <ArrowRight size={14} className="text-white/80 group-hover:translate-x-0.5 transition-transform duration-200 shrink-0 hidden sm:block" />
           </a>
 
           {/* Location Directions */}
@@ -197,10 +197,10 @@ export default function ContactSection() {
             href={COMPANY.mapUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="group flex items-center justify-between p-2.5 sm:p-3.5 rounded-xl bg-slate-800 hover:bg-slate-900 text-white shadow-xs hover:shadow-sm hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-200 border border-white/10"
+            className="group flex items-center justify-between p-2.5 sm:p-3.5 rounded-xl bg-slate-800 hover:bg-slate-900 text-white shadow-xs hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] transition-all duration-200 ease-out border border-white/10 cursor-pointer"
           >
             <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
-              <div className="w-7 h-7 sm:w-8.5 sm:h-8.5 rounded-lg bg-white/15 flex items-center justify-center shrink-0 backdrop-blur-sm group-hover:scale-105 transition-transform">
+              <div className="w-7 h-7 sm:w-8.5 sm:h-8.5 rounded-lg bg-white/15 flex items-center justify-center shrink-0 backdrop-blur-sm group-hover:scale-105 transition-transform duration-200">
                 <Navigation size={14} className="text-white" />
               </div>
               <div className="min-w-0">
@@ -212,7 +212,7 @@ export default function ContactSection() {
                 </span>
               </div>
             </div>
-            <ExternalLink size={14} className="text-white/80 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform shrink-0 hidden sm:block" />
+            <ExternalLink size={14} className="text-white/80 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-200 shrink-0 hidden sm:block" />
           </a>
         </div>
 
@@ -333,7 +333,7 @@ export default function ContactSection() {
                 href={COMPANY.mapUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-primary/10 hover:bg-primary/15 text-primary text-[11px] font-bold border border-primary/25 transition-colors self-start sm:self-auto"
+                className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-primary/10 hover:bg-primary/20 hover:border-primary/40 text-primary text-[11px] font-bold border border-primary/25 transition-all duration-200 ease-out hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] self-start sm:self-auto cursor-pointer"
               >
                 <span>Open in Google Maps</span>
                 <ExternalLink size={11} />

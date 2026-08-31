@@ -258,10 +258,10 @@ export default function ReviewsSection() {
                             prev > 0 ? prev - 1 : remainingReviews.length - 1
                           )
                         }
-                        className="w-6.5 h-6.5 rounded-full border border-gray-200 bg-white hover:bg-primary/5 hover:border-primary text-gray-600 hover:text-primary flex items-center justify-center transition-all cursor-pointer shadow-xs active:scale-95"
+                        className="w-7 h-7 rounded-full border border-gray-200 bg-white hover:bg-slate-50 hover:border-primary/50 text-gray-600 hover:text-primary flex items-center justify-center transition-all duration-200 ease-out cursor-pointer shadow-2xs hover:scale-105 active:scale-95"
                         aria-label="Previous review"
                       >
-                        <ChevronLeft size={13} />
+                        <ChevronLeft size={14} />
                       </button>
                       <button
                         onClick={() =>
@@ -269,10 +269,10 @@ export default function ReviewsSection() {
                             prev < remainingReviews.length - 1 ? prev + 1 : 0
                           )
                         }
-                        className="w-6.5 h-6.5 rounded-full border border-gray-200 bg-white hover:bg-primary/5 hover:border-primary text-gray-600 hover:text-primary flex items-center justify-center transition-all cursor-pointer shadow-xs active:scale-95"
+                        className="w-7 h-7 rounded-full border border-gray-200 bg-white hover:bg-slate-50 hover:border-primary/50 text-gray-600 hover:text-primary flex items-center justify-center transition-all duration-200 ease-out cursor-pointer shadow-2xs hover:scale-105 active:scale-95"
                         aria-label="Next review"
                       >
-                        <ChevronRight size={13} />
+                        <ChevronRight size={14} />
                       </button>
                     </div>
                   </div>
@@ -300,10 +300,10 @@ export default function ReviewsSection() {
                       href={summary.viewAllReviewsUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-xs font-semibold text-primary hover:text-primary-dark inline-flex items-center gap-1"
+                      className="text-xs font-semibold text-primary hover:text-primary-dark inline-flex items-center gap-1 group transition-colors"
                     >
                       <span>Read all on Google</span>
-                      <ArrowRight size={12} />
+                      <ArrowRight size={12} className="transition-transform duration-200 group-hover:translate-x-0.5" />
                     </a>
                   </div>
                 )}

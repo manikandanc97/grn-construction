@@ -49,7 +49,7 @@ export default function ReviewSummary({ summary }: ReviewSummaryProps) {
             href={summary.writeReviewUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-4 sm:px-5 py-2 rounded-full bg-primary hover:bg-primary-dark active:scale-98 text-white text-xs font-semibold shadow-xs hover:shadow-sm transition-all cursor-pointer"
+            className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-4 sm:px-5 py-2 rounded-full bg-primary hover:bg-primary-light text-white text-xs font-semibold shadow-xs hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] transition-all duration-200 ease-out cursor-pointer"
           >
             <Edit3 size={13} />
             <span>Write a Review</span>
@@ -59,7 +59,7 @@ export default function ReviewSummary({ summary }: ReviewSummaryProps) {
             href={summary.viewAllReviewsUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-4 sm:px-5 py-2 rounded-full bg-gray-50 hover:bg-gray-100 text-dark border border-gray-200 hover:border-gray-300 text-xs font-medium transition-all cursor-pointer active:scale-98"
+            className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-4 sm:px-5 py-2 rounded-full bg-gray-50 hover:bg-white hover:border-gray-300 text-dark border border-gray-200 shadow-2xs hover:shadow-xs hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] text-xs font-medium transition-all duration-200 ease-out cursor-pointer"
           >
             <span>View on Google</span>
             <ExternalLink size={12} className="text-gray-500" />

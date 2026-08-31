@@ -298,7 +298,7 @@ export default function AboutSection() {
                 return (
                   <div
                     key={pillar.num}
-                    className="group relative p-3 sm:p-3.5 rounded-xl bg-white/90 hover:bg-white border border-neutral-200/80 hover:border-primary/40 shadow-xs hover:shadow-[0_4px_16px_rgba(26,107,124,0.08)] transition-all duration-200"
+                    className="group relative p-3 sm:p-3.5 rounded-xl bg-white/90 hover:bg-white border border-neutral-200/80 hover:border-primary/40 shadow-xs hover:shadow-[0_4px_16px_rgba(26,107,124,0.08)] hover:-translate-y-0.5 transition-all duration-200 ease-out"
                   >
                     <div className="flex items-start gap-3">
                       {/* Number & Icon Pill */}

@@ -210,7 +210,7 @@ _Submitted via GRN Website Plan Approval Portal_`;
             {/* Close Button */}
             <button
               onClick={closeModal}
-              className="absolute top-3.5 right-3.5 z-20 w-7 h-7 rounded-full bg-neutral-100 hover:bg-neutral-200 text-neutral-500 hover:text-dark flex items-center justify-center transition-colors cursor-pointer"
+              className="absolute top-3.5 right-3.5 z-20 w-7 h-7 rounded-full bg-neutral-100 hover:bg-neutral-200 text-neutral-500 hover:text-dark flex items-center justify-center transition-all duration-200 ease-out hover:scale-105 active:scale-95 cursor-pointer"
               aria-label="Close modal"
             >
               <X size={15} />
@@ -265,7 +265,7 @@ _Submitted via GRN Website Plan Approval Portal_`;
                     <button
                       type="button"
                       onClick={() => handleSubmitWhatsApp()}
-                      className="flex-1 inline-flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs transition-colors cursor-pointer shadow-sm"
+                      className="flex-1 inline-flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs transition-all duration-200 ease-out shadow-xs hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] cursor-pointer"
                     >
                       <MessageCircle size={15} />
                       Open WhatsApp
@@ -274,7 +274,7 @@ _Submitted via GRN Website Plan Approval Portal_`;
                     <button
                       type="button"
                       onClick={handleCopy}
-                      className="inline-flex items-center justify-center gap-1.5 py-2.5 px-3.5 rounded-xl border border-neutral-200 hover:bg-neutral-50 text-dark text-xs font-medium transition-colors cursor-pointer"
+                      className="inline-flex items-center justify-center gap-1.5 py-2.5 px-3.5 rounded-xl border border-neutral-200 hover:bg-neutral-50 hover:border-neutral-300 text-dark text-xs font-medium transition-all duration-200 ease-out hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] cursor-pointer shadow-2xs"
                     >
                       {isCopied ? <Check size={14} className="text-emerald-600" /> : <Copy size={14} />}
                       {isCopied ? 'Copied' : 'Copy'}
@@ -285,7 +285,7 @@ _Submitted via GRN Website Plan Approval Portal_`;
                     <button
                       type="button"
                       onClick={handleReset}
-                      className="inline-flex items-center gap-1 hover:text-dark font-medium cursor-pointer"
+                      className="inline-flex items-center gap-1 hover:text-dark font-medium transition-all duration-150 active:scale-[0.98] cursor-pointer"
                     >
                       <RotateCcw size={11} />
                       New Inquiry
@@ -293,7 +293,7 @@ _Submitted via GRN Website Plan Approval Portal_`;
                     <span>•</span>
                     <a
                       href={COMPANY.callLink}
-                      className="inline-flex items-center gap-1 text-primary hover:underline font-semibold"
+                      className="inline-flex items-center gap-1 text-primary hover:underline font-semibold transition-colors"
                     >
                       <Phone size={11} />
                       {COMPANY.phone}
@@ -316,10 +316,10 @@ _Submitted via GRN Website Plan Approval Portal_`;
                             key={srv.id}
                             type="button"
                             onClick={() => handleInputChange('serviceType', srv.id)}
-                            className={`p-2 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-center ${
+                            className={`p-2 rounded-xl border text-left transition-all duration-200 ease-out hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] cursor-pointer flex flex-col justify-center ${
                               isSelected
                                 ? 'border-secondary bg-secondary/10 text-secondary-dark ring-1 ring-secondary/20 shadow-2xs font-semibold'
-                                : 'border-neutral-200 bg-neutral-50/50 hover:bg-neutral-100/70 text-neutral-700'
+                                : 'border-neutral-200 bg-neutral-50/50 hover:bg-neutral-100/70 hover:border-neutral-300 text-neutral-700'
                             }`}
                           >
                             <span className="text-xs font-bold leading-tight">{srv.label}</span>
@@ -429,7 +429,7 @@ _Submitted via GRN Website Plan Approval Portal_`;
                   <div className="pt-1 space-y-1.5">
                     <button
                       type="submit"
-                      className="w-full inline-flex items-center justify-center gap-2 py-2.5 sm:py-3 px-4 rounded-xl bg-gradient-to-r from-secondary to-secondary-dark hover:from-secondary-dark hover:to-secondary text-white font-bold text-xs sm:text-sm tracking-wide shadow-sm hover:shadow transition-all duration-150 cursor-pointer hover:-translate-y-0.5 active:translate-y-0"
+                      className="w-full inline-flex items-center justify-center gap-2 py-2.5 sm:py-3 px-4 rounded-xl bg-gradient-to-r from-secondary to-secondary-dark hover:from-secondary-dark hover:to-secondary text-white font-bold text-xs sm:text-sm tracking-wide shadow-md hover:shadow-lg hover:shadow-secondary/30 transition-all duration-200 ease-out cursor-pointer hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]"
                     >
                       <MessageCircle size={16} className="shrink-0" />
                       <span>Consult on WhatsApp for Plan Approval</span>

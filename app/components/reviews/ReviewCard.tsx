@@ -121,7 +121,7 @@ export default function ReviewCard({
         {shouldTruncate && (
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className="mt-1.5 text-xs font-semibold text-primary hover:text-primary-light inline-flex items-center gap-1 cursor-pointer transition-colors"
+            className="mt-1.5 text-xs font-semibold text-primary hover:text-primary-dark inline-flex items-center gap-1 cursor-pointer transition-all duration-150 active:opacity-80"
           >
             {isExpanded ? (
               <>
@@ -146,7 +146,7 @@ export default function ReviewCard({
                 key={pIdx}
                 type="button"
                 onClick={() => onOpenPhoto?.(review.reviewPhotos, pIdx, review.reviewerName)}
-                className="relative w-16 h-16 rounded-xl overflow-hidden flex-shrink-0 border border-gray-200 hover:opacity-90 hover:scale-105 transition-all cursor-pointer group"
+                className="relative w-16 h-16 rounded-xl overflow-hidden flex-shrink-0 border border-gray-200 hover:scale-105 active:scale-95 transition-all duration-200 ease-out cursor-pointer group shadow-2xs"
                 aria-label={`View photo ${pIdx + 1} from ${review.reviewerName}`}
               >
                 <Image

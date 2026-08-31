@@ -145,7 +145,7 @@ export default function Navbar() {
             <button
               type="button"
               onClick={() => window.dispatchEvent(new CustomEvent('open-free-estimate-modal'))}
-              className="inline-flex items-center justify-center gap-1.5 rounded-full border border-secondary/50 bg-secondary/15 hover:bg-secondary/25 px-3.5 py-2 text-[12.5px] font-semibold text-secondary-light transition-all duration-200 cursor-pointer shadow-xs hover:scale-105 active:scale-95 whitespace-nowrap"
+              className="inline-flex items-center justify-center gap-1.5 rounded-full border border-secondary/50 bg-secondary/15 hover:bg-secondary/25 hover:border-secondary px-3.5 py-2 text-[12.5px] font-semibold text-secondary-light transition-all duration-200 ease-out cursor-pointer shadow-xs hover:shadow-sm hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] whitespace-nowrap"
             >
               <span className="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse" />
               <span>Free Estimate</span>
@@ -153,7 +153,7 @@ export default function Navbar() {
 
             <a
               href={COMPANY.callLink}
-              className="inline-flex items-center justify-center gap-1.5 rounded-full bg-secondary hover:bg-secondary-light px-3.5 py-2 text-[12.5px] font-semibold tracking-wide text-white shadow-[0_2px_10px_rgba(212,129,58,0.35)] transition-all duration-200 hover:shadow-[0_4px_16px_rgba(212,129,58,0.45)] hover:scale-105 active:scale-95 whitespace-nowrap"
+              className="inline-flex items-center justify-center gap-1.5 rounded-full bg-secondary hover:bg-secondary-light px-3.5 py-2 text-[12.5px] font-semibold tracking-wide text-white shadow-[0_2px_10px_rgba(212,129,58,0.35)] transition-all duration-200 ease-out hover:shadow-[0_4px_16px_rgba(212,129,58,0.45)] hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] whitespace-nowrap"
             >
               <Phone size={13} className="stroke-[2.5]" />
               <span>Call Now</span>
@@ -174,7 +174,7 @@ export default function Navbar() {
         <div className="w-full px-5 flex items-center justify-between">
           <Link
             href="#home"
-            className="flex items-center gap-2.5"
+            className="flex items-center gap-2.5 group transition-transform duration-200 hover:scale-[1.01]"
             onClick={() => handleNavClick('#home')}
           >
             <div className="relative w-9 h-9 rounded-lg overflow-hidden border border-white/20">
@@ -201,20 +201,20 @@ export default function Navbar() {
             <button
               type="button"
               onClick={() => window.dispatchEvent(new CustomEvent('open-free-estimate-modal'))}
-              className="inline-flex items-center justify-center gap-1 rounded-full bg-secondary/20 border border-secondary/50 px-2.5 py-1.5 text-[11px] font-semibold text-secondary-light"
+              className="inline-flex items-center justify-center gap-1 rounded-full bg-secondary/20 border border-secondary/50 hover:bg-secondary/30 hover:border-secondary px-2.5 py-1.5 text-[11px] font-semibold text-secondary-light transition-all duration-200 ease-out hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] cursor-pointer"
             >
               Estimate
             </button>
             <a
               href={COMPANY.callLink}
-              className="inline-flex items-center justify-center gap-1.5 rounded-full bg-gradient-to-r from-secondary to-secondary-light px-3 py-1.5 text-xs font-semibold text-white shadow-sm"
+              className="inline-flex items-center justify-center gap-1.5 rounded-full bg-secondary hover:bg-secondary-light px-3 py-1.5 text-xs font-semibold text-white shadow-xs hover:shadow-sm hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] transition-all duration-200 ease-out cursor-pointer"
             >
               <Phone size={12} />
               <span>Call</span>
             </a>
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
-              className={`p-1.5 rounded-lg border transition-colors ${
+              className={`p-1.5 rounded-lg border transition-all duration-200 hover:scale-105 active:scale-95 cursor-pointer ${
                 scrolled
                   ? 'text-dark border-gray-200 hover:bg-gray-100'
                   : 'text-white border-white/20 hover:bg-white/10'
@@ -236,10 +236,10 @@ export default function Navbar() {
                     key={link.href}
                     onClick={() => handleNavClick(link.href)}
                     aria-current={isActive ? 'page' : undefined}
-                    className={`text-left px-3.5 py-2.5 rounded-xl text-sm font-medium transition-colors ${
+                    className={`text-left px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 cursor-pointer ${
                       isActive
                         ? 'bg-secondary/10 text-secondary font-semibold'
-                        : 'text-neutral-800 hover:bg-gray-50 hover:text-primary'
+                        : 'text-neutral-800 hover:bg-gray-100/80 hover:text-primary'
                     }`}
                   >
                     {link.label}
@@ -254,7 +254,7 @@ export default function Navbar() {
                     setMobileOpen(false);
                     window.dispatchEvent(new CustomEvent('open-plan-approval-modal'));
                   }}
-                  className="w-full text-left px-3.5 py-2 rounded-xl text-xs font-semibold bg-secondary/10 text-secondary-dark border border-secondary/20 flex items-center justify-between"
+                  className="w-full text-left px-3.5 py-2 rounded-xl text-xs font-semibold bg-secondary/10 text-secondary-dark border border-secondary/20 hover:bg-secondary/20 hover:border-secondary/40 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] transition-all duration-200 ease-out cursor-pointer flex items-center justify-between shadow-2xs"
                 >
                   <span>🏛️ Plan Approval &amp; Blueprints</span>
                   <span className="text-[10px] bg-secondary text-white px-2 py-0.5 rounded-full font-bold">DTCP</span>
@@ -268,7 +268,7 @@ export default function Navbar() {
                     setMobileOpen(false);
                     window.dispatchEvent(new CustomEvent('open-free-estimate-modal'));
                   }}
-                  className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl bg-primary text-white text-xs font-semibold py-2.5 shadow-sm transition-all"
+                  className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl bg-primary hover:bg-primary-light text-white text-xs font-semibold py-2.5 shadow-sm hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] transition-all duration-200 ease-out cursor-pointer"
                 >
                   Free Estimate
                 </button>
@@ -276,7 +276,7 @@ export default function Navbar() {
                   href={COMPANY.whatsappLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl bg-green-500 hover:bg-green-600 text-white text-xs font-semibold py-2.5 shadow-sm transition-all"
+                  className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold py-2.5 shadow-sm hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] transition-all duration-200 ease-out cursor-pointer"
                 >
                   <MessageCircle size={16} /> WhatsApp
                 </a>

@@ -13,7 +13,7 @@ export default function FloatingButtons() {
         <motion.a
           href={COMPANY.callLink}
           className="w-12 h-12 sm:w-[52px] sm:h-[52px] rounded-full flex items-center justify-center text-white shadow-2xl group relative bg-gradient-to-br from-[#D4813A] to-[#E8974F] cursor-pointer"
-          whileHover={{ scale: 1.12 }}
+          whileHover={{ scale: 1.08 }}
           whileTap={{ scale: 0.95 }}
           animate={{
             boxShadow: [
@@ -37,7 +37,7 @@ export default function FloatingButtons() {
       <div className="fixed left-3 sm:left-5 bottom-36 sm:bottom-24 z-40">
         <motion.button
           onClick={() => window.dispatchEvent(new CustomEvent('open-free-estimate-modal'))}
-          className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-full bg-dark/95 hover:bg-dark text-white text-[11px] sm:text-xs font-semibold shadow-xl border border-secondary/40 backdrop-blur-md transition-all cursor-pointer hover:border-secondary hover:scale-105 active:scale-95"
+          className="inline-flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full bg-dark/95 hover:bg-dark text-white text-[11px] sm:text-xs font-semibold shadow-xl border border-secondary/40 backdrop-blur-md transition-all duration-200 ease-out cursor-pointer hover:border-secondary hover:shadow-2xl active:scale-95"
           whileHover={{ y: -2 }}
           aria-label="Get Free Estimate"
         >
@@ -53,7 +53,7 @@ export default function FloatingButtons() {
           target="_blank"
           rel="noopener noreferrer"
           className="w-12 h-12 sm:w-[52px] sm:h-[52px] rounded-full flex items-center justify-center text-white shadow-2xl group relative bg-[#25D366] cursor-pointer"
-          whileHover={{ scale: 1.12 }}
+          whileHover={{ scale: 1.08 }}
           whileTap={{ scale: 0.95 }}
           animate={{
             boxShadow: [

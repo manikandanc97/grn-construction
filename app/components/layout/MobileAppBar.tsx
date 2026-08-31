@@ -46,7 +46,7 @@ export default function MobileAppBar() {
       <div className="flex items-center shrink-0 ml-2">
         <a
           href={COMPANY.callLink}
-          className="flex items-center gap-1.5 rounded-full bg-gradient-to-br from-secondary to-secondary-light px-3.5 py-1.5 text-xs font-semibold text-white shadow-md transition-all"
+          className="flex items-center gap-1.5 rounded-full bg-secondary hover:bg-secondary-light px-3.5 py-1.5 text-xs font-semibold text-white shadow-xs hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] transition-all duration-200 ease-out cursor-pointer"
           aria-label="Call Now"
         >
           <Phone size={13} />

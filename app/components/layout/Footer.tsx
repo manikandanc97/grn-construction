@@ -180,7 +180,7 @@ export default function Footer() {
                   key={label}
                   href={href}
                   aria-label={label}
-                  className="w-9 h-9 rounded-lg flex items-center justify-center text-white/60 hover:text-secondary hover:border-secondary/40 hover:bg-white/[0.04] transition-all duration-200 border border-white/10"
+                  className="w-9 h-9 rounded-lg flex items-center justify-center text-white/60 hover:text-secondary hover:border-secondary/60 hover:bg-white/[0.08] hover:scale-105 active:scale-95 transition-all duration-200 ease-out border border-white/10 shadow-2xs"
                 >
                   <Icon />
                 </a>
@@ -283,7 +283,7 @@ export default function Footer() {
               <a
                 href="#requirements"
                 onClick={(e) => handleNavClick(e, '#requirements')}
-                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-[13px] font-semibold text-white bg-secondary hover:bg-secondary-light transition-all duration-200 shadow-md shadow-secondary/20 hover:shadow-lg hover:shadow-secondary/30 hover:-translate-y-0.5 group"
+                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-[13px] font-semibold text-white bg-secondary hover:bg-secondary-light transition-all duration-200 ease-out shadow-md shadow-secondary/20 hover:shadow-lg hover:shadow-secondary/35 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] group cursor-pointer"
               >
                 <span>Start Your Project</span>
                 <ArrowRight

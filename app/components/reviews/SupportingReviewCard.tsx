@@ -136,7 +136,7 @@ export default function SupportingReviewCard({
           {shouldTruncate && (
             <button
               onClick={() => setIsExpanded(!isExpanded)}
-              className="mt-2 text-xs font-semibold text-primary hover:text-primary-dark inline-flex items-center gap-1 cursor-pointer transition-colors"
+              className="mt-2 text-xs font-semibold text-primary hover:text-primary-dark inline-flex items-center gap-1 cursor-pointer transition-all duration-150 active:opacity-80"
             >
               {isExpanded ? (
                 <>
@@ -163,7 +163,7 @@ export default function SupportingReviewCard({
                   key={pIdx}
                   type="button"
                   onClick={() => onOpenPhoto?.(review.reviewPhotos, pIdx, review.reviewerName)}
-                  className="relative w-16 h-16 sm:w-18 sm:h-18 rounded-xl overflow-hidden flex-shrink-0 border-2 border-white shadow-2xs hover:scale-105 transition-transform duration-300 cursor-pointer group"
+                  className="relative w-16 h-16 sm:w-18 sm:h-18 rounded-xl overflow-hidden flex-shrink-0 border-2 border-white shadow-2xs hover:scale-105 active:scale-95 transition-all duration-200 ease-out cursor-pointer group"
                   aria-label={`View photo ${pIdx + 1} from ${review.reviewerName}`}
                 >
                   <Image
@@ -219,7 +219,7 @@ export default function SupportingReviewCard({
             href={review.googleMapsUri}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:text-primary-dark transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:text-primary-dark transition-all duration-150 active:scale-[0.98] cursor-pointer"
           >
             <span>View on Google</span>
             <ExternalLink size={12} />

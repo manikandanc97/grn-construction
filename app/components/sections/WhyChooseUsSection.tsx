@@ -278,7 +278,7 @@ export default function WhyChooseUsSection() {
         <div ref={ctaRef} className="mt-6 sm:mt-8 text-center opacity-0">
           <button
             onClick={handleScrollToRequirements}
-            className="inline-flex items-center gap-1.5 px-5 py-2 sm:px-6 sm:py-2.5 rounded-lg text-white font-semibold text-xs sm:text-[13px] bg-secondary hover:bg-secondary-light hover:shadow-xs hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 cursor-pointer shadow-xs"
+            className="inline-flex items-center gap-1.5 px-6 py-2.5 rounded-xl text-white font-semibold text-xs sm:text-[13.5px] bg-secondary hover:bg-secondary-light shadow-md shadow-secondary/20 hover:shadow-lg hover:shadow-secondary/35 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] transition-all duration-200 ease-out cursor-pointer"
           >
             <span>Start Your Project</span>
             <ArrowRight size={14} className="stroke-[2.5]" />

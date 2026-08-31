@@ -65,7 +65,7 @@ export default function PhotoLightboxModal({
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute -top-12 right-0 md:-right-12 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
+          className="absolute -top-12 right-0 md:-right-12 p-2 rounded-full bg-white/10 hover:bg-white/20 hover:scale-105 active:scale-95 text-white transition-all duration-200 ease-out cursor-pointer"
           aria-label="Close photo modal"
         >
           <X size={24} />
@@ -97,7 +97,7 @@ export default function PhotoLightboxModal({
                 <button
                   disabled={currentIndex === 0}
                   onClick={() => onNavigate(currentIndex - 1)}
-                  className="p-1.5 rounded-full bg-white/10 hover:bg-white/20 disabled:opacity-30 disabled:cursor-not-allowed text-white"
+                  className="p-1.5 rounded-full bg-white/10 hover:bg-white/20 hover:scale-105 active:scale-95 disabled:opacity-30 disabled:hover:scale-100 disabled:cursor-not-allowed text-white transition-all duration-200 ease-out cursor-pointer"
                   aria-label="Previous photo"
                 >
                   <ChevronLeft size={18} />
@@ -105,7 +105,7 @@ export default function PhotoLightboxModal({
                 <button
                   disabled={currentIndex === photos.length - 1}
                   onClick={() => onNavigate(currentIndex + 1)}
-                  className="p-1.5 rounded-full bg-white/10 hover:bg-white/20 disabled:opacity-30 disabled:cursor-not-allowed text-white"
+                  className="p-1.5 rounded-full bg-white/10 hover:bg-white/20 hover:scale-105 active:scale-95 disabled:opacity-30 disabled:hover:scale-100 disabled:cursor-not-allowed text-white transition-all duration-200 ease-out cursor-pointer"
                   aria-label="Next photo"
                 >
                   <ChevronRight size={18} />

@@ -262,10 +262,10 @@ export default function ServicesSection() {
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pt-3 border-t border-neutral-100">
                 <a
                   href={FEATURED_SERVICE.ctaHref}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary text-white text-xs sm:text-sm font-semibold transition-all duration-300 hover:bg-primary-hover hover:shadow-xs group"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary hover:bg-primary-light text-white text-xs sm:text-sm font-semibold transition-all duration-200 ease-out shadow-xs hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] cursor-pointer group"
                 >
                   <span>{FEATURED_SERVICE.ctaText}</span>
-                  <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
+                  <ArrowRight size={14} className="transition-transform duration-200 group-hover:translate-x-1" />
                 </a>
                 <span className="text-xs text-neutral-500 font-medium">
                   Complete engineering &amp; architectural oversight
@@ -286,7 +286,7 @@ export default function ServicesSection() {
               <a
                 key={service.id}
                 href="#contact"
-                className="group relative flex flex-col justify-between p-4 sm:p-5 min-h-[140px] rounded-xl border border-neutral-200/90 bg-white opacity-0 transition-all duration-200 ease-out hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-sm"
+                className="group relative flex flex-col justify-between p-4 sm:p-5 min-h-[140px] rounded-xl border border-neutral-200/90 bg-white opacity-0 transition-all duration-200 ease-out hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-sm active:scale-[0.99] cursor-pointer"
               >
                 {/* Top Row: Service Number + Simple Icon */}
                 <div className="flex items-center justify-between mb-2">
@@ -333,7 +333,7 @@ export default function ServicesSection() {
           </div>
           <a
             href="#contact"
-            className="shrink-0 inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-gradient-to-br from-secondary to-secondary-light text-white text-xs font-semibold shadow-xs hover:shadow-sm hover:-translate-y-0.5 transition-all duration-200"
+            className="shrink-0 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-secondary hover:bg-secondary-light text-white text-xs font-semibold shadow-xs hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] transition-all duration-200 ease-out cursor-pointer"
           >
             <span>Request Free Consultation</span>
             <ArrowRight size={13} />

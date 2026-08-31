@@ -4,9 +4,11 @@
   --color-primary: #1A6B7C;
   --color-primary-light: #2A8A9E;
   --color-primary-dark: #0F4A57;
+  --color-primary-hover: #2A8A9E;
   --color-secondary: #D4813A;
   --color-secondary-light: #E8974F;
   --color-secondary-dark: #B8692A;
+  --color-secondary-hover: #E8974F;
   --color-dark: #0F1923;
   --color-dark-muted: #1C2B38;
   --color-brand-light: #F8F5F0;

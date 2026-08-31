@@ -199,7 +199,7 @@ export default function ProjectsSection() {
                   key={cat}
                   onClick={() => setActiveCategory(cat)}
                   aria-pressed={isActive}
-                  className={`inline-flex items-center justify-center gap-2 px-4 py-2 sm:px-5 sm:py-2.5 min-h-[44px] rounded-xl text-xs sm:text-sm font-semibold transition-all duration-300 cursor-pointer ${
+                  className={`inline-flex items-center justify-center gap-2 px-4 py-2 sm:px-5 sm:py-2.5 min-h-[44px] rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 ease-out hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] cursor-pointer ${
                     isActive
                       ? 'bg-dark text-white shadow-sm'
                       : 'text-neutral-700 hover:text-dark hover:bg-slate-100/90'
@@ -232,7 +232,7 @@ export default function ProjectsSection() {
                   const idx = PROJECTS.findIndex((p) => p.id === leadProject.id);
                   setActiveImageIndex(idx >= 0 ? idx : 0);
                 }}
-                className="project-card lg:col-span-7 group relative h-[340px] sm:h-[400px] lg:h-[440px] rounded-2xl sm:rounded-3xl overflow-hidden bg-dark shadow-md hover:shadow-2xl hover:shadow-primary/15 border border-slate-200/60 transition-all duration-500 cursor-pointer"
+                className="project-card lg:col-span-7 group relative h-[340px] sm:h-[400px] lg:h-[440px] rounded-2xl sm:rounded-3xl overflow-hidden bg-dark shadow-md hover:shadow-2xl hover:shadow-primary/15 border border-slate-200/60 transition-all duration-300 cursor-pointer"
               >
                 <div className="relative w-full h-full overflow-hidden">
                   <Image
@@ -274,10 +274,10 @@ export default function ProjectsSection() {
                     </div>
 
                     {/* Frosted Action Button */}
-                    <div className="shrink-0 w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/15 backdrop-blur-md border border-white/25 flex items-center justify-center text-white group-hover:bg-secondary group-hover:border-secondary transition-all duration-300 group-hover:scale-110 shadow-md">
+                    <div className="shrink-0 w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/15 backdrop-blur-md border border-white/25 flex items-center justify-center text-white group-hover:bg-secondary group-hover:border-secondary transition-all duration-200 ease-out group-hover:scale-105 shadow-md group-hover:shadow-lg">
                       <ArrowUpRight
                         size={18}
-                        className="transition-transform duration-300 ease-out group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                        className="transition-transform duration-200 ease-out group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
                       />
                     </div>
                   </div>
@@ -293,7 +293,7 @@ export default function ProjectsSection() {
                       const idx = PROJECTS.findIndex((p) => p.id === project.id);
                       setActiveImageIndex(idx >= 0 ? idx : 0);
                     }}
-                    className="project-card group relative h-[200px] sm:h-[190px] lg:h-[208px] rounded-2xl overflow-hidden bg-dark shadow-md hover:shadow-xl hover:shadow-primary/10 border border-slate-200/60 transition-all duration-500 cursor-pointer"
+                    className="project-card group relative h-[200px] sm:h-[190px] lg:h-[208px] rounded-2xl overflow-hidden bg-dark shadow-md hover:shadow-xl hover:shadow-primary/10 border border-slate-200/60 transition-all duration-300 cursor-pointer"
                   >
                     <div className="relative w-full h-full overflow-hidden">
                       <Image
@@ -328,10 +328,10 @@ export default function ProjectsSection() {
                         </div>
 
                         {/* Frosted Action Button */}
-                        <div className="shrink-0 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/15 backdrop-blur-md border border-white/20 flex items-center justify-center text-white group-hover:bg-secondary group-hover:border-secondary transition-all duration-300 shadow-xs">
+                        <div className="shrink-0 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/15 backdrop-blur-md border border-white/20 flex items-center justify-center text-white group-hover:bg-secondary group-hover:border-secondary transition-all duration-200 ease-out group-hover:scale-105 shadow-xs group-hover:shadow-md">
                           <ArrowUpRight
                             size={15}
-                            className="transition-transform duration-300 ease-out group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                            className="transition-transform duration-200 ease-out group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
                           />
                         </div>
                       </div>
@@ -360,7 +360,7 @@ export default function ProjectsSection() {
                     const idx = PROJECTS.findIndex((p) => p.id === project.id);
                     setActiveImageIndex(idx >= 0 ? idx : 0);
                   }}
-                  className="project-card group relative h-[240px] sm:h-[260px] lg:h-[280px] rounded-2xl overflow-hidden bg-dark shadow-md hover:shadow-xl hover:shadow-primary/10 border border-slate-200/60 transition-all duration-500 cursor-pointer"
+                  className="project-card group relative h-[240px] sm:h-[260px] lg:h-[280px] rounded-2xl overflow-hidden bg-dark shadow-md hover:shadow-xl hover:shadow-primary/10 border border-slate-200/60 transition-all duration-300 cursor-pointer"
                 >
                   <div className="relative w-full h-full overflow-hidden">
                     <Image
@@ -397,10 +397,10 @@ export default function ProjectsSection() {
                       </div>
 
                       {/* Frosted Action Button */}
-                      <div className="shrink-0 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/15 backdrop-blur-md border border-white/20 flex items-center justify-center text-white group-hover:bg-secondary group-hover:border-secondary transition-all duration-300 shadow-xs">
+                      <div className="shrink-0 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/15 backdrop-blur-md border border-white/20 flex items-center justify-center text-white group-hover:bg-secondary group-hover:border-secondary transition-all duration-200 ease-out group-hover:scale-105 shadow-xs group-hover:shadow-md">
                         <ArrowUpRight
                           size={15}
-                          className="transition-transform duration-300 ease-out group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                          className="transition-transform duration-200 ease-out group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
                         />
                       </div>
                     </div>
@@ -415,9 +415,9 @@ export default function ProjectsSection() {
         <div className="mt-8 sm:mt-10 flex justify-center">
           <button
             onClick={() => setActiveImageIndex(0)}
-            className="inline-flex items-center gap-2.5 px-6 py-3 rounded-full bg-white hover:bg-slate-50 text-dark font-semibold text-xs sm:text-sm shadow-md hover:shadow-lg border border-slate-200/90 transition-all duration-300 hover:-translate-y-0.5 cursor-pointer group"
+            className="inline-flex items-center gap-2.5 px-6 py-3 rounded-full bg-white hover:bg-slate-50 text-dark font-semibold text-xs sm:text-sm shadow-md hover:shadow-lg border border-slate-200/90 hover:border-slate-300 transition-all duration-200 ease-out hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] cursor-pointer group"
           >
-            <Images size={16} className="text-secondary group-hover:scale-110 transition-transform" />
+            <Images size={16} className="text-secondary group-hover:scale-110 transition-transform duration-200" />
             <span>Show More Photos ({PROJECTS.length} Images)</span>
           </button>
         </div>
@@ -439,7 +439,7 @@ export default function ProjectsSection() {
 
             <button
               onClick={() => setActiveImageIndex(null)}
-              className="pointer-events-auto w-10 h-10 rounded-full bg-black/60 hover:bg-black/80 backdrop-blur-md border border-white/20 text-white flex items-center justify-center transition-all cursor-pointer shadow-lg hover:scale-105"
+              className="pointer-events-auto w-10 h-10 rounded-full bg-black/60 hover:bg-black/80 backdrop-blur-md border border-white/20 text-white flex items-center justify-center transition-all duration-200 ease-out cursor-pointer shadow-lg hover:scale-105 active:scale-95"
               aria-label="Close"
             >
               <X size={20} />
@@ -452,7 +452,7 @@ export default function ProjectsSection() {
               e.stopPropagation();
               handlePrevImage();
             }}
-            className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-30 w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-black/60 hover:bg-black/80 backdrop-blur-md border border-white/20 text-white flex items-center justify-center transition-all cursor-pointer shadow-xl hover:scale-110"
+            className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-30 w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-black/60 hover:bg-black/80 backdrop-blur-md border border-white/20 text-white flex items-center justify-center transition-all duration-200 ease-out cursor-pointer shadow-xl hover:scale-105 active:scale-95"
             aria-label="Previous image"
           >
             <ChevronLeft size={24} />
@@ -464,7 +464,7 @@ export default function ProjectsSection() {
               e.stopPropagation();
               handleNextImage();
             }}
-            className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 z-30 w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-black/60 hover:bg-black/80 backdrop-blur-md border border-white/20 text-white flex items-center justify-center transition-all cursor-pointer shadow-xl hover:scale-110"
+            className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 z-30 w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-black/60 hover:bg-black/80 backdrop-blur-md border border-white/20 text-white flex items-center justify-center transition-all duration-200 ease-out cursor-pointer shadow-xl hover:scale-105 active:scale-95"
             aria-label="Next image"
           >
             <ChevronRight size={24} />

@@ -211,8 +211,9 @@ export default function HeroSection() {
             className="flex flex-wrap items-center gap-2.5 sm:gap-3.5 mb-8 sm:mb-9"
           >
             <button
-              onClick={() => handleScrollTo('requirements')}
-              className="inline-flex h-[42px] sm:h-[46px] items-center justify-center gap-2 rounded-xl bg-secondary px-5 sm:px-6 text-sm sm:text-[15px] font-semibold text-white shadow-[0_4px_20px_rgba(212,129,58,0.4)] transition-all duration-300 ease-[cubic-bezier(0.21,0.47,0.32,0.98)] hover:bg-secondary-light hover:shadow-[0_6px_28px_rgba(212,129,58,0.55)] hover:-translate-y-0.5 active:translate-y-0 cursor-pointer opacity-0"
+              type="button"
+              onClick={() => window.dispatchEvent(new CustomEvent('open-quote-modal'))}
+              className="inline-flex h-[42px] sm:h-[46px] items-center justify-center gap-2 rounded-xl bg-secondary px-5 sm:px-6 text-sm sm:text-[15px] font-semibold text-white shadow-[0_4px_20px_rgba(212,129,58,0.4)] transition-all duration-200 ease-out hover:bg-secondary-light hover:shadow-[0_6px_28px_rgba(212,129,58,0.55)] hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] cursor-pointer opacity-0"
             >
               <span>Get a Quote</span>
               <ArrowUpRight size={17} className="stroke-[2.5]" />
@@ -222,7 +223,7 @@ export default function HeroSection() {
             <button
               type="button"
               onClick={() => window.dispatchEvent(new CustomEvent('open-plan-approval-modal'))}
-              className="inline-flex h-[42px] sm:h-[46px] items-center justify-center gap-2 rounded-xl border border-secondary/50 bg-secondary/15 px-4 sm:px-5 text-sm sm:text-[15px] font-semibold text-white backdrop-blur-md transition-all duration-300 ease-[cubic-bezier(0.21,0.47,0.32,0.98)] hover:bg-secondary/30 hover:border-secondary hover:-translate-y-0.5 active:translate-y-0 cursor-pointer opacity-0 shadow-[0_2px_12px_rgba(212,129,58,0.2)]"
+              className="inline-flex h-[42px] sm:h-[46px] items-center justify-center gap-2 rounded-xl border border-secondary/50 bg-secondary/15 hover:bg-secondary/30 hover:border-secondary px-4 sm:px-5 text-sm sm:text-[15px] font-semibold text-white backdrop-blur-md transition-all duration-200 ease-out hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] cursor-pointer opacity-0 shadow-[0_2px_12px_rgba(212,129,58,0.2)] hover:shadow-[0_4px_16px_rgba(212,129,58,0.35)]"
             >
               <FileCheck size={16} className="text-secondary-light stroke-[2.2]" />
               <span>Plan Approval Works</span>
@@ -230,7 +231,7 @@ export default function HeroSection() {
 
             <button
               onClick={() => handleScrollTo('packages')}
-              className="inline-flex h-[42px] sm:h-[46px] items-center justify-center gap-2 rounded-xl border border-white/25 bg-white/[0.06] px-4 sm:px-5 text-sm sm:text-[15px] font-medium text-white backdrop-blur-md transition-all duration-300 ease-[cubic-bezier(0.21,0.47,0.32,0.98)] hover:bg-white/12 hover:border-white/40 hover:-translate-y-0.5 active:translate-y-0 cursor-pointer opacity-0"
+              className="inline-flex h-[42px] sm:h-[46px] items-center justify-center gap-2 rounded-xl border border-white/25 bg-white/[0.06] hover:bg-white/15 hover:border-white/45 px-4 sm:px-5 text-sm sm:text-[15px] font-medium text-white backdrop-blur-md transition-all duration-200 ease-out hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] cursor-pointer opacity-0 shadow-2xs hover:shadow-xs"
             >
               <span>View Packages</span>
             </button>
@@ -273,7 +274,7 @@ export default function HeroSection() {
       <div
         ref={scrollIndicatorRef}
         onClick={() => handleScrollTo('about')}
-        className="hidden md:flex absolute bottom-6 lg:bottom-8 right-10 lg:right-16 z-20 items-center gap-2 text-white/45 hover:text-white/85 transition-colors cursor-pointer opacity-0"
+        className="hidden md:flex absolute bottom-6 lg:bottom-8 right-10 lg:right-16 z-20 items-center gap-2 text-white/45 hover:text-white transition-all duration-200 hover:-translate-y-0.5 cursor-pointer opacity-0"
       >
         <span className="text-[11px] font-medium tracking-widest uppercase">Explore</span>
         <ChevronDown size={16} />

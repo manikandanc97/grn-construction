@@ -152,13 +152,13 @@ const PACKAGES: PackageItem[] = [
     priceNote: 'per sq.ft',
     startingEstimate: 'Est. ~₹24 Lakhs for 1,000 sq.ft',
     targetDescription:
-      'Our flagship standard with primary Tata/JSW steel, teak main entrance, UPVC windows & contemporary glass elevation.',
+      'Our flagship standard with primary Tata/JSW steel, teak main entrance, teakwood windows & contemporary glass elevation.',
     accentColor: 'from-primary to-primary-dark',
     coreInclusions: [
       { category: 'Structure', spec: 'Heavy-duty engineered RCC framed frame' },
       { category: 'Steel', spec: 'Primary Tata Tiscon / JSW Neosteel Fe 550D' },
       { category: 'Walls', spec: 'Grade-A kiln-baked wirecut red bricks' },
-      { category: 'Joinery', spec: 'Teak main door & UPVC sliding windows' },
+      { category: 'Joinery', spec: 'Teak main door & teak wood windows' },
       { category: 'Flooring', spec: "Glazed Vitrified (GVT) 4' x 2' (₹85/sq.ft)" },
       { category: 'Sanitary', spec: 'Parryware / Hindware wall-hung range' },
       { category: 'Elevation', spec: 'Architectural glass fitting & CNC facade' },
@@ -177,7 +177,7 @@ const PACKAGES: PackageItem[] = [
         category: 'Joinery & Architectural Finishes',
         items: [
           '1st quality seasoned teakwood main door frame & carved shutter',
-          'Premium multi-track UPVC sliding windows with safety MS grills',
+          'Seasoned teakwood window frames with safety MS grills',
           'Toughened glass balcony railings with SS 304 fittings',
           '2 coats Birla Putty + Asian Paints Royale Luxury Emulsion',
           'Exterior Asian Paints Apex Ultima weather-proof coating',
@@ -189,7 +189,7 @@ const PACKAGES: PackageItem[] = [
           'Finolex / Havells wiring with Legrand modular switches',
           'Astral / Finolex CPVC pipes with diverters in all baths',
           'Dedicated Site Engineer supervision with weekly photo reports',
-          '10-Year structural warranty & 1-year complimentary maintenance',
+          '1-Year complimentary maintenance & dedicated post-handover support',
         ],
       },
     ],
@@ -210,7 +210,7 @@ const PACKAGES: PackageItem[] = [
       { category: 'Structure', spec: 'Seismic-resistant heavy RCC framed structure' },
       { category: 'Steel', spec: '100% Tata Tiscon Fe 550D Primary Steel' },
       { category: 'Walls', spec: 'High-compression wirecut red bricks' },
-      { category: 'Joinery', spec: 'Handcrafted teak doors & soundproof UPVC' },
+      { category: 'Joinery', spec: 'Handcrafted teak doors & teak wood windows' },
       { category: 'Flooring', spec: "Italian marble look 4' x 2' GVT (₹110/sq.ft)" },
       { category: 'Sanitary', spec: 'Jaquar / Kohler luxury series fittings' },
       { category: 'Elevation', spec: 'Grand facade glass + TV unit & wardrobes' },
@@ -230,7 +230,7 @@ const PACKAGES: PackageItem[] = [
         items: [
           'Modular TV entertainment unit & master bedroom wardrobes included',
           'Heavy designer teakwood double-door main entrance',
-          'Soundproof multi-chamber UPVC windows with Saint-Gobain glass',
+          'Seasoned 1st-quality teakwood window frames with safety MS grills',
           'Asian Paints Royale Luxury Emulsion with PU Italian wood polish',
         ],
       },
@@ -252,8 +252,10 @@ export default function PackagesSection() {
   const headerRef = useRef<HTMLDivElement>(null);
   const sliderRef = useRef<HTMLDivElement>(null);
 
-  // Active index starts at 0 (Lowest price package - Standard)
-  const [activeIndex, setActiveIndex] = useState<number>(0);
+  // Scroll availability state for arrow buttons
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
+
   // Expanded detailed specs state
   const [expandedCards, setExpandedCards] = useState<Record<string, boolean>>({});
 
@@ -282,56 +284,36 @@ export default function PackagesSection() {
     { scope: sectionRef }
   );
 
-  // Scroll to index without looping (stops at 0 or 3)
-  const scrollToIndex = (index: number) => {
-    const targetIdx = Math.max(0, Math.min(index, PACKAGES.length - 1));
-    setActiveIndex(targetIdx);
-
-    if (sliderRef.current) {
-      const container = sliderRef.current;
-      const child = container.children[targetIdx] as HTMLElement;
-      if (child) {
-        const targetScroll = child.offsetLeft - (container.clientWidth - child.clientWidth) / 2;
-        container.scrollTo({
-          left: Math.max(0, targetScroll),
-          behavior: 'smooth',
-        });
-      }
-    }
+  const updateScrollState = () => {
+    if (!sliderRef.current) return;
+    const { scrollLeft, scrollWidth, clientWidth } = sliderRef.current;
+    setCanScrollLeft(scrollLeft > 10);
+    setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
   };
 
+  useEffect(() => {
+    updateScrollState();
+    const handleResize = () => updateScrollState();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Smooth scroll by 1 card step
   const handlePrev = () => {
-    if (activeIndex > 0) {
-      scrollToIndex(activeIndex - 1);
+    if (sliderRef.current) {
+      const container = sliderRef.current;
+      const firstChild = container.children[0] as HTMLElement | undefined;
+      const scrollStep = firstChild ? firstChild.offsetWidth + 24 : 360;
+      container.scrollBy({ left: -scrollStep, behavior: 'smooth' });
     }
   };
 
   const handleNext = () => {
-    if (activeIndex < PACKAGES.length - 1) {
-      scrollToIndex(activeIndex + 1);
-    }
-  };
-
-  // Sync activeIndex on scroll (for swipe gestures)
-  const handleScroll = () => {
-    if (!sliderRef.current) return;
-    const container = sliderRef.current;
-    const scrollCenter = container.scrollLeft + container.clientWidth / 2;
-    let closestIdx = 0;
-    let minDistance = Infinity;
-
-    Array.from(container.children).forEach((child, idx) => {
-      const el = child as HTMLElement;
-      const childCenter = el.offsetLeft + el.clientWidth / 2;
-      const distance = Math.abs(scrollCenter - childCenter);
-      if (distance < minDistance) {
-        minDistance = distance;
-        closestIdx = idx;
-      }
-    });
-
-    if (closestIdx !== activeIndex) {
-      setActiveIndex(closestIdx);
+    if (sliderRef.current) {
+      const container = sliderRef.current;
+      const firstChild = container.children[0] as HTMLElement | undefined;
+      const scrollStep = firstChild ? firstChild.offsetWidth + 24 : 360;
+      container.scrollBy({ left: scrollStep, behavior: 'smooth' });
     }
   };
 
@@ -348,9 +330,6 @@ export default function PackagesSection() {
     );
     return `https://wa.me/${COMPANY.phoneRaw}?text=${text}`;
   };
-
-  const canPrev = activeIndex > 0;
-  const canNext = activeIndex < PACKAGES.length - 1;
 
   return (
     <section
@@ -381,20 +360,19 @@ export default function PackagesSection() {
         </div>
 
         {/* Slider Navigation Controls Header */}
-        <div className="flex items-center justify-end gap-3 mt-6 sm:mt-8 pb-2 border-b border-slate-200/70">
-          <span className="text-xs font-medium text-slate-500">
-            Package <strong className="text-dark">{activeIndex + 1}</strong> of{' '}
-            <strong className="text-dark">{PACKAGES.length}</strong>
+        <div className="flex items-center justify-between gap-3 mt-6 sm:mt-8 pb-2 border-b border-slate-200/70">
+          <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+            Swipe or use arrows to view all packages
           </span>
           <div className="flex items-center gap-1.5">
             <button
               type="button"
               onClick={handlePrev}
-              disabled={!canPrev}
+              disabled={!canScrollLeft}
               aria-label="Previous package"
-              className={`p-2 rounded-lg border transition-all ${
-                canPrev
-                  ? 'bg-white border-slate-200 text-dark hover:bg-slate-50 hover:scale-105 active:scale-95 shadow-2xs cursor-pointer'
+              className={`p-2 rounded-lg border transition-all duration-200 ease-out ${
+                canScrollLeft
+                  ? 'bg-white border-slate-200 text-dark hover:bg-slate-50 hover:border-slate-300 hover:scale-105 active:scale-95 shadow-2xs cursor-pointer'
                   : 'bg-slate-100 border-slate-200/60 text-slate-300 cursor-not-allowed opacity-50'
               }`}
             >
@@ -403,11 +381,11 @@ export default function PackagesSection() {
             <button
               type="button"
               onClick={handleNext}
-              disabled={!canNext}
+              disabled={!canScrollRight}
               aria-label="Next package"
-              className={`p-2 rounded-lg border transition-all ${
-                canNext
-                  ? 'bg-white border-slate-200 text-dark hover:bg-slate-50 hover:scale-105 active:scale-95 shadow-2xs cursor-pointer'
+              className={`p-2 rounded-lg border transition-all duration-200 ease-out ${
+                canScrollRight
+                  ? 'bg-white border-slate-200 text-dark hover:bg-slate-50 hover:border-slate-300 hover:scale-105 active:scale-95 shadow-2xs cursor-pointer'
                   : 'bg-slate-100 border-slate-200/60 text-slate-300 cursor-not-allowed opacity-50'
               }`}
             >
@@ -416,17 +394,16 @@ export default function PackagesSection() {
           </div>
         </div>
 
-        {/* Interactive Slider Track (No infinite loop, strictly Low to High) */}
+        {/* Interactive Slider Track */}
         <div className="relative mt-6 sm:mt-8">
           {/* Scrollable Container with Snap */}
           <div
             ref={sliderRef}
-            onScroll={handleScroll}
+            onScroll={updateScrollState}
             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             className="flex gap-4 sm:gap-5 lg:gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-4 pt-2 px-1 [&::-webkit-scrollbar]:hidden"
           >
-            {PACKAGES.map((pkg, idx) => {
-              const isSelected = activeIndex === idx;
+            {PACKAGES.map((pkg) => {
               const isElite = pkg.isPopular;
               const isLux = pkg.isLuxury;
               const isExpanded = !!expandedCards[pkg.id];
@@ -434,15 +411,12 @@ export default function PackagesSection() {
               return (
                 <div
                   key={pkg.id}
-                  onClick={() => scrollToIndex(idx)}
-                  className={`snap-center shrink-0 w-[86vw] max-w-[340px] sm:w-[360px] md:w-[350px] lg:w-[320px] xl:w-[295px] flex flex-col justify-between rounded-2xl transition-all duration-300 bg-white cursor-pointer ${
-                    isSelected
-                      ? isElite
-                        ? 'border-2 border-primary ring-2 ring-primary/20 shadow-md bg-gradient-to-b from-primary/[0.03] to-white md:scale-[1.01]'
-                        : isLux
-                        ? 'border-2 border-secondary ring-2 ring-secondary/20 shadow-md bg-gradient-to-b from-secondary/[0.03] to-white md:scale-[1.01]'
-                        : 'border-2 border-slate-700 ring-2 ring-slate-200 shadow-md md:scale-[1.01]'
-                      : 'border border-slate-200/90 shadow-2xs hover:border-slate-300 opacity-95 hover:opacity-100'
+                  className={`snap-start shrink-0 w-[85vw] max-w-[340px] sm:w-[360px] sm:max-w-none md:w-[calc((100%-1.25rem)/2)] lg:w-[calc((100%-3rem)/3)] flex flex-col justify-between rounded-2xl transition-all duration-200 bg-white ${
+                    isElite
+                      ? 'border-2 border-primary/80 ring-1 ring-primary/20 shadow-md bg-gradient-to-b from-primary/[0.02] to-white'
+                      : isLux
+                      ? 'border-2 border-secondary/70 ring-1 ring-secondary/20 shadow-md bg-gradient-to-b from-secondary/[0.02] to-white'
+                      : 'border border-slate-200/90 shadow-2xs hover:border-slate-300 hover:shadow-xs'
                   }`}
                 >
                   {/* Top Architectural Accent Bar */}
@@ -452,9 +426,9 @@ export default function PackagesSection() {
                         ? 'from-primary to-primary-light'
                         : isLux
                         ? 'from-secondary to-secondary-dark'
-                        : isSelected
-                        ? 'from-slate-700 to-slate-800'
-                        : 'from-slate-300 to-slate-400'
+                        : pkg.id === 'premium'
+                        ? 'from-[#1A6B7C] to-[#145361]'
+                        : 'from-slate-600 to-slate-700'
                     }`}
                   />
 
@@ -495,8 +469,6 @@ export default function PackagesSection() {
                           ? 'bg-primary/[0.06] border-primary/20'
                           : isLux
                           ? 'bg-secondary/[0.07] border-secondary/25'
-                          : isSelected
-                          ? 'bg-slate-100/90 border-slate-300'
                           : 'bg-slate-50/90 border-slate-200/80'
                       }`}
                     >
@@ -578,10 +550,10 @@ export default function PackagesSection() {
                           e.stopPropagation();
                           toggleExpand(pkg.id);
                         }}
-                        className={`w-full py-2 px-2.5 rounded-lg text-xs font-semibold flex items-center justify-between transition-colors ${
+                        className={`w-full py-2 px-2.5 rounded-lg text-xs font-semibold flex items-center justify-between transition-all duration-150 cursor-pointer ${
                           isExpanded
                             ? 'bg-slate-100 text-dark'
-                            : 'text-neutral-700 hover:text-dark hover:bg-slate-50'
+                            : 'text-neutral-700 hover:text-dark hover:bg-slate-100/70'
                         }`}
                         aria-expanded={isExpanded}
                       >
@@ -625,77 +597,66 @@ export default function PackagesSection() {
                       href={getWhatsAppPackageUrl(pkg.name, pkg.price)}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className={`w-full py-2.5 px-3 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2 transition-all duration-200 shadow-xs active:scale-[0.99] ${
+                      className={`w-full py-2.5 px-3 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2 transition-all duration-200 ease-out shadow-xs hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] cursor-pointer ${
                         isElite
-                          ? 'bg-primary text-white hover:bg-primary-hover shadow-sm'
+                          ? 'bg-primary hover:bg-primary-light text-white'
                           : isLux
-                          ? 'bg-secondary text-white hover:bg-secondary-dark shadow-sm'
-                          : 'bg-primary text-white hover:bg-primary-hover shadow-sm'
+                          ? 'bg-secondary hover:bg-secondary-light text-white'
+                          : 'bg-primary hover:bg-primary-light text-white'
                       }`}
                     >
                       <MessageCircle size={15} />
                       <span>Inquire on WhatsApp</span>
                     </a>
 
-                    {/* Secondary CTA */}
-                    <Link
-                      href="#requirements"
-                      className="w-full py-2 px-3 rounded-xl text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200/70 border border-slate-200/60 flex items-center justify-center gap-1.5 transition-colors"
+                    {/* Secondary CTA: Open Estimation Modal with prefilled package */}
+                    <button
+                      type="button"
+                      onClick={() =>
+                        window.dispatchEvent(
+                          new CustomEvent('open-free-estimate-modal', {
+                            detail: { package: pkg.name },
+                          })
+                        )
+                      }
+                      className="w-full py-2 px-3 rounded-xl text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200/80 hover:border-slate-300 hover:text-dark hover:-translate-y-0.5 hover:shadow-2xs active:translate-y-0 active:scale-[0.98] border border-slate-200/60 flex items-center justify-center gap-1.5 transition-all duration-200 ease-out cursor-pointer"
                     >
-                      <span>Customize in Form</span>
+                      <span>Customize &amp; Get Estimate</span>
                       <ArrowRight size={12} className="text-slate-400" />
-                    </Link>
+                    </button>
                   </div>
                 </div>
               );
             })}
           </div>
 
-          {/* Slider Pagination Dots & Direct Proximity Navigation Controls */}
-          <div className="flex items-center justify-center gap-4 mt-5 sm:mt-7">
+          {/* Mobile Bottom Navigation Controls */}
+          <div className="flex sm:hidden items-center justify-center gap-3 mt-5">
             <button
               type="button"
               onClick={handlePrev}
-              disabled={!canPrev}
+              disabled={!canScrollLeft}
               aria-label="Previous package"
-              className={`p-2 rounded-xl border transition-all ${
-                canPrev
-                  ? 'bg-white border-slate-300 text-dark hover:bg-slate-50 active:scale-95 shadow-xs cursor-pointer'
+              className={`p-2.5 rounded-xl border transition-all duration-200 ease-out ${
+                canScrollLeft
+                  ? 'bg-white border-slate-300 text-dark hover:bg-slate-50 hover:scale-105 active:scale-95 shadow-xs cursor-pointer'
                   : 'bg-slate-100 border-slate-200/60 text-slate-300 opacity-50 cursor-not-allowed'
               }`}
             >
-              <ChevronLeft size={18} />
+              <ChevronLeft size={20} />
             </button>
-
-            {/* Slide Dots Indicator */}
-            <div className="flex items-center gap-2">
-              {PACKAGES.map((pkg, idx) => (
-                <button
-                  key={pkg.id}
-                  type="button"
-                  onClick={() => scrollToIndex(idx)}
-                  aria-label={`Go to ${pkg.name}`}
-                  className={`h-2.5 rounded-full transition-all duration-300 ${
-                    activeIndex === idx
-                      ? 'w-8 bg-primary'
-                      : 'w-2.5 bg-slate-300 hover:bg-slate-400'
-                  }`}
-                />
-              ))}
-            </div>
-
             <button
               type="button"
               onClick={handleNext}
-              disabled={!canNext}
+              disabled={!canScrollRight}
               aria-label="Next package"
-              className={`p-2 rounded-xl border transition-all ${
-                canNext
-                  ? 'bg-white border-slate-300 text-dark hover:bg-slate-50 active:scale-95 shadow-xs cursor-pointer'
+              className={`p-2.5 rounded-xl border transition-all duration-200 ease-out ${
+                canScrollRight
+                  ? 'bg-white border-slate-300 text-dark hover:bg-slate-50 hover:scale-105 active:scale-95 shadow-xs cursor-pointer'
                   : 'bg-slate-100 border-slate-200/60 text-slate-300 opacity-50 cursor-not-allowed'
               }`}
             >
-              <ChevronRight size={18} />
+              <ChevronRight size={20} />
             </button>
           </div>
         </div>

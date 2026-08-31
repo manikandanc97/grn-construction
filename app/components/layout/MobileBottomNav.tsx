@@ -53,8 +53,8 @@ export default function MobileBottomNav() {
             <button
               key={href}
               onClick={() => handleClick(href)}
-              className={`flex flex-1 cursor-pointer flex-col items-center justify-center gap-0.5 rounded-xl py-1.5 transition-all duration-200 ${
-                isActive ? 'bg-secondary/10' : ''
+              className={`flex flex-1 cursor-pointer flex-col items-center justify-center gap-0.5 rounded-xl py-1.5 transition-all duration-150 ease-out active:scale-95 ${
+                isActive ? 'bg-secondary/10' : 'hover:bg-slate-100/80'
               }`}
             >
               <Icon

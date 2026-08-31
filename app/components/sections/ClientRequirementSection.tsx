@@ -700,7 +700,7 @@ _Submitted via GRN Construction Specification Form_`;
                     href={getWhatsAppUrl()}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-green-600 hover:bg-green-700 text-white font-semibold text-sm transition-all shadow-sm cursor-pointer hover:shadow hover:-translate-y-0.5"
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-sm transition-all duration-200 ease-out shadow-xs hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] cursor-pointer"
                   >
                     <MessageCircle size={17} />
                     Send on WhatsApp
@@ -709,9 +709,9 @@ _Submitted via GRN Construction Specification Form_`;
                   <button
                     type="button"
                     onClick={handleCopy}
-                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl border border-neutral-200 hover:bg-neutral-50 text-dark font-semibold text-sm transition-colors cursor-pointer"
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl border border-neutral-200 hover:bg-neutral-50 hover:border-neutral-300 text-dark font-semibold text-sm transition-all duration-200 ease-out hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] cursor-pointer shadow-2xs"
                   >
-                    {isCopied ? <Check size={16} className="text-green-600" /> : <Copy size={16} />}
+                    {isCopied ? <Check size={16} className="text-emerald-600" /> : <Copy size={16} />}
                     {isCopied ? 'Copied to Clipboard' : 'Copy Specifications'}
                   </button>
                 </div>
@@ -720,7 +720,7 @@ _Submitted via GRN Construction Specification Form_`;
                   <button
                     type="button"
                     onClick={handleReset}
-                    className="inline-flex items-center gap-1.5 text-xs text-gray-500 hover:text-dark font-medium transition-colors"
+                    className="inline-flex items-center gap-1.5 text-xs text-gray-500 hover:text-dark font-medium transition-all duration-150 active:scale-[0.98] cursor-pointer"
                   >
                     <RotateCcw size={13} />
                     Fill another specification form
@@ -1661,7 +1661,7 @@ _Submitted via GRN Construction Specification Form_`;
                     <button
                       type="button"
                       onClick={prevStep}
-                      className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-neutral-200 text-xs sm:text-sm font-semibold text-neutral-700 hover:bg-neutral-50 transition-colors cursor-pointer"
+                      className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-neutral-200 text-xs sm:text-sm font-semibold text-neutral-700 hover:bg-neutral-50 hover:border-neutral-300 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] transition-all duration-200 ease-out cursor-pointer shadow-2xs"
                     >
                       <ArrowLeft size={15} />
                       Back
@@ -1674,7 +1674,7 @@ _Submitted via GRN Construction Specification Form_`;
                     <button
                       type="button"
                       onClick={nextStep}
-                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary hover:bg-primary-light text-white text-xs sm:text-sm font-semibold transition-all shadow-sm cursor-pointer hover:shadow"
+                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary hover:bg-primary-light text-white text-xs sm:text-sm font-semibold transition-all duration-200 ease-out shadow-xs hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] cursor-pointer"
                     >
                       Next Step
                       <ArrowRight size={15} />
@@ -1683,7 +1683,7 @@ _Submitted via GRN Construction Specification Form_`;
                     <button
                       type="button"
                       onClick={handleSubmit}
-                      className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-green-600 hover:bg-green-700 text-white text-xs sm:text-sm font-semibold transition-all shadow-sm cursor-pointer hover:shadow hover:-translate-y-0.5"
+                      className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs sm:text-sm font-semibold transition-all duration-200 ease-out shadow-xs hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] cursor-pointer"
                     >
                       <MessageCircle size={16} />
                       Submit via WhatsApp
