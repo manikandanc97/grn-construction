@@ -247,6 +247,7 @@ export default function FreeEstimationModal() {
   const [isCopied, setIsCopied] = useState(false);
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
   const modalContentRef = useRef<HTMLDivElement>(null);
+  const stepPillsContainerRef = useRef<HTMLDivElement>(null);
 
   const openModal = useCallback((prefill?: Partial<EstimationFormData>) => {
     if (prefill) {
@@ -265,7 +266,25 @@ export default function FreeEstimationModal() {
     }, 300);
   }, []);
 
-  // Listen to open events from across the site
+  // Auto-open modal automatically when website opens
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsOpen(true);
+    }, 700);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Scroll active step pill into view on step change (crucial on mobile)
+  useEffect(() => {
+    if (stepPillsContainerRef.current) {
+      const activePill = stepPillsContainerRef.current.querySelector('[aria-current="step"]');
+      if (activePill) {
+        activePill.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+      }
+    }
+  }, [currentStep]);
+
+  // Listen to open events from across the site (both quote and free estimate)
   useEffect(() => {
     const handleCustomOpen = (e: Event) => {
       const customEvent = e as CustomEvent<{
@@ -279,6 +298,7 @@ export default function FreeEstimationModal() {
     };
 
     window.addEventListener('open-free-estimate-modal', handleCustomOpen);
+    window.addEventListener('open-quote-modal', handleCustomOpen);
 
     // Escape key closes modal
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -290,6 +310,7 @@ export default function FreeEstimationModal() {
 
     return () => {
       window.removeEventListener('open-free-estimate-modal', handleCustomOpen);
+      window.removeEventListener('open-quote-modal', handleCustomOpen);
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [isOpen, openModal, closeModal]);
@@ -546,7 +567,7 @@ _Submitted via GRN Construction Estimation Portal_`;
           role="dialog"
           aria-modal="true"
           aria-labelledby="modal-title"
-          className="fixed inset-0 z-[9999] flex items-center justify-center p-3 sm:p-4 md:p-6"
+          className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center p-0 sm:p-4 md:p-6"
         >
           {/* Backdrop */}
           <motion.div
@@ -555,28 +576,31 @@ _Submitted via GRN Construction Estimation Portal_`;
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
             onClick={closeModal}
-            className="absolute inset-0 bg-dark/75 backdrop-blur-sm"
+            className="absolute inset-0 bg-dark/80 backdrop-blur-sm"
           />
 
           {/* Modal Card */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 15 }}
+            initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 15 }}
+            exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ duration: 0.25, ease: 'easeOut' }}
-            className="relative w-full max-w-4xl max-h-[92vh] flex flex-col bg-white rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden border border-slate-200 z-10"
+            className="relative w-full max-w-4xl h-[78dvh] max-h-[80dvh] sm:h-auto sm:max-h-[88vh] flex flex-col bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden border-t sm:border border-slate-200 z-10 overscroll-contain"
           >
+            {/* Mobile Sheet Drag Indicator */}
+            <div className="w-10 h-1 rounded-full bg-slate-300 mx-auto mt-2 -mb-0.5 sm:hidden shrink-0" />
+
             {/* Modal Header */}
-            <div className="flex items-center justify-between px-5 sm:px-7 py-3.5 sm:py-4 bg-white border-b border-slate-200/80 shrink-0">
-              <div className="flex items-center gap-2.5">
+            <div className="flex items-center justify-between px-4 sm:px-7 py-2.5 sm:py-4 bg-white border-b border-slate-200/80 shrink-0">
+              <div className="flex items-center gap-2.5 min-w-0 pr-2">
                 <div className="w-8 h-8 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
                   <ClipboardCheck size={18} />
                 </div>
-                <div>
-                  <div className="flex items-center gap-2">
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <h2
                       id="modal-title"
-                      className="text-base sm:text-lg font-bold text-dark font-display tracking-tight"
+                      className="text-sm sm:text-base md:text-lg font-bold text-dark font-display tracking-tight truncate sm:whitespace-normal"
                     >
                       Building Specification &amp; Free Estimation
                     </h2>
@@ -586,7 +610,7 @@ _Submitted via GRN Construction Estimation Portal_`;
                       </span>
                     )}
                   </div>
-                  <p className="text-[11px] text-gray-500">
+                  <p className="text-[10.5px] sm:text-[11px] text-gray-500 truncate">
                     Step {currentStep} of {SPECIFICATION_STEPS.length}: {SPECIFICATION_STEPS[currentStep - 1]?.title}
                   </p>
                 </div>
@@ -595,7 +619,7 @@ _Submitted via GRN Construction Estimation Portal_`;
               <button
                 type="button"
                 onClick={closeModal}
-                className="w-8 h-8 rounded-full flex items-center justify-center text-gray-400 hover:text-dark hover:bg-slate-100 hover:scale-105 active:scale-95 transition-all duration-200 ease-out cursor-pointer"
+                className="w-8 h-8 sm:w-9 sm:h-9 min-w-[32px] sm:min-w-[36px] rounded-full flex items-center justify-center text-gray-400 hover:text-dark hover:bg-slate-100 hover:scale-105 active:scale-95 transition-all duration-200 ease-out cursor-pointer shrink-0"
                 aria-label="Close estimation modal"
               >
                 <X size={18} />
@@ -604,8 +628,11 @@ _Submitted via GRN Construction Estimation Portal_`;
 
             {/* Step Pills Bar */}
             {!submitted && (
-              <div className="px-5 sm:px-7 py-2.5 bg-slate-50 border-b border-slate-200/70 overflow-x-auto [&::-webkit-scrollbar]:hidden shrink-0">
-                <div className="flex items-center gap-2 min-w-max">
+              <div
+                ref={stepPillsContainerRef}
+                className="px-3 sm:px-7 py-1.5 sm:py-2.5 bg-slate-50 border-b border-slate-200/70 overflow-x-auto [&::-webkit-scrollbar]:hidden shrink-0 touch-pan-x"
+              >
+                <div className="flex items-center gap-1.5 sm:gap-2 min-w-max">
                   {SPECIFICATION_STEPS.map((s) => {
                     const isCurrent = currentStep === s.id;
                     const isDone = currentStep > s.id;
@@ -614,7 +641,8 @@ _Submitted via GRN Construction Estimation Portal_`;
                         key={s.id}
                         type="button"
                         onClick={() => handleStepClick(s.id)}
-                        className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold transition-all duration-150 cursor-pointer hover:-translate-y-0.5 active:scale-[0.98] ${
+                        aria-current={isCurrent ? 'step' : undefined}
+                        className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-full text-[11px] sm:text-xs font-semibold transition-all duration-150 cursor-pointer hover:-translate-y-0.5 active:scale-[0.98] ${
                           isCurrent
                             ? 'bg-primary text-white shadow-xs'
                             : isDone
@@ -623,7 +651,7 @@ _Submitted via GRN Construction Estimation Portal_`;
                         }`}
                       >
                         <span
-                          className={`w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-bold ${
+                          className={`w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full flex items-center justify-center text-[8.5px] sm:text-[9px] font-bold ${
                             isCurrent
                               ? 'bg-white/20 text-white'
                               : isDone
@@ -642,7 +670,7 @@ _Submitted via GRN Construction Estimation Portal_`;
             )}
 
             {/* Modal Body (Scrollable) */}
-            <div ref={modalContentRef} className="flex-1 overflow-y-auto p-5 sm:p-7">
+            <div ref={modalContentRef} className="flex-1 overflow-y-auto p-3.5 sm:p-6 md:p-7 touch-pan-y overscroll-contain">
               {submitted ? (
                 /* Success / WhatsApp Summary State */
                 <div className="py-6 sm:py-8 text-center space-y-5">
@@ -660,7 +688,7 @@ _Submitted via GRN Construction Estimation Portal_`;
 
                   {/* Specification Summary Card */}
                   <div className="p-4 sm:p-5 rounded-2xl bg-slate-50 border border-slate-200 text-left text-xs text-gray-700 space-y-2.5 max-w-lg mx-auto shadow-2xs">
-                    <div className="grid grid-cols-2 gap-2 pb-2.5 border-b border-slate-200/80">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pb-2.5 border-b border-slate-200/80">
                       <p><strong className="text-dark">Name:</strong> {form.name}</p>
                       <p><strong className="text-dark">Phone:</strong> {form.phone}</p>
                       <p><strong className="text-dark">Building:</strong> {resolveVal(form.buildingType, form.buildingTypeOther)}</p>
@@ -668,7 +696,7 @@ _Submitted via GRN Construction Estimation Portal_`;
                       <p><strong className="text-dark">Structure:</strong> {(form.structureType || '').includes('framed') ? 'Framed Column' : 'Load Bearing'}</p>
                       <p><strong className="text-dark">Basement:</strong> {resolveVal(form.basementHeight, form.basementHeightOther)}</p>
                     </div>
-                    <div className="grid grid-cols-2 gap-2 pt-1 text-slate-600">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 text-slate-600">
                       <p><strong>Roof:</strong> {resolveVal(form.roofType, form.roofTypeOther)}</p>
                       <p><strong>Wall:</strong> {resolveVal(form.wallType, form.wallTypeOther)}</p>
                       <p><strong>Steel:</strong> {resolveVal(form.steelBrand, form.steelBrandOther)}</p>
@@ -676,7 +704,7 @@ _Submitted via GRN Construction Estimation Portal_`;
                       <p><strong>Floor:</strong> {resolveVal(form.flooringFloor, form.flooringFloorOther)}</p>
                       <p><strong>Sanitary:</strong> {resolveVal(form.sanitaryBrand, form.sanitaryBrandOther)}</p>
                       {form.layoutDocumentName && (
-                        <p className="col-span-2 text-primary font-semibold pt-1 border-t border-slate-200/80">
+                        <p className="col-span-1 sm:col-span-2 text-primary font-semibold pt-1 border-t border-slate-200/80">
                           <strong>Attached Layout:</strong> {form.layoutDocumentName} ({form.layoutDocumentSize})
                         </p>
                       )}
@@ -955,14 +983,14 @@ _Submitted via GRN Construction Estimation Portal_`;
                                   key={t.id}
                                   type="button"
                                   onClick={() => handleInputChange('buildingType', t.id)}
-                                  className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer flex items-center gap-2 ${
+                                  className={`p-2.5 sm:p-3 rounded-xl border text-left transition-all duration-200 ease-out cursor-pointer flex items-center gap-2 min-h-[44px] hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] ${
                                     isSelected
-                                      ? 'border-primary bg-primary/10 text-primary font-semibold ring-1 ring-primary/20'
+                                      ? 'border-primary bg-primary/10 text-primary font-semibold ring-1 ring-primary/20 shadow-2xs'
                                       : 'border-slate-200 bg-white hover:border-slate-300 text-slate-800'
                                   }`}
                                 >
-                                  <Icon size={16} className={isSelected ? 'text-primary' : 'text-slate-500'} />
-                                  <span className="text-xs">{t.label}</span>
+                                  <Icon size={16} className={`shrink-0 ${isSelected ? 'text-primary' : 'text-slate-500'}`} />
+                                  <span className="text-xs leading-snug">{t.label}</span>
                                 </button>
                               );
                             })}
@@ -973,7 +1001,7 @@ _Submitted via GRN Construction Estimation Portal_`;
                               value={form.buildingTypeOther}
                               onChange={(e) => handleInputChange('buildingTypeOther', e.target.value)}
                               placeholder="Please specify your building type"
-                              className="mt-2 w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs text-dark placeholder-slate-400 focus:outline-none focus:border-primary"
+                              className="mt-2 w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm text-dark placeholder-slate-400 focus:outline-none focus:border-primary"
                             />
                           )}
                           {validationErrors.buildingType && (
@@ -994,9 +1022,9 @@ _Submitted via GRN Construction Estimation Portal_`;
                                   key={opt}
                                   type="button"
                                   onClick={() => handleInputChange('bhk', opt)}
-                                  className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all cursor-pointer ${
+                                  className={`px-3.5 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all duration-150 cursor-pointer min-h-[38px] hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] ${
                                     isSelected
-                                      ? 'bg-primary text-white font-semibold'
+                                      ? 'bg-primary text-white font-semibold shadow-xs'
                                       : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
                                   }`}
                                 >
@@ -1011,7 +1039,7 @@ _Submitted via GRN Construction Estimation Portal_`;
                               value={form.bhkOther}
                               onChange={(e) => handleInputChange('bhkOther', e.target.value)}
                               placeholder="e.g. 5 BHK, Studio room, etc."
-                              className="mt-2 w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs text-dark placeholder-slate-400 focus:outline-none focus:border-primary"
+                              className="mt-2 w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm text-dark placeholder-slate-400 focus:outline-none focus:border-primary"
                             />
                           )}
                         </div>
@@ -1029,9 +1057,9 @@ _Submitted via GRN Construction Estimation Portal_`;
                                   key={fl}
                                   type="button"
                                   onClick={() => handleInputChange('floors', fl)}
-                                  className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all cursor-pointer ${
+                                  className={`px-3.5 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all duration-150 cursor-pointer min-h-[38px] hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] ${
                                     isSelected
-                                      ? 'bg-primary text-white font-semibold'
+                                      ? 'bg-primary text-white font-semibold shadow-xs'
                                       : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
                                   }`}
                                 >
@@ -1046,7 +1074,7 @@ _Submitted via GRN Construction Estimation Portal_`;
                               value={form.floorsOther}
                               onChange={(e) => handleInputChange('floorsOther', e.target.value)}
                               placeholder="Specify number of floors"
-                              className="mt-2 w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs text-dark placeholder-slate-400 focus:outline-none focus:border-primary"
+                              className="mt-2 w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm text-dark placeholder-slate-400 focus:outline-none focus:border-primary"
                             />
                           )}
                         </div>
@@ -1064,14 +1092,14 @@ _Submitted via GRN Construction Estimation Portal_`;
                                   key={st.id}
                                   type="button"
                                   onClick={() => handleInputChange('structureType', st.id)}
-                                  className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
+                                  className={`p-3 rounded-xl border text-left transition-all duration-200 ease-out cursor-pointer hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] ${
                                     isSelected
-                                      ? 'border-primary bg-primary/10 text-primary font-semibold ring-1 ring-primary/20'
+                                      ? 'border-primary bg-primary/10 text-primary font-semibold ring-1 ring-primary/20 shadow-2xs'
                                       : 'border-slate-200 bg-white hover:border-slate-300 text-slate-800'
                                   }`}
                                 >
-                                  <div className="text-xs font-semibold">{st.label}</div>
-                                  <div className="text-[10.5px] text-gray-500 font-normal mt-0.5">{st.desc}</div>
+                                  <div className="text-xs sm:text-sm font-semibold">{st.label}</div>
+                                  <div className="text-[10.5px] sm:text-xs text-gray-500 font-normal mt-0.5 leading-relaxed">{st.desc}</div>
                                 </button>
                               );
                             })}
@@ -1091,9 +1119,9 @@ _Submitted via GRN Construction Estimation Portal_`;
                                   key={bh}
                                   type="button"
                                   onClick={() => handleInputChange('basementHeight', bh)}
-                                  className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all cursor-pointer ${
+                                  className={`px-3.5 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all duration-150 cursor-pointer min-h-[38px] hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] ${
                                     isSelected
-                                      ? 'bg-primary text-white font-semibold'
+                                      ? 'bg-primary text-white font-semibold shadow-xs'
                                       : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
                                   }`}
                                 >
@@ -1108,7 +1136,7 @@ _Submitted via GRN Construction Estimation Portal_`;
                               value={form.basementHeightOther}
                               onChange={(e) => handleInputChange('basementHeightOther', e.target.value)}
                               placeholder="Specify basement height (e.g. 4.5 Feet)"
-                              className="mt-2 w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs text-dark placeholder-slate-400 focus:outline-none focus:border-primary"
+                              className="mt-2 w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm text-dark placeholder-slate-400 focus:outline-none focus:border-primary"
                             />
                           )}
                           {validationErrors.basementHeight && (
@@ -1152,9 +1180,9 @@ _Submitted via GRN Construction Estimation Portal_`;
                                   key={rf}
                                   type="button"
                                   onClick={() => handleInputChange('roofType', rf)}
-                                  className={`p-2.5 rounded-xl border text-left text-xs transition-all cursor-pointer ${
+                                  className={`p-3 rounded-xl border text-left text-xs sm:text-sm transition-all duration-150 cursor-pointer min-h-[42px] hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] ${
                                     isSelected
-                                      ? 'border-primary bg-primary/10 text-primary font-semibold ring-1 ring-primary/20'
+                                      ? 'border-primary bg-primary/10 text-primary font-semibold ring-1 ring-primary/20 shadow-2xs'
                                       : 'border-slate-200 bg-white hover:border-slate-300 text-slate-800'
                                   }`}
                                 >
@@ -1169,7 +1197,7 @@ _Submitted via GRN Construction Estimation Portal_`;
                               value={form.roofTypeOther}
                               onChange={(e) => handleInputChange('roofTypeOther', e.target.value)}
                               placeholder="Specify roof structure"
-                              className="mt-2 w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs text-dark placeholder-slate-400 focus:outline-none focus:border-primary"
+                              className="mt-2 w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm text-dark placeholder-slate-400 focus:outline-none focus:border-primary"
                             />
                           )}
                         </div>
@@ -1187,9 +1215,9 @@ _Submitted via GRN Construction Estimation Portal_`;
                                   key={wl}
                                   type="button"
                                   onClick={() => handleInputChange('wallType', wl)}
-                                  className={`p-2.5 rounded-xl border text-left text-xs transition-all cursor-pointer ${
+                                  className={`p-3 rounded-xl border text-left text-xs sm:text-sm transition-all duration-150 cursor-pointer min-h-[42px] hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] ${
                                     isSelected
-                                      ? 'border-primary bg-primary/10 text-primary font-semibold ring-1 ring-primary/20'
+                                      ? 'border-primary bg-primary/10 text-primary font-semibold ring-1 ring-primary/20 shadow-2xs'
                                       : 'border-slate-200 bg-white hover:border-slate-300 text-slate-800'
                                   }`}
                                 >
@@ -1204,7 +1232,7 @@ _Submitted via GRN Construction Estimation Portal_`;
                               value={form.wallTypeOther}
                               onChange={(e) => handleInputChange('wallTypeOther', e.target.value)}
                               placeholder="Specify wall structure"
-                              className="mt-2 w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs text-dark placeholder-slate-400 focus:outline-none focus:border-primary"
+                              className="mt-2 w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm text-dark placeholder-slate-400 focus:outline-none focus:border-primary"
                             />
                           )}
                         </div>
@@ -1222,9 +1250,9 @@ _Submitted via GRN Construction Estimation Portal_`;
                                   key={st}
                                   type="button"
                                   onClick={() => handleInputChange('steelBrand', st)}
-                                  className={`p-2.5 rounded-xl border text-left text-xs transition-all cursor-pointer ${
+                                  className={`p-3 rounded-xl border text-left text-xs sm:text-sm transition-all duration-150 cursor-pointer min-h-[42px] hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] ${
                                     isSelected
-                                      ? 'border-primary bg-primary/10 text-primary font-semibold ring-1 ring-primary/20'
+                                      ? 'border-primary bg-primary/10 text-primary font-semibold ring-1 ring-primary/20 shadow-2xs'
                                       : 'border-slate-200 bg-white hover:border-slate-300 text-slate-800'
                                   }`}
                                 >
@@ -1239,7 +1267,7 @@ _Submitted via GRN Construction Estimation Portal_`;
                               value={form.steelBrandOther}
                               onChange={(e) => handleInputChange('steelBrandOther', e.target.value)}
                               placeholder="Specify steel brand"
-                              className="mt-2 w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs text-dark placeholder-slate-400 focus:outline-none focus:border-primary"
+                              className="mt-2 w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm text-dark placeholder-slate-400 focus:outline-none focus:border-primary"
                             />
                           )}
                         </div>
@@ -1257,9 +1285,9 @@ _Submitted via GRN Construction Estimation Portal_`;
                                   key={cm}
                                   type="button"
                                   onClick={() => handleInputChange('cementBrand', cm)}
-                                  className={`p-2.5 rounded-xl border text-left text-xs transition-all cursor-pointer ${
+                                  className={`p-3 rounded-xl border text-left text-xs sm:text-sm transition-all duration-150 cursor-pointer min-h-[42px] hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] ${
                                     isSelected
-                                      ? 'border-primary bg-primary/10 text-primary font-semibold ring-1 ring-primary/20'
+                                      ? 'border-primary bg-primary/10 text-primary font-semibold ring-1 ring-primary/20 shadow-2xs'
                                       : 'border-slate-200 bg-white hover:border-slate-300 text-slate-800'
                                   }`}
                                 >
@@ -1274,7 +1302,7 @@ _Submitted via GRN Construction Estimation Portal_`;
                               value={form.cementBrandOther}
                               onChange={(e) => handleInputChange('cementBrandOther', e.target.value)}
                               placeholder="Specify cement brand"
-                              className="mt-2 w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs text-dark placeholder-slate-400 focus:outline-none focus:border-primary"
+                              className="mt-2 w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm text-dark placeholder-slate-400 focus:outline-none focus:border-primary"
                             />
                           )}
                         </div>
@@ -1301,28 +1329,28 @@ _Submitted via GRN Construction Estimation Portal_`;
                         </div>
 
                         {/* Joineries */}
-                        <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
+                        <div className="p-3.5 sm:p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
                           <div className="flex items-center gap-2">
                             <DoorClosed size={15} className="text-primary" />
-                            <h4 className="text-xs font-bold text-dark uppercase tracking-wider">
+                            <h4 className="text-xs sm:text-sm font-bold text-dark uppercase tracking-wider">
                               Joinery Preferences
                             </h4>
                           </div>
 
                           <div>
-                            <label className="block text-[11px] font-semibold text-slate-700 mb-1">
+                            <label className="block text-[11px] sm:text-xs font-semibold text-slate-700 mb-1.5">
                               • Main Door
                             </label>
-                            <div className="flex flex-wrap gap-1.5">
+                            <div className="flex flex-wrap gap-1.5 sm:gap-2">
                               {JOINERY_OPTIONS.map((opt) => (
                                 <button
                                   key={opt}
                                   type="button"
                                   onClick={() => handleInputChange('joineryMainDoor', opt)}
-                                  className={`px-2.5 py-1.5 rounded-lg text-xs transition-all cursor-pointer ${
+                                  className={`px-3 py-1.5 rounded-lg text-xs sm:text-sm transition-all duration-150 cursor-pointer min-h-[36px] hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] ${
                                     form.joineryMainDoor === opt
-                                      ? 'bg-primary text-white font-semibold'
-                                      : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-100'
+                                      ? 'bg-primary text-white font-semibold shadow-2xs'
+                                      : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 hover:border-slate-300'
                                   }`}
                                 >
                                   {opt}
@@ -1332,19 +1360,19 @@ _Submitted via GRN Construction Estimation Portal_`;
                           </div>
 
                           <div>
-                            <label className="block text-[11px] font-semibold text-slate-700 mb-1">
+                            <label className="block text-[11px] sm:text-xs font-semibold text-slate-700 mb-1.5">
                               • Bedroom Door Frame
                             </label>
-                            <div className="flex flex-wrap gap-1.5">
+                            <div className="flex flex-wrap gap-1.5 sm:gap-2">
                               {JOINERY_OPTIONS.map((opt) => (
                                 <button
                                   key={opt}
                                   type="button"
                                   onClick={() => handleInputChange('joineryBedroomDoor', opt)}
-                                  className={`px-2.5 py-1.5 rounded-lg text-xs transition-all cursor-pointer ${
+                                  className={`px-3 py-1.5 rounded-lg text-xs sm:text-sm transition-all duration-150 cursor-pointer min-h-[36px] hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] ${
                                     form.joineryBedroomDoor === opt
-                                      ? 'bg-primary text-white font-semibold'
-                                      : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-100'
+                                      ? 'bg-primary text-white font-semibold shadow-2xs'
+                                      : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 hover:border-slate-300'
                                   }`}
                                 >
                                   {opt}
@@ -1354,19 +1382,19 @@ _Submitted via GRN Construction Estimation Portal_`;
                           </div>
 
                           <div>
-                            <label className="block text-[11px] font-semibold text-slate-700 mb-1">
+                            <label className="block text-[11px] sm:text-xs font-semibold text-slate-700 mb-1.5">
                               • Windows &amp; Ventilators
                             </label>
-                            <div className="flex flex-wrap gap-1.5">
+                            <div className="flex flex-wrap gap-1.5 sm:gap-2">
                               {JOINERY_OPTIONS.map((opt) => (
                                 <button
                                   key={opt}
                                   type="button"
                                   onClick={() => handleInputChange('joineryWindows', opt)}
-                                  className={`px-2.5 py-1.5 rounded-lg text-xs transition-all cursor-pointer ${
+                                  className={`px-3 py-1.5 rounded-lg text-xs sm:text-sm transition-all duration-150 cursor-pointer min-h-[36px] hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] ${
                                     form.joineryWindows === opt
-                                      ? 'bg-primary text-white font-semibold'
-                                      : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-100'
+                                      ? 'bg-primary text-white font-semibold shadow-2xs'
+                                      : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 hover:border-slate-300'
                                   }`}
                                 >
                                   {opt}
@@ -1377,28 +1405,28 @@ _Submitted via GRN Construction Estimation Portal_`;
                         </div>
 
                         {/* Flooring */}
-                        <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
+                        <div className="p-3.5 sm:p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
                           <div className="flex items-center gap-2">
                             <Grid size={15} className="text-secondary" />
-                            <h4 className="text-xs font-bold text-dark uppercase tracking-wider">
+                            <h4 className="text-xs sm:text-sm font-bold text-dark uppercase tracking-wider">
                               Flooring &amp; Surface Finishes
                             </h4>
                           </div>
 
                           <div>
-                            <label className="block text-[11px] font-semibold text-slate-700 mb-1">
+                            <label className="block text-[11px] sm:text-xs font-semibold text-slate-700 mb-1.5">
                               • Floor
                             </label>
-                            <div className="flex flex-wrap gap-1.5">
+                            <div className="flex flex-wrap gap-1.5 sm:gap-2">
                               {FLOORING_OPTIONS.map((opt) => (
                                 <button
                                   key={opt}
                                   type="button"
                                   onClick={() => handleInputChange('flooringFloor', opt)}
-                                  className={`px-2.5 py-1.5 rounded-lg text-xs transition-all cursor-pointer ${
+                                  className={`px-3 py-1.5 rounded-lg text-xs sm:text-sm transition-all duration-150 cursor-pointer min-h-[36px] hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] ${
                                     form.flooringFloor === opt
-                                      ? 'bg-primary text-white font-semibold'
-                                      : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-100'
+                                      ? 'bg-primary text-white font-semibold shadow-2xs'
+                                      : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 hover:border-slate-300'
                                   }`}
                                 >
                                   {opt}
@@ -1408,19 +1436,19 @@ _Submitted via GRN Construction Estimation Portal_`;
                           </div>
 
                           <div>
-                            <label className="block text-[11px] font-semibold text-slate-700 mb-1">
+                            <label className="block text-[11px] sm:text-xs font-semibold text-slate-700 mb-1.5">
                               • Wall (Bathrooms / Dadoing)
                             </label>
-                            <div className="flex flex-wrap gap-1.5">
+                            <div className="flex flex-wrap gap-1.5 sm:gap-2">
                               {FLOORING_OPTIONS.map((opt) => (
                                 <button
                                   key={opt}
                                   type="button"
                                   onClick={() => handleInputChange('flooringWall', opt)}
-                                  className={`px-2.5 py-1.5 rounded-lg text-xs transition-all cursor-pointer ${
+                                  className={`px-3 py-1.5 rounded-lg text-xs sm:text-sm transition-all duration-150 cursor-pointer min-h-[36px] hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] ${
                                     form.flooringWall === opt
-                                      ? 'bg-primary text-white font-semibold'
-                                      : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-100'
+                                      ? 'bg-primary text-white font-semibold shadow-2xs'
+                                      : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 hover:border-slate-300'
                                   }`}
                                 >
                                   {opt}
@@ -1430,19 +1458,19 @@ _Submitted via GRN Construction Estimation Portal_`;
                           </div>
 
                           <div>
-                            <label className="block text-[11px] font-semibold text-slate-700 mb-1">
+                            <label className="block text-[11px] sm:text-xs font-semibold text-slate-700 mb-1.5">
                               • Kitchen Table Top
                             </label>
-                            <div className="flex flex-wrap gap-1.5">
+                            <div className="flex flex-wrap gap-1.5 sm:gap-2">
                               {FLOORING_OPTIONS.map((opt) => (
                                 <button
                                   key={opt}
                                   type="button"
                                   onClick={() => handleInputChange('flooringKitchenTop', opt)}
-                                  className={`px-2.5 py-1.5 rounded-lg text-xs transition-all cursor-pointer ${
+                                  className={`px-3 py-1.5 rounded-lg text-xs sm:text-sm transition-all duration-150 cursor-pointer min-h-[36px] hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] ${
                                     form.flooringKitchenTop === opt
-                                      ? 'bg-primary text-white font-semibold'
-                                      : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-100'
+                                      ? 'bg-primary text-white font-semibold shadow-2xs'
+                                      : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 hover:border-slate-300'
                                   }`}
                                 >
                                   {opt}
@@ -1486,9 +1514,9 @@ _Submitted via GRN Construction Estimation Portal_`;
                                   key={el}
                                   type="button"
                                   onClick={() => handleInputChange('electricalBrand', el)}
-                                  className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all cursor-pointer ${
+                                  className={`px-3.5 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all duration-150 cursor-pointer min-h-[38px] hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] ${
                                     isSelected
-                                      ? 'bg-primary text-white font-semibold'
+                                      ? 'bg-primary text-white font-semibold shadow-xs'
                                       : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
                                   }`}
                                 >
@@ -1503,7 +1531,7 @@ _Submitted via GRN Construction Estimation Portal_`;
                               value={form.electricalBrandOther}
                               onChange={(e) => handleInputChange('electricalBrandOther', e.target.value)}
                               placeholder="Specify electrical brand"
-                              className="mt-2 w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs text-dark placeholder-slate-400 focus:outline-none focus:border-primary"
+                              className="mt-2 w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm text-dark placeholder-slate-400 focus:outline-none focus:border-primary"
                             />
                           )}
                         </div>
@@ -1521,9 +1549,9 @@ _Submitted via GRN Construction Estimation Portal_`;
                                   key={pl}
                                   type="button"
                                   onClick={() => handleInputChange('plumbingBrand', pl)}
-                                  className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all cursor-pointer ${
+                                  className={`px-3.5 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all duration-150 cursor-pointer min-h-[38px] hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] ${
                                     isSelected
-                                      ? 'bg-primary text-white font-semibold'
+                                      ? 'bg-primary text-white font-semibold shadow-xs'
                                       : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
                                   }`}
                                 >
@@ -1538,7 +1566,7 @@ _Submitted via GRN Construction Estimation Portal_`;
                               value={form.plumbingBrandOther}
                               onChange={(e) => handleInputChange('plumbingBrandOther', e.target.value)}
                               placeholder="Specify plumbing brand"
-                              className="mt-2 w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs text-dark placeholder-slate-400 focus:outline-none focus:border-primary"
+                              className="mt-2 w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm text-dark placeholder-slate-400 focus:outline-none focus:border-primary"
                             />
                           )}
                         </div>
@@ -1556,9 +1584,9 @@ _Submitted via GRN Construction Estimation Portal_`;
                                   key={sn}
                                   type="button"
                                   onClick={() => handleInputChange('sanitaryBrand', sn)}
-                                  className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all cursor-pointer ${
+                                  className={`px-3.5 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all duration-150 cursor-pointer min-h-[38px] hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] ${
                                     isSelected
-                                      ? 'bg-primary text-white font-semibold'
+                                      ? 'bg-primary text-white font-semibold shadow-xs'
                                       : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
                                   }`}
                                 >
@@ -1573,7 +1601,7 @@ _Submitted via GRN Construction Estimation Portal_`;
                               value={form.sanitaryBrandOther}
                               onChange={(e) => handleInputChange('sanitaryBrandOther', e.target.value)}
                               placeholder="Specify sanitary brand"
-                              className="mt-2 w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs text-dark placeholder-slate-400 focus:outline-none focus:border-primary"
+                              className="mt-2 w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm text-dark placeholder-slate-400 focus:outline-none focus:border-primary"
                             />
                           )}
                         </div>
@@ -1603,25 +1631,25 @@ _Submitted via GRN Construction Estimation Portal_`;
 
             {/* Modal Sticky Bottom Actions */}
             {!submitted && (
-              <div className="px-5 sm:px-7 py-3.5 sm:py-4 bg-slate-50 border-t border-slate-200 flex items-center justify-between gap-3 shrink-0">
+              <div className="px-3.5 sm:px-7 py-3 sm:py-3.5 bg-white sm:bg-slate-50 border-t border-slate-200 flex items-center justify-between gap-2 shrink-0 shadow-[0_-4px_12px_rgba(0,0,0,0.04)]">
                 {currentStep > 1 ? (
                   <button
                     type="button"
                     onClick={prevStep}
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl border border-slate-200 text-xs sm:text-sm font-semibold text-slate-700 hover:bg-white hover:border-slate-300 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] transition-all duration-200 ease-out cursor-pointer shadow-2xs"
+                    className="inline-flex items-center gap-1 sm:gap-1.5 px-3 sm:px-4 py-2 rounded-xl border border-slate-200 text-xs sm:text-sm font-semibold text-slate-700 hover:bg-white hover:border-slate-300 hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] transition-all duration-200 ease-out cursor-pointer shadow-2xs shrink-0"
                   >
-                    <ArrowLeft size={15} />
-                    Back
+                    <ArrowLeft size={14} className="sm:w-[15px] sm:h-[15px]" />
+                    <span>Back</span>
                   </button>
                 ) : (
                   <div />
                 )}
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5 sm:gap-2">
                   <button
                     type="button"
                     onClick={closeModal}
-                    className="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-medium text-gray-500 hover:text-dark hover:bg-slate-200/50 transition-all duration-150 active:scale-[0.98] cursor-pointer"
+                    className="px-2.5 sm:px-3.5 py-2 rounded-xl text-xs sm:text-sm font-medium text-gray-500 hover:text-dark hover:bg-slate-200/50 transition-all duration-150 active:scale-[0.98] cursor-pointer"
                   >
                     Cancel
                   </button>
@@ -1630,19 +1658,19 @@ _Submitted via GRN Construction Estimation Portal_`;
                     <button
                       type="button"
                       onClick={nextStep}
-                      className="inline-flex items-center gap-1.5 px-5 py-2 rounded-xl bg-primary hover:bg-primary-light text-white text-xs sm:text-sm font-bold transition-all duration-200 ease-out shadow-xs hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] cursor-pointer"
+                      className="inline-flex items-center gap-1.5 px-3.5 sm:px-5 py-2 rounded-xl bg-primary hover:bg-primary-light text-white text-xs sm:text-sm font-bold transition-all duration-200 ease-out shadow-xs hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] cursor-pointer shrink-0"
                     >
-                      Next Step
-                      <ArrowRight size={15} />
+                      <span>Next Step</span>
+                      <ArrowRight size={14} className="sm:w-[15px] sm:h-[15px]" />
                     </button>
                   ) : (
                     <button
                       type="button"
                       onClick={handleSubmit}
-                      className="inline-flex items-center gap-2 px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs sm:text-sm font-bold transition-all duration-200 ease-out shadow-xs hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] cursor-pointer"
+                      className="inline-flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs sm:text-sm font-bold transition-all duration-200 ease-out shadow-xs hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] cursor-pointer shrink-0"
                     >
-                      <MessageCircle size={16} />
-                      Submit via WhatsApp
+                      <MessageCircle size={15} className="sm:w-4 sm:h-4" />
+                      <span>Submit via WhatsApp</span>
                     </button>
                   )}
                 </div>
